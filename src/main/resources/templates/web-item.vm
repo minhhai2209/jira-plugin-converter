@@ -1,0 +1,10 @@
+#enable_html_escaping()
+
+#set($hostConfigJsonWithHtml = $hostConfigJson)
+
+<div id="embedded-$ns"></div>
+<script>
+  require(['connect-host', 'ac/cookie', 'ac/env', 'ac/inline-dialog', 'ac/dialog', 'ac/messages', 'ac/request', 'ac/history'], function(host){
+    host.create($hostConfigJsonWithHtml);
+  });
+</script>

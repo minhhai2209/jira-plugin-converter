@@ -1,0 +1,196 @@
+/**
+ * RESET
+ */
+html, body, p, div, h1, h2, h3, h4, h5, h6, img, pre, form, fieldset {
+  margin: 0;
+  padding: 0;
+}
+/* allows sizing to height of iframe element */
+html, body {
+  height: 100%;
+}
+ul, ol, dl {
+  margin: 0;
+}
+img, fieldset {
+  border: 0;
+}
+/**
+ * HTML5
+ */
+/* Solution from https://github.com/necolas/normalize.css/blob/master/normalize.css */
+/* Corrects block display not defined in IE6/7/8/9 & FF3 */
+article, aside, details, figcaption, figure, footer, header, hgroup, nav, section {
+  display: block;
+}
+
+/* Corrects inline-block display not defined in IE6/7/8/9 & FF3 */
+audio, canvas, video {
+  display: inline-block;
+  *display: inline;
+  *zoom: 1;
+}
+/**
+ * TYPOGRAPHY - 14px base font size, agnostic font stack
+ */
+body {
+  color: #333;
+  font-family: sans-serif;
+  font-size: 14px;
+  line-height: 1.42857142857143; /* 20px equiv line-height */
+}
+
+/* Default margins */
+p,
+ul,
+ol,
+dl,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+blockquote,
+pre,
+form.aui,
+table.aui,
+.aui-tabs,
+.aui-panel,
+.aui-group {
+  margin: 10px 0 0 0;
+}
+
+/* No top margin to interfere with box padding */
+p:first-child,
+ul:first-child,
+ol:first-child,
+dl:first-child,
+h1:first-child,
+h2:first-child,
+h3:first-child,
+h4:first-child,
+h5:first-child,
+h6:first-child,
+blockquote:first-child,
+pre:first-child,
+form.aui:first-child,
+table.aui:first-child,
+.aui-tabs:first-child,
+.aui-panel:first-child,
+.aui-group:first-child {
+  margin-top: 0;
+}
+
+/* Headings */
+h1 {
+  font-size: 24px;
+  font-weight: normal;
+  line-height: 1.25; /* 30px equiv line-height */
+  margin: 40px 0 0 0;
+}
+h2 {
+  font-size: 20px;
+  font-weight: normal;
+  line-height: 1.5; /* 30px equiv line-height */
+  margin: 40px 0 0 0;
+}
+h3 {
+  font-size: 16px;
+  line-height: 1.5625; /* 25px equiv line-height */
+  margin: 30px 0 0 0;
+}
+h4 {
+  font-size: 14px;
+  line-height: 1.5; /* 20px equiv line-height */
+  margin: 20px 0 0 0;
+}
+h5 {
+  color: #707070;
+  font-size: 12px;
+  line-height: 1.66666666666667;
+  margin: 20px 0 0 0;
+  text-transform: uppercase;
+}
+h6 {
+  color: #707070;
+  font-size: 12px;
+  line-height: 1.66666666666667;
+  margin: 20px 0 0 0;
+}
+h1:first-child,
+h2:first-child,
+h3:first-child,
+h4:first-child,
+h5:first-child,
+h6:first-child {
+  margin-top: 0;
+}
+/* Nice styles for using subheadings */
+h1 + h2,
+h2 + h3,
+h3 + h4,
+h4 + h5,
+h5 + h6 {
+  margin-top: 10px;
+}
+/* Increase the margins on all headings when used in the group/item pattern ... */
+.aui-group > .aui-item > h1:first-child,
+.aui-group > .aui-item > h2:first-child,
+.aui-group > .aui-item > h3:first-child,
+.aui-group > .aui-item > h4:first-child,
+.aui-group > .aui-item > h5:first-child,
+.aui-group > .aui-item > h6:first-child {
+  margin-top: 20px;
+}
+/* ... unless they're the first-child */
+.aui-group:first-child > .aui-item > h1:first-child,
+.aui-group:first-child > .aui-item > h2:first-child,
+.aui-group:first-child > .aui-item > h3:first-child,
+.aui-group:first-child > .aui-item > h4:first-child,
+.aui-group:first-child > .aui-item > h5:first-child,
+.aui-group:first-child > .aui-item > h6:first-child {
+  margin-top: 0;
+}
+
+/* Other typographical elements */
+small {
+  color: #707070;
+  font-size: 12px;
+  line-height: 1.33333333333333; /* 16px equiv line-height */
+}
+code,
+kbd {
+  font-family: monospace;
+}
+var,
+address,
+dfn,
+cite {
+  font-style: italic;
+}
+cite:before {
+  content: "\2014 \2009";
+}
+blockquote {
+  border-left: 1px solid #ccc;
+  color: #707070;
+  padding: 10px 30px;
+}
+blockquote > cite {
+  display: block;
+  margin-top: 10px;
+}
+q {
+  color: #707070;
+}
+q:before {
+  content: open-quote;
+}
+q:after {
+  content: close-quote;
+}
+abbr {
+  border-bottom: 1px #707070 dotted;
+  cursor: help;
+}

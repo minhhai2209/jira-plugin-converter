@@ -1,0 +1,246 @@
+<atlassian-plugin key="${project.groupId}.${project.artifactId}" name="${project.name}"
+  plugins-version="2">
+  <plugin-info>
+    <description>${project.description}</description>
+    <version>${project.version}</version>
+    <vendor name="${project.organization.name}" url="${project.organization.url}" />
+    <param name="plugin-icon">images/pluginIcon.png</param>
+    <param name="plugin-logo">images/pluginLogo.png</param>
+  </plugin-info>
+
+  <servlet-filter key="iframe-resources" class="${project.groupId}.plugin.staticcontent.StaticResourcesFilter"
+    location="after-encoding">
+    <url-pattern>/${project.groupId}-${project.artifactId}/*</url-pattern>
+  </servlet-filter>
+
+  <!-- add our i18n resource -->
+<!--   <resource type="i18n" name="i18n" location="${project.artifactId}" /> -->
+
+  <!-- add our web resources -->
+<!--   <web-resource key="${project.artifactId}-resources" name="${project.artifactId} Web Resources"> -->
+<!--     <resource type="download" name="${project.artifactId}.css" location="/css/${project.artifactId}.css" /> -->
+<!--     <resource type="download" name="${project.artifactId}.js" location="/js/${project.artifactId}.js" /> -->
+<!--     <resource type="download" name="images/" location="/images" /> -->
+<!--   </web-resource> -->
+
+  <web-resource key="iframe-host-css">
+    <resource type="download" name="core-host.css" location="/css/core/host-css.css" />
+    <resource type="download" name="host.css" location="/css/iframe/host.css" />
+    <resource type="download" name="admin.css" location="/css/iframe/admin.css" />
+    <resource type="download" name="messages-main.css" location="css/messages/main.css" />
+  </web-resource>
+
+  <web-resource key="atlassian-connect-resources" name="Connect resources for inclusion on every page.">
+    <context>atl.admin</context>
+    <context>atl.general</context>
+
+    <dependency>${project.groupId}.${project.artifactId}:dialog-page-resource</dependency>
+    <dependency>${project.groupId}.${project.artifactId}:remote-condition</dependency>
+    <dependency>${project.groupId}.${project.artifactId}:iframe-host-css</dependency>
+    <dependency>${project.groupId}.${project.artifactId}:iframe-host-js</dependency>
+    <dependency>${project.groupId}.${project.artifactId}:ap-extensions</dependency>
+    <dependency>${project.groupId}.${project.artifactId}:ap-user</dependency>
+    <dependency>${project.groupId}.${project.artifactId}:workflow-post-function</dependency>
+    <dependency>${project.groupId}.${project.artifactId}:events</dependency>
+    <dependency>${project.groupId}.${project.artifactId}:create-issue-dialog</dependency>
+  </web-resource>
+
+  <web-resource key="dialog-page-resource">
+    <dependency>com.atlassian.auiplugin:ajs</dependency>
+  </web-resource>
+
+  <web-resource key="atlassian-connect-dashboard-item-resources" name="Connect resources for dashboard page.">
+    <context>atl.dashboard</context>
+
+    <dependency>${project.groupId}.${project.artifactId}:atlassian-connect-resources</dependency>
+    <dependency>${project.groupId}.${project.artifactId}:dashboard-item</dependency>
+  </web-resource>
+
+  <!-- JavaScript API Core -->
+
+  <web-resource key="ap-core">
+    <resource type="download" name="core-host.js" location="/js/core/connect-host-amd.js" />
+    <dependency>jira.webresources:almond</dependency>
+  </web-resource>
+
+  <web-resource key="ap-extensions">
+    <resource type="download" name="connect-cookie.js" location="/js/core/connect-host-cookie.js" />
+    <resource type="download" name="connect-env.js" location="/js/core/connect-host-env.js" />
+    <resource type="download" name="connect-messages.js" location="/js/core/connect-host-messages.js" />
+    <resource type="download" name="connect-request.js" location="/js/core/connect-host-request.js" />
+    <resource type="download" name="connect-history.js" location="/js/core/connect-host-history.js" />
+    <resource type="download" name="connect-dialog.js" location="/js/core/connect-host-dialog.js" />
+    <resource type="download" name="connect-inline-dialog.js" location="/js/core/connect-host-inline-dialog.js" />
+    <dependency>${project.groupId}.${project.artifactId}:ap-core</dependency>
+    <dependency>${project.groupId}.${project.artifactId}:iframe-host-js</dependency>
+  </web-resource>
+
+  <web-resource key="ap-user">
+    <resource type="download" name="user.js" location="/js/iframe/host/user.js" />
+    <dependency>${project.groupId}.${project.artifactId}:ap-core</dependency>
+  </web-resource>
+
+  <web-resource key="iframe-host-js">
+    <dependency>${project.groupId}.${project.artifactId}:ap-core</dependency>
+    <resource type="download" name="main.js" location="/js/iframe/host/main.js" />
+    <resource type="download" name="content-resolver.js" location="/js/iframe/host/content-resolver.js" />
+    <dependency>com.atlassian.auiplugin:dialog2</dependency>
+  </web-resource>
+
+  <web-resource key="remote-condition">
+    <resource type="download" name="remote.js" location="js/condition/remote.js" />
+    <dependency>${project.groupId}.${project.artifactId}:ap-core</dependency>
+  </web-resource>
+
+  <!-- JIRA specific javascript modules -->
+
+  <web-resource key="workflow-post-function">
+    <resource type="download" name="workflow-post-function.js" location="js/jira/workflow-post-function/workflow-post-function.js" />
+    <resource type="download" name="workflow-post-function-rpc.js" location="js/jira/workflow-post-function/workflow-post-function-rpc.js" />
+    <dependency>com.atlassian.auiplugin:ajs</dependency>
+    <dependency>${project.groupId}.${project.artifactId}:ap-core</dependency>
+  </web-resource>
+
+  <web-resource key="dashboard-item">
+    <resource type="download" name="dashboard-item.js" location="js/jira/dashboard-item/dashboard-item.js" />
+
+    <dependency>com.atlassian.auiplugin:ajs</dependency>
+    <dependency>${project.groupId}.${project.artifactId}:ap-core</dependency>
+  </web-resource>
+
+  <web-resource key="create-issue-dialog">
+    <resource type="download" name="create-issue-dialog.js" location="/js/jira/issue/issue.js" />
+    <resource type="download" name="create-issue-dialog-rpc.js" location="/js/jira/issue/issue-rpc.js" />
+    <dependency>com.atlassian.auiplugin:ajs</dependency>
+    <dependency>${project.groupId}.${project.artifactId}:ap-core</dependency>
+  </web-resource>
+
+  <web-resource key="events">
+    <resource type="download" name="jira-events.js" location="/js/jira/events/events.js" />
+    <resource type="download" name="jira-events-rpc.js" location="/js/jira/events/events-rpc.js" />
+    <dependency>com.atlassian.auiplugin:ajs</dependency>
+    <dependency>${project.groupId}.${project.artifactId}:ap-core</dependency>
+  </web-resource>
+
+  <!-- publish our component -->
+  <!-- <component key="myPluginComponent" class="${project.groupId}.MyPluginComponentImpl" -->
+  <!-- public="true"> -->
+  <!-- <interface>${project.groupId}.MyPluginComponent</interface> -->
+  <!-- </component> -->
+
+  <!-- properties -->
+  
+  <component-import key="applicationProperties" interface="com.atlassian.sal.api.ApplicationProperties" />
+  
+  <component-import key="timeZoneService" interface="com.atlassian.jira.timezone.TimeZoneService" />
+  
+  <component-import key="localeResolver" interface="com.atlassian.sal.api.message.LocaleResolver" />
+  
+  <component-import key="pluginLicenseManager" interface="com.atlassian.upm.api.license.PluginLicenseManager" />
+
+  <!-- life cycle events -->
+
+  <component-import key="eventPublisher" interface="com.atlassian.event.api.EventPublisher" />
+
+  <component key="pluginLifeCycleEventListener" class="${project.groupId}.plugin.lifecycle.PluginLifeCycleEventListener" />
+
+  <!-- view -->
+
+  <component-import key="renderer" interface="com.atlassian.templaterenderer.velocity.one.six.VelocityTemplateRenderer" />
+
+  <!-- working with plugin settings -->
+  
+  <component-import key="pluginSettingsFactory" interface="com.atlassian.sal.api.pluginsettings.PluginSettingsFactory" />
+  
+  <component-import key="transactionTemplate" interface="com.atlassian.sal.api.transaction.TransactionTemplate" />
+  
+  <!-- page -->
+  
+  <servlet key="${project.artifactId}-page-servlet" class="${project.groupId}.plugin.render.PageRenderer">
+    <url-pattern>/${project.groupId}-${project.artifactId}/page/*</url-pattern>
+  </servlet>
+  
+  <!-- web panel -->
+  
+  <web-panel-renderer key="webPanelRenderer" class="${project.groupId}.plugin.render.WebPanelRenderer"/>
+
+  <!-- web item -->
+  
+  <servlet key="${project.artifactId}-web-item-servlet" class="${project.groupId}.plugin.render.WebItemRenderer">
+    <url-pattern>/${project.groupId}-${project.artifactId}/web-item/*</url-pattern>
+  </servlet>
+  
+  <!-- REST -->
+  <servlet key="${project.artifactId}-rest-servlet" class="${project.groupId}.plugin.rest.RestProxy">
+    <url-pattern>/${project.groupId}-${project.artifactId}/rest-proxy/*</url-pattern>
+  </servlet>
+
+  <!-- generated -->
+  
+  <web-item key="hw-admin-page-0" name="hw general page 0" section="admin_plugins_menu/upm_section" weight="200">
+    <label key="hw-admin-page-0-label" />
+    <link linkId="hw-admin-page-0-link">/plugins/servlet/${project.groupId}-${project.artifactId}/page/hw-admin-page-0</link>
+  </web-item>
+  
+  <web-item key="hw-general-page-0" name="hw general page 0" section="system.top.navigation.bar" weight="200">
+    <label key="hw-general-page-0-label" />
+    <link linkId="hw-general-page-0-link">/plugins/servlet/${project.groupId}-${project.artifactId}/page/hw-general-page-0</link>
+  </web-item>
+  
+<!--   <web-item key="hw-web-item-1" name="hw web item 1" section="system.top.navigation.bar" weight="200"> -->
+<!--     <label key="hw-web-item-1-label" /> -->
+<!--     <link linkId="hw-web-item-1-link">/plugins/servlet/${project.groupId}-${project.artifactId}/web-item/hw-web-item-1</link> -->
+<!--   </web-item> -->
+  
+<!--   <web-item key="hw-web-item-0" name="hw web item 0" section="gadgets.dashboard.menu" weight="200"> -->
+<!--     <label key="hw-web-item-0-label" /> -->
+<!--     <link linkId="hw-web-item-0-link">/plugins/servlet/${project.groupId}-${project.artifactId}/web-item/hw-web-item-0</link> -->
+<!--     <styleClass>trigger-dialog</styleClass> -->
+<!--   </web-item> -->
+
+<!--   <web-panel key="hw-web-panel-0" location="atl.jira.view.issue.left.context"> -->
+<!--     <resource name="view" type="${project.groupId}.${project.artifactId}-iframe" location="hw-web-panel-0" /> -->
+<!--   </web-panel> -->
+
+<web-item key="hw-web-item-0" section="gadgets.dashboard.menu" weight="200">
+    <label>Web item 0</label>
+    <link>/plugins/servlet/${project.groupId}-${project.artifactId}/web-item/hw-web-item-0</link>
+    <styleClass>trigger-dialog</styleClass>
+</web-item>
+<web-item key="hw-web-item-1" section="gadgets.dashboard.menu" weight="200">
+    <label>Web item 1</label>
+    <link>/plugins/servlet/${project.groupId}-${project.artifactId}/web-item/hw-web-item-1</link>
+    <styleClass>trigger-dialog</styleClass>
+</web-item>
+<web-item key="hw-web-item-2" section="gadgets.dashboard.menu" weight="200">
+    <label>Web item 2</label>
+    <link>/plugins/servlet/${project.groupId}-${project.artifactId}/web-item/hw-web-item-2</link>
+    <styleClass>trigger-dialog</styleClass>
+</web-item>
+<web-item key="hw-web-item-6" section="gadgets.dashboard.menu" weight="200">
+    <label>Web item 6</label>
+    <link>/plugins/servlet/${project.groupId}-${project.artifactId}/web-item/hw-web-item-6</link>
+    <styleClass>trigger-dialog</styleClass>
+</web-item>
+<web-item key="hw-web-item-3" section="system.top.navigation.bar" weight="200">
+    <label>Web item 3</label>
+    <link>/plugins/servlet/${project.groupId}-${project.artifactId}/web-item/hw-web-item-3</link>
+</web-item>
+<web-item key="hw-web-item-4" section="system.top.navigation.bar" weight="200">
+    <label>Web item 4</label>
+    <link>/plugins/servlet/${project.groupId}-${project.artifactId}/web-item/hw-web-item-4</link>
+</web-item>
+<web-item key="hw-web-item-5" section="system.top.navigation.bar" weight="200">
+    <label>Web item 5</label>
+    <link>/plugins/servlet/${project.groupId}-${project.artifactId}/web-item/hw-web-item-5</link>
+</web-item>
+<web-item key="hw-web-item-7" section="system.top.navigation.bar" weight="200">
+    <label>Web item 7</label>
+    <link>/plugins/servlet/${project.groupId}-${project.artifactId}/web-item/hw-web-item-7</link>
+</web-item>
+<web-panel key="hw-web-panel-0" weight="200" location="atl.jira.view.issue.left.context">
+    <label key="Web panel 0"/>
+    <resource name="view" type="${project.groupId}.${project.artifactId}-iframe" location="hw-web-panel-0"/>
+</web-panel>
+  
+</atlassian-plugin>

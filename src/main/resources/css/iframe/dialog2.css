@@ -1,0 +1,10 @@
+
+/**
+ * Forces dialog2 content to be 100% - (header height + footer height)
+ * This is done so that dialog2 inner contents are always: fixed height header, fixed height footer, and content
+ * takes all the remaining space
+ */
+.aui-dialog2-content {
+    height: -webkit-calc(100% - 107px);
+    height: calc(100% - 107px);
+}
