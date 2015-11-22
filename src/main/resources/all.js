@@ -70,7 +70,7 @@ if(q){l.addListener(q,function(){h.resize()
 }})
 }}}}});
 f.extend(AP,h,d,{Meta:{get:h.meta},request:e,Dialog:i});
-var m={},c=f("script[src*='/generated_artifact_id/all']");
+var m={},c=f("script[src*='/atlassian-connect/all']");
 if(!(c&&/\/atlassian-connect\/all(-debug)?\.js($|\?)/.test(c.attr("src")))){c=f("#ac-iframe-options")
 }if(c&&c.length>0){var j=c.attr("data-options");
 if(j){f.each(j.split(";"),function(t,s){var o=f.trim;
