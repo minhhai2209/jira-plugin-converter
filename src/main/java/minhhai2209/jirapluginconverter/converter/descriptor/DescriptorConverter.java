@@ -1,6 +1,5 @@
 package minhhai2209.jirapluginconverter.converter.descriptor;
 
-import java.io.File;
 import java.io.StringWriter;
 import java.util.List;
 
@@ -27,7 +26,7 @@ public class DescriptorConverter {
   private static PageConverter generalPageConverter = new PageConverter("system.top.navigation.bar");
   private static PageConverter adminPageConverter = new PageConverter("advanced_menu_section/advanced_section");
 
-  public static String convert(File descriptorFile) {
+  public static String convert(String descriptorFile) {
     try {
       Descriptor descriptor = mapper.readValue(descriptorFile, Descriptor.class);
       Module modules = descriptor.getModules();

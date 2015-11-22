@@ -1,10 +1,11 @@
 package minhhai2209.jirapluginconverter.converter.utils;
 
 import java.io.File;
-import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 
 import minhhai2209.jirapluginconverter.converter.descriptor.DescriptorConverter;
 import minhhai2209.jirapluginconverter.utils.ExceptionUtils;
@@ -35,27 +36,37 @@ public class ConverterUtils {
     }
   }
 
-  public static void replaceTextInDescriptor(File root, File connectDescriptorFile) {
+  public static void replaceTextInDescriptor(File root, String connectFile) {
     File pluginDescriptorFile = new File(root, "/src/main/resources/atlassian-plugin.xml");
     String placeholder = "<generated_xml />";
-    String pluginDescriptor = DescriptorConverter.convert(connectDescriptorFile);
+    String pluginDescriptor = DescriptorConverter.convert(connectFile);
     replaceTextInFile(pluginDescriptorFile, placeholder, pluginDescriptor);
   }
 
-  public static void copy(File root, File connectFile) {
+  public static void copy(File root, String connectFile) {
     try {
       File destFile = new File(root, "/src/main/resources/imported_atlas_connect_descriptor.json");
-      FileUtils.copyFile(connectFile, destFile);
+      FileUtils.write(destFile, connectFile);
     } catch (Exception e) {
       ExceptionUtils.throwUnchecked(e);
     }
   }
 
-  public static File getConnectFile(String url) throws IOException {
-    URL source = new URL(url);
-    String connectFileName = System.currentTimeMillis() + "-" + "connect.json";
-    File connectFile = new File(connectFileName);
-    FileUtils.copyURLToFile(source, connectFile);
-    return connectFile;
+  public static String getConnectFile(String url) {
+    try {
+      URL source = new URL(url);
+      InputStream in = null;
+      try {
+        in = source.openStream();
+        return IOUtils.toString(in);
+      } finally {
+        if (in != null) {
+          IOUtils.closeQuietly(in);
+        }
+      }
+    } catch (Exception e) {
+      ExceptionUtils.throwUnchecked(e);
+    }
+    return null;
   }
 }
