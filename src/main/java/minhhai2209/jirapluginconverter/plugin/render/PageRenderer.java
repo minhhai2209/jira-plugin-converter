@@ -25,7 +25,6 @@ import com.atlassian.templaterenderer.TemplateRenderer;
 import minhhai2209.jirapluginconverter.connect.descriptor.page.Page;
 import minhhai2209.jirapluginconverter.plugin.iframe.HostConfig;
 import minhhai2209.jirapluginconverter.plugin.setting.PluginSetting;
-import minhhai2209.jirapluginconverter.plugin.staticcontent.StaticResourcesFilter;
 import minhhai2209.jirapluginconverter.plugin.utils.LocaleUtils;
 import minhhai2209.jirapluginconverter.plugin.utils.RequestUtils;
 import minhhai2209.jirapluginconverter.utils.ExceptionUtils;
@@ -85,7 +84,6 @@ public class PageRenderer extends HttpServlet {
 
       String xdm_e = applicationProperties.getBaseUrl(UrlMode.ABSOLUTE);
       String cp = applicationProperties.getBaseUrl(UrlMode.RELATIVE);
-      String pp = StaticResourcesFilter.HOST_RESOURCE_PATH;
       String ns = PluginSetting.URL_SAFE_PLUGIN_KEY + "__" + moduleKey;
       String xdm_c = "channel-" + ns;
       String dlg = "";
@@ -103,7 +101,7 @@ public class PageRenderer extends HttpServlet {
 
       ParameterContextBuilder paramContextBuilder = new ParameterContextBuilder();
       url = paramContextBuilder.buildUrl(request, url);
-      
+
       url = new URIBuilder(url)
           .addParameter("tz", timezone)
           .addParameter("loc", loc)
@@ -112,7 +110,6 @@ public class PageRenderer extends HttpServlet {
           .addParameter("xdm_e", xdm_e)
           .addParameter("xdm_c", xdm_c)
           .addParameter("cp", cp)
-          .addParameter("pp", pp)
           .addParameter("lic", lic)
           .addParameter("cv", cv)
           .toString();

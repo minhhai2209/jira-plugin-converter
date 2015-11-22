@@ -28,7 +28,6 @@ import minhhai2209.jirapluginconverter.connect.descriptor.webitem.WebItemTarget;
 import minhhai2209.jirapluginconverter.connect.descriptor.webitem.WebItemTarget.Type;
 import minhhai2209.jirapluginconverter.plugin.iframe.HostConfig;
 import minhhai2209.jirapluginconverter.plugin.setting.PluginSetting;
-import minhhai2209.jirapluginconverter.plugin.staticcontent.StaticResourcesFilter;
 import minhhai2209.jirapluginconverter.plugin.utils.EnumUtils;
 import minhhai2209.jirapluginconverter.plugin.utils.LocaleUtils;
 import minhhai2209.jirapluginconverter.plugin.utils.RequestUtils;
@@ -94,7 +93,6 @@ public class WebItemRenderer extends HttpServlet {
 
       String xdm_e = applicationProperties.getBaseUrl(UrlMode.ABSOLUTE);
       String cp = applicationProperties.getBaseUrl(UrlMode.RELATIVE);
-      String pp = StaticResourcesFilter.HOST_RESOURCE_PATH;
       String ns = PluginSetting.URL_SAFE_PLUGIN_KEY + "__" + moduleKey;
       String xdm_c = "channel-" + ns;
       String dlg = EnumUtils.equals(type, Type.dialog) ? "1" : "";
@@ -112,7 +110,7 @@ public class WebItemRenderer extends HttpServlet {
 
       ParameterContextBuilder paramContextBuilder = new ParameterContextBuilder();
       url = paramContextBuilder.buildUrl(request, url);
-      
+
       URIBuilder uriBuilder = new URIBuilder(url);
       if (EnumUtils.equals(type, Type.dialog) ||
           (EnumUtils.equals(type, Type.page)
@@ -125,7 +123,6 @@ public class WebItemRenderer extends HttpServlet {
             .addParameter("xdm_e", xdm_e)
             .addParameter("xdm_c", xdm_c)
             .addParameter("cp", cp)
-            .addParameter("pp", pp)
             .addParameter("lic", lic)
             .addParameter("cv", cv);
       }

@@ -27,8 +27,8 @@ import com.google.common.cache.LoadingCache;
  */
 public class StaticResourcesFilter implements Filter {
 
-  public static final String HOST_RESOURCE_PATH = "/atlassian-connect";
-  public static final int PLUGIN_TTL_NEAR_FUTURE = 60 * 30; // 30 min
+  private static final String HOST_RESOURCE_PATH = "/atlassian-connect";
+  private static final int PLUGIN_TTL_NEAR_FUTURE = 60 * 30; // 30 min
 
   private static final Pattern RESOURCE_PATTERN = Pattern.compile("all\\.(js|css)");
 
