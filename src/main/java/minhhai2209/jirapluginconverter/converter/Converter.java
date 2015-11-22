@@ -33,8 +33,9 @@ public class Converter {
     info.setCompany("company");
     info.setCompanyUrl("http://localhost:7777/hw/company");
     info.setDescription("description");
+    info.setUrl("http://localhost:7777/hw/json");
 
-    String templatePath = "D:\tmp\jira-plugin-converter";
+    String templatePath = "D:\\tmp\\jira-plugin-converter";
 
     generate(templatePath, info);
   }

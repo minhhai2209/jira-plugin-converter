@@ -38,7 +38,7 @@ public class ConverterUtils {
 
   public static void replaceTextInDescriptor(File root, String connectFile) {
     File pluginDescriptorFile = new File(root, "/src/main/resources/atlassian-plugin.xml");
-    String placeholder = "<generated_xml />";
+    String placeholder = "<!-- <generated_xml /> -->";
     String pluginDescriptor = DescriptorConverter.convert(connectFile);
     replaceTextInFile(pluginDescriptorFile, placeholder, pluginDescriptor);
   }
