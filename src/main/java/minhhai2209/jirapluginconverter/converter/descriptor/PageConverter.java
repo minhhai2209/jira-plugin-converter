@@ -10,7 +10,7 @@ import minhhai2209.jirapluginconverter.plugin.descriptor.Icon;
 import minhhai2209.jirapluginconverter.plugin.descriptor.WebItemModule;
 import minhhai2209.jirapluginconverter.plugin.descriptor.Conditions.Type;
 
-public class PageConverter extends Converter<WebItemModule, Page>{
+public class PageConverter extends ModuleConverter<WebItemModule, Page>{
 
   private ConditionConverter conditionConverter = new ConditionConverter();
 

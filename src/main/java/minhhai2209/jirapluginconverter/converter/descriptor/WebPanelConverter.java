@@ -11,7 +11,7 @@ import minhhai2209.jirapluginconverter.plugin.descriptor.Resource;
 import minhhai2209.jirapluginconverter.plugin.descriptor.WebPanelModule;
 import minhhai2209.jirapluginconverter.plugin.descriptor.Conditions.Type;
 
-public class WebPanelConverter extends Converter<WebPanelModule, WebPanel>{
+public class WebPanelConverter extends ModuleConverter<WebPanelModule, WebPanel>{
 
   private ConditionConverter conditionConverter = new ConditionConverter();
   

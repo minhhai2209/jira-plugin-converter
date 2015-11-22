@@ -174,4 +174,6 @@
     <url-pattern>/rest/*</url-pattern>
   </servlet-filter>
   
+  <generated_xml />
+  
 </atlassian-plugin>

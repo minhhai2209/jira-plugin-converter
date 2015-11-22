@@ -7,7 +7,7 @@ import java.util.Map;
 import minhhai2209.jirapluginconverter.plugin.descriptor.Condition;
 import minhhai2209.jirapluginconverter.plugin.descriptor.Param;
 
-public class ConditionConverter extends Converter<Condition, minhhai2209.jirapluginconverter.connect.descriptor.condition.Condition>{
+public class ConditionConverter extends ModuleConverter<Condition, minhhai2209.jirapluginconverter.connect.descriptor.condition.Condition>{
 
   @Override
   public Condition toPluginModule(minhhai2209.jirapluginconverter.connect.descriptor.condition.Condition connectCondition) {

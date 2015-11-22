@@ -11,7 +11,7 @@ import minhhai2209.jirapluginconverter.plugin.descriptor.Icon;
 import minhhai2209.jirapluginconverter.plugin.descriptor.WebItemModule;
 import minhhai2209.jirapluginconverter.plugin.descriptor.Conditions.Type;
 
-public class WebItemConverter extends Converter<WebItemModule, WebItem>{
+public class WebItemConverter extends ModuleConverter<WebItemModule, WebItem>{
   
   private ConditionConverter conditionConverter = new ConditionConverter();
 

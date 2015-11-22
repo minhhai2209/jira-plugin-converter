@@ -9,7 +9,7 @@ import minhhai2209.jirapluginconverter.plugin.descriptor.Conditions;
 import minhhai2209.jirapluginconverter.plugin.descriptor.WebSectionModule;
 import minhhai2209.jirapluginconverter.plugin.descriptor.Conditions.Type;
 
-public class WebSectionConverter extends Converter<WebSectionModule, WebSection> {
+public class WebSectionConverter extends ModuleConverter<WebSectionModule, WebSection> {
 
   private ConditionConverter conditionConverter = new ConditionConverter();
   
