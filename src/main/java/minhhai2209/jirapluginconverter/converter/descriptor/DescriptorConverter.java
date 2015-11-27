@@ -6,7 +6,7 @@ import java.util.List;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import minhhai2209.jirapluginconverter.connect.descriptor.Descriptor;
-import minhhai2209.jirapluginconverter.connect.descriptor.Module;
+import minhhai2209.jirapluginconverter.connect.descriptor.Modules;
 import minhhai2209.jirapluginconverter.connect.descriptor.page.Page;
 import minhhai2209.jirapluginconverter.connect.descriptor.webitem.WebItem;
 import minhhai2209.jirapluginconverter.connect.descriptor.webpanel.WebPanel;
@@ -29,13 +29,13 @@ public class DescriptorConverter {
   public static String convert(String descriptorFile) {
     try {
       Descriptor descriptor = mapper.readValue(descriptorFile, Descriptor.class);
-      Module modules = descriptor.getModules();
+      Modules modules = descriptor.getModules();
       StringWriter writer = new StringWriter();
 
       List<WebItem> webItems = modules.getWebItems();
       if (webItems != null) {
         for (WebItem webItem : webItems) {
-          WebItemModule pluginModule = webItemConverter.toPluginModule(webItem);
+          WebItemModule pluginModule = webItemConverter.toPluginModule(webItem, modules);
           XmlUtils.toXml(pluginModule, writer);
         }
       }
@@ -43,7 +43,7 @@ public class DescriptorConverter {
       List<WebPanel> webPanels = modules.getWebPanels();
       if (webPanels != null) {
         for (WebPanel webPanel : webPanels) {
-          WebPanelModule pluginModule = webPanelConverter.toPluginModule(webPanel);
+          WebPanelModule pluginModule = webPanelConverter.toPluginModule(webPanel, modules);
           XmlUtils.toXml(pluginModule, writer);
         }
       }
@@ -51,7 +51,7 @@ public class DescriptorConverter {
       List<WebSection> webSections = modules.getWebSections();
       if (webSections != null) {
         for (WebSection webSection : webSections) {
-          WebSectionModule pluginModule = webSectionConverter.toPluginModule(webSection);
+          WebSectionModule pluginModule = webSectionConverter.toPluginModule(webSection, modules);
           XmlUtils.toXml(pluginModule, writer);
         }
       }
@@ -59,7 +59,7 @@ public class DescriptorConverter {
       List<Page> generalPages = modules.getGeneralPages();
       if (generalPages != null) {
         for (Page page : generalPages) {
-          WebItemModule pluginModule = generalPageConverter.toPluginModule(page);
+          WebItemModule pluginModule = generalPageConverter.toPluginModule(page, modules);
           XmlUtils.toXml(pluginModule, writer);
         }
       }
@@ -67,7 +67,7 @@ public class DescriptorConverter {
       List<Page> adminPages = modules.getAdminPages();
       if (adminPages != null) {
         for (Page page : adminPages) {
-          WebItemModule pluginModule = adminPageConverter.toPluginModule(page);
+          WebItemModule pluginModule = adminPageConverter.toPluginModule(page, modules);
           XmlUtils.toXml(pluginModule, writer);
         }
       }

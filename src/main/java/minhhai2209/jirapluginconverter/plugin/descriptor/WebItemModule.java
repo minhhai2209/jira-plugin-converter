@@ -20,12 +20,12 @@ public class WebItemModule {
 
   private Label label = new Label();
 
-  private String link;
-  
+  private Link link;
+
   private Icon icon;
-  
+
   private String styleClass;
-  
+
   private Condition condition;
   private Conditions conditions;
 
@@ -92,11 +92,11 @@ public class WebItemModule {
   }
 
   @XmlElement
-  public String getLink() {
+  public Link getLink() {
     return link;
   }
 
-  public void setLink(String link) {
+  public void setLink(Link link) {
     this.link = link;
   }
 

@@ -32,7 +32,7 @@ import com.atlassian.upm.api.license.PluginLicenseManager;
 import minhhai2209.jirapluginconverter.connect.descriptor.Context;
 import minhhai2209.jirapluginconverter.connect.descriptor.Descriptor;
 import minhhai2209.jirapluginconverter.connect.descriptor.LifeCycle;
-import minhhai2209.jirapluginconverter.connect.descriptor.Module;
+import minhhai2209.jirapluginconverter.connect.descriptor.Modules;
 import minhhai2209.jirapluginconverter.connect.descriptor.authentication.Authentication;
 import minhhai2209.jirapluginconverter.connect.descriptor.page.Page;
 import minhhai2209.jirapluginconverter.connect.descriptor.webitem.WebItem;
@@ -135,7 +135,7 @@ public class PluginSetting {
   }
 
   private static void buildWebItemLookup() {
-    Module modules = descriptor.getModules();
+    Modules modules = descriptor.getModules();
     List<WebItem> webItems = modules.getWebItems();
     webItemLookup = new HashMap<String, WebItem>();
     if (webItems != null) {
@@ -147,7 +147,7 @@ public class PluginSetting {
   }
 
   private static void buildWebPanelLookup() {
-    Module modules = descriptor.getModules();
+    Modules modules = descriptor.getModules();
     List<WebPanel> webPanels = modules.getWebPanels();
     webPanelLookup = new HashMap<String, WebPanel>();
     if (webPanels != null) {
@@ -159,7 +159,7 @@ public class PluginSetting {
   }
 
   private static void buildGeneralPageLookup() {
-    Module modules = descriptor.getModules();
+    Modules modules = descriptor.getModules();
     List<Page> pages = modules.getGeneralPages();
     generalPageLookup = new HashMap<String, Page>();
     if (pages != null) {
@@ -171,7 +171,7 @@ public class PluginSetting {
   }
 
   private static void buildAdminPageLookup() {
-    Module modules = descriptor.getModules();
+    Modules modules = descriptor.getModules();
     List<Page> pages = modules.getAdminPages();
     adminPageLookup = new HashMap<String, Page>();
     if (pages != null) {

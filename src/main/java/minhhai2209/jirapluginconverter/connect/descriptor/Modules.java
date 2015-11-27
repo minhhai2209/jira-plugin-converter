@@ -18,7 +18,7 @@ import minhhai2209.jirapluginconverter.connect.descriptor.webpanel.WebPanel;
 import minhhai2209.jirapluginconverter.connect.descriptor.websection.WebSection;
 
 @JsonIgnoreProperties(ignoreUnknown=true)
-public class Module {
+public class Modules {
 
   private List<WebItem> webItems;
   private List<WebPanel> webPanels;

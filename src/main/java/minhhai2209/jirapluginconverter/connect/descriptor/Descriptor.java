@@ -23,7 +23,7 @@ public class Descriptor {
   private String baseUrl;
   private Authentication authentication;
   private boolean enableLicensing;
-  private Module modules;
+  private Modules modules;
   private List<String> scopes;
 
   public String getKey() {
@@ -86,10 +86,10 @@ public class Descriptor {
   public void setEnableLicensing(boolean enableLicensing) {
     this.enableLicensing = enableLicensing;
   }
-  public Module getModules() {
+  public Modules getModules() {
     return modules;
   }
-  public void setModules(Module modules) {
+  public void setModules(Modules modules) {
     this.modules = modules;
   }
   public List<String> getScopes() {

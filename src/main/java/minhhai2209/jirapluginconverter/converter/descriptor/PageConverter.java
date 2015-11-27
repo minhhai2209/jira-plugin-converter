@@ -2,13 +2,15 @@ package minhhai2209.jirapluginconverter.converter.descriptor;
 
 import java.util.List;
 
+import minhhai2209.jirapluginconverter.connect.descriptor.Modules;
 import minhhai2209.jirapluginconverter.connect.descriptor.condition.ConditionWrapper;
 import minhhai2209.jirapluginconverter.connect.descriptor.page.Page;
 import minhhai2209.jirapluginconverter.plugin.descriptor.Condition;
 import minhhai2209.jirapluginconverter.plugin.descriptor.Conditions;
-import minhhai2209.jirapluginconverter.plugin.descriptor.Icon;
-import minhhai2209.jirapluginconverter.plugin.descriptor.WebItemModule;
 import minhhai2209.jirapluginconverter.plugin.descriptor.Conditions.Type;
+import minhhai2209.jirapluginconverter.plugin.descriptor.Icon;
+import minhhai2209.jirapluginconverter.plugin.descriptor.Link;
+import minhhai2209.jirapluginconverter.plugin.descriptor.WebItemModule;
 
 public class PageConverter extends ModuleConverter<WebItemModule, Page>{
 
@@ -21,7 +23,7 @@ public class PageConverter extends ModuleConverter<WebItemModule, Page>{
   }
 
   @Override
-  public WebItemModule toPluginModule(Page page) {
+  public WebItemModule toPluginModule(Page page, Modules modules) {
     WebItemModule module = new WebItemModule();
     String key = page.getKey();
     String location = page.getLocation() == null ? defaultLocation : page.getLocation();
@@ -39,17 +41,17 @@ public class PageConverter extends ModuleConverter<WebItemModule, Page>{
       if (conditionWrapper.getOr() != null) {
         Conditions conditions =  new Conditions();
         conditions.setType(Type.OR);
-        List<Condition> clauses =conditionConverter.getConditionModules(conditionWrapper.getOr());
+        List<Condition> clauses =conditionConverter.getConditionModules(conditionWrapper.getOr(), modules);
         conditions.setConditions(clauses);
         module.setConditions(conditions);
       } else if (conditionWrapper.getAnd() != null) {
         Conditions conditions =  new Conditions();
         conditions.setType(Type.OR);
-        List<Condition> clauses = conditionConverter.getConditionModules(conditionWrapper.getAnd());
+        List<Condition> clauses = conditionConverter.getConditionModules(conditionWrapper.getAnd(), modules);
         conditions.setConditions(clauses);
         module.setConditions(conditions);
       } else {
-        Condition singleCondtion = conditionConverter.toPluginModule(conditionWrapper);
+        Condition singleCondtion = conditionConverter.toPluginModule(conditionWrapper, modules);
         module.setCondition(singleCondtion);
       }
 
@@ -57,7 +59,9 @@ public class PageConverter extends ModuleConverter<WebItemModule, Page>{
     return module;
   }
 
-  public static String getPageUrl(String key) {
-    return "/plugins/servlet/${project.groupId}-${project.artifactId}/page/" + key + "?" + queryContext;
+  public static Link getPageUrl(String key) {
+    Link link = new Link();
+    link.setValue("/plugins/servlet/${project.groupId}-${project.artifactId}/page/" + key + "?" + queryContext);
+    return link;
   }
 }
