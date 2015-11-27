@@ -78,6 +78,7 @@ public class WebItemConverter extends ModuleConverter<WebItemModule, WebItem>{
     if (menu) {
       link.setLinkId(key);
     } else {
+      String queryContext = "projectKey=${project.key}&projectId=${project.id}&versionId=${version.id}&componentId=${component.id}&issueId=${issue.id}&issueKey=${issue.key}";
       link.setValue("/plugins/servlet/${project.groupId}-${project.artifactId}/web-item/" + key + "?" + queryContext);
     }
     return link;
