@@ -79,16 +79,6 @@ public class PluginSetting {
     sharedSecret = SharedSecretGenerator.generateSharedSecret(pluginSettingsFactory, transactionTemplate);
   }
 
-//  private static void loadSen(PluginLicenseManager pluginLicenseManager) {
-//    Option<PluginLicense> licenseOption = pluginLicenseManager.getLicense();
-//    PluginLicense license = licenseOption.getOrElse((PluginLicense) null);
-//    if (license == null) {
-//      sen = "";
-//    } else {
-//      sen = license.getSupportEntitlementNumber().getOrElse("");
-//    }
-//  }
-
   private static void readDescriptor() {
     InputStream is = null;
     try {
