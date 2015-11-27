@@ -11,7 +11,7 @@ public class Converter {
   public static void generate(String templatePath, PluginProperties info) {
 
     try {
-      File root = new File(templatePath);
+      File root = ConverterUtils.getTemplate(templatePath);
       String connectFile = ConverterUtils.getConnectFile(info.getUrl());
       ConverterUtils.replaceTextInFolder(root, "generated_artifact_id", info.getArtifactId());
       ConverterUtils.replaceTextInFolder(root, "generated_group_id", info.getGroupId());

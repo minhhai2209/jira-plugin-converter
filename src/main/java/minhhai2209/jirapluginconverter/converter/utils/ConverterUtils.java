@@ -6,6 +6,7 @@ import java.net.URL;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.zeroturnaround.zip.ZipUtil;
 
 import minhhai2209.jirapluginconverter.converter.descriptor.DescriptorConverter;
 import minhhai2209.jirapluginconverter.utils.ExceptionUtils;
@@ -64,6 +65,21 @@ public class ConverterUtils {
           IOUtils.closeQuietly(in);
         }
       }
+    } catch (Exception e) {
+      ExceptionUtils.throwUnchecked(e);
+    }
+    return null;
+  }
+
+  public static File getTemplate(String templatePath) {
+    try {
+      templatePath += "-" + System.currentTimeMillis();
+      URL source = new URL("https://github.com/minhhai2209/jira-plugin-converter/archive/master.zip");
+      File zip = new File(templatePath);
+      FileUtils.copyURLToFile(source, zip);
+      ZipUtil.explode(zip);
+      File template = new File(templatePath, "jira-plugin-converter-master");
+      return template;
     } catch (Exception e) {
       ExceptionUtils.throwUnchecked(e);
     }
