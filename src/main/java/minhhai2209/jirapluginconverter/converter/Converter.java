@@ -28,15 +28,12 @@ public class Converter {
   public static void main(String[] args) {
 
     PluginProperties info = new PluginProperties();
-    info.setArtifactId("artifactid");
-    info.setGroupId("groupid");
-    info.setCompany("company");
-    info.setCompanyUrl("http://localhost:7777/hw/company");
-    info.setDescription("description");
-    info.setUrl("http://localhost:7777/hw/json");
-
-    String templatePath = "D:\\tmp\\jira-plugin-converter";
-
-    generate(templatePath, info);
+    info.setArtifactId(args[0]);
+    info.setGroupId(args[1]);
+    info.setCompany(args[2]);
+    info.setCompanyUrl(args[3]);
+    info.setDescription(args[4]);
+    info.setUrl(args[5]);
+    generate(args[6], info);
   }
 }
