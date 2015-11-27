@@ -5,7 +5,6 @@ import java.io.StringReader;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -23,9 +22,7 @@ import org.xml.sax.InputSource;
 
 import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.config.properties.APKeys;
-import com.atlassian.sal.api.pluginsettings.PluginSettings;
 import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
-import com.atlassian.sal.api.transaction.TransactionCallback;
 import com.atlassian.sal.api.transaction.TransactionTemplate;
 import com.atlassian.upm.api.license.PluginLicenseManager;
 
@@ -39,6 +36,7 @@ import minhhai2209.jirapluginconverter.connect.descriptor.webitem.WebItem;
 import minhhai2209.jirapluginconverter.connect.descriptor.webitem.WebItemTarget;
 import minhhai2209.jirapluginconverter.connect.descriptor.webitem.WebItemTarget.Type;
 import minhhai2209.jirapluginconverter.connect.descriptor.webpanel.WebPanel;
+import minhhai2209.jirapluginconverter.plugin.jwt.SharedSecretGenerator;
 import minhhai2209.jirapluginconverter.plugin.utils.EnumUtils;
 import minhhai2209.jirapluginconverter.plugin.utils.HttpClientFactory;
 import minhhai2209.jirapluginconverter.utils.ExceptionUtils;
@@ -78,8 +76,7 @@ public class PluginSetting {
       PluginLicenseManager pluginLicenseManager) throws Exception {
     readDescriptor();
     loadJiraConsumer();
-    generateSharedSecret(pluginSettingsFactory, transactionTemplate);
-//    loadSen(pluginLicenseManager);
+    sharedSecret = SharedSecretGenerator.generateSharedSecret(pluginSettingsFactory, transactionTemplate);
   }
 
 //  private static void loadSen(PluginLicenseManager pluginLicenseManager) {
@@ -91,26 +88,6 @@ public class PluginSetting {
 //      sen = license.getSupportEntitlementNumber().getOrElse("");
 //    }
 //  }
-
-  private static void generateSharedSecret(
-      final PluginSettingsFactory pluginSettingsFactory,
-      TransactionTemplate transactionTemplate) {
-
-    sharedSecret = transactionTemplate.execute(new TransactionCallback<String>() {
-
-      @Override
-      public String doInTransaction() {
-        PluginSettings settings = pluginSettingsFactory.createGlobalSettings();
-        String settingKey = PLUGIN_KEY + ".sharedSecret";
-        String sharedSecret = (String) settings.get(settingKey);
-        if (sharedSecret == null) {
-          sharedSecret = UUID.randomUUID().toString();
-          settings.put(settingKey, sharedSecret);
-        }
-        return sharedSecret;
-      }
-    });
-  }
 
   private static void readDescriptor() {
     InputStream is = null;
