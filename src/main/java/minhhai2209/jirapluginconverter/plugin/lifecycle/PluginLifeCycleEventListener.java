@@ -62,28 +62,32 @@ public class PluginLifeCycleEventListener implements InitializingBean, Disposabl
 
   @PluginEventListener
   public void onPluginEnabled(PluginEnabledEvent enabledEvent) throws Exception {
-    Plugin enabledPlugin = enabledEvent.getPlugin();
-    String enabledPluginKey = enabledPlugin.getKey();
-    if (PluginSetting.PLUGIN_KEY.equals(enabledPluginKey)) {
-      PluginSetting.load(pluginSettingsFactory, transactionTemplate, pluginLicenseManager);
-      String installedUrl = LifeCycleUtils.getInstalledUrl();
-      if (installedUrl != null) {
+    try {
+      Plugin enabledPlugin = enabledEvent.getPlugin();
+      String enabledPluginKey = enabledPlugin.getKey();
+      if (PluginSetting.PLUGIN_KEY.equals(enabledPluginKey)) {
+        PluginSetting.load(pluginSettingsFactory, transactionTemplate, pluginLicenseManager);
+        String installedUrl = LifeCycleUtils.getInstalledUrl();
+        if (installedUrl != null) {
 
-        PluginLifeCycleEvent event = new PluginLifeCycleEvent();
-        event.setBaseUrl(PluginSetting.getJiraBaseUrl());
-        event.setClientKey(KeyUtils.getClientKey());
-        event.setDescription("");
-        event.setEventType(EventType.enabled);
-        event.setKey(PluginSetting.PLUGIN_KEY);
-        event.setPluginsVersion(enabledPlugin.getPluginInformation().getVersion());
-        event.setProductType(ProductType.jira);
-        event.setPublicKey(KeyUtils.getPublicKey());
-        event.setServerVersion(applicationProperties.getVersion());
-        event.setServiceEntitlementNumber(SenUtils.getSen());
-        event.setSharedSecret(KeyUtils.getSharedSecret());
+          PluginLifeCycleEvent event = new PluginLifeCycleEvent();
+          event.setBaseUrl(PluginSetting.getJiraBaseUrl());
+          event.setClientKey(KeyUtils.getClientKey());
+          event.setDescription("");
+          event.setEventType(EventType.enabled);
+          event.setKey(PluginSetting.PLUGIN_KEY);
+          event.setPluginsVersion(enabledPlugin.getPluginInformation().getVersion());
+          event.setProductType(ProductType.jira);
+          event.setPublicKey(KeyUtils.getPublicKey());
+          event.setServerVersion(applicationProperties.getVersion());
+          event.setServiceEntitlementNumber(SenUtils.getSen());
+          event.setSharedSecret(KeyUtils.getSharedSecret());
 
-        sendInstall(installedUrl, event);
+          sendInstall(installedUrl, event);
+        }
       }
+    } catch (Exception e) {
+
     }
   }
 
