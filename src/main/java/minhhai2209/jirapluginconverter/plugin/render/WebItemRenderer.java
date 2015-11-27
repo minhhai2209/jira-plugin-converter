@@ -28,6 +28,7 @@ import minhhai2209.jirapluginconverter.connect.descriptor.webitem.WebItemTarget;
 import minhhai2209.jirapluginconverter.connect.descriptor.webitem.WebItemTarget.Type;
 import minhhai2209.jirapluginconverter.plugin.iframe.HostConfig;
 import minhhai2209.jirapluginconverter.plugin.setting.PluginSetting;
+import minhhai2209.jirapluginconverter.plugin.setting.WebItemUtils;
 import minhhai2209.jirapluginconverter.plugin.utils.EnumUtils;
 import minhhai2209.jirapluginconverter.plugin.utils.LocaleUtils;
 import minhhai2209.jirapluginconverter.plugin.utils.RequestUtils;
@@ -68,9 +69,9 @@ public class WebItemRenderer extends HttpServlet {
     try {
 
       String moduleKey = RequestUtils.getModuleKey(request);
-      WebItem webItem = PluginSetting.getWebItem(moduleKey);
+      WebItem webItem = WebItemUtils.getWebItem(moduleKey);
       String webItemUrl = webItem.getUrl();
-      String url = PluginSetting.getUrl(webItem);
+      String url = WebItemUtils.getUrl(webItem);
       WebItemTarget target = webItem.getTarget();
       Type type = null;
       if (target != null) {

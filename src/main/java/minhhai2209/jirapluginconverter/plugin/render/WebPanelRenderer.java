@@ -23,6 +23,7 @@ import com.atlassian.templaterenderer.TemplateRenderer;
 import minhhai2209.jirapluginconverter.connect.descriptor.webpanel.WebPanel;
 import minhhai2209.jirapluginconverter.plugin.iframe.HostConfig;
 import minhhai2209.jirapluginconverter.plugin.setting.PluginSetting;
+import minhhai2209.jirapluginconverter.plugin.setting.WebPanelUtils;
 import minhhai2209.jirapluginconverter.plugin.utils.LocaleUtils;
 import minhhai2209.jirapluginconverter.utils.ExceptionUtils;
 import minhhai2209.jirapluginconverter.utils.JsonUtils;
@@ -60,8 +61,8 @@ public class WebPanelRenderer implements com.atlassian.plugin.web.renderer.WebPa
 
     try {
 
-      WebPanel webPanel = PluginSetting.getWebPanel(templateName);
-      String url = PluginSetting.getUrl(webPanel);
+      WebPanel webPanel = WebPanelUtils.getWebPanel(templateName);
+      String url = WebPanelUtils.getUrl(webPanel);
 
       JiraAuthenticationContext authenticationContext = ComponentAccessor.getJiraAuthenticationContext();
       ApplicationUser user = authenticationContext != null ? authenticationContext.getUser() : null;

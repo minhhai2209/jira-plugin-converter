@@ -17,7 +17,10 @@ import com.atlassian.sal.api.transaction.TransactionTemplate;
 import com.atlassian.upm.api.license.PluginLicenseManager;
 
 import minhhai2209.jirapluginconverter.plugin.jwt.JwtComposer;
+import minhhai2209.jirapluginconverter.plugin.setting.KeyUtils;
+import minhhai2209.jirapluginconverter.plugin.setting.LifeCycleUtils;
 import minhhai2209.jirapluginconverter.plugin.setting.PluginSetting;
+import minhhai2209.jirapluginconverter.plugin.setting.SenUtils;
 import minhhai2209.jirapluginconverter.plugin.utils.HttpClientFactory;
 import minhhai2209.jirapluginconverter.utils.ExceptionUtils;
 import minhhai2209.jirapluginconverter.utils.JsonUtils;
@@ -63,21 +66,21 @@ public class PluginLifeCycleEventListener implements InitializingBean, Disposabl
     String enabledPluginKey = enabledPlugin.getKey();
     if (PluginSetting.PLUGIN_KEY.equals(enabledPluginKey)) {
       PluginSetting.load(pluginSettingsFactory, transactionTemplate, pluginLicenseManager);
-      String installedUrl = PluginSetting.getInstalledUrl();
+      String installedUrl = LifeCycleUtils.getInstalledUrl();
       if (installedUrl != null) {
 
         PluginLifeCycleEvent event = new PluginLifeCycleEvent();
         event.setBaseUrl(PluginSetting.getJiraBaseUrl());
-        event.setClientKey(PluginSetting.getClientKey());
+        event.setClientKey(KeyUtils.getClientKey());
         event.setDescription("");
         event.setEventType(EventType.enabled);
         event.setKey(PluginSetting.PLUGIN_KEY);
         event.setPluginsVersion(enabledPlugin.getPluginInformation().getVersion());
         event.setProductType(ProductType.jira);
-        event.setPublicKey(PluginSetting.getPublicKey());
+        event.setPublicKey(KeyUtils.getPublicKey());
         event.setServerVersion(applicationProperties.getVersion());
-        event.setServiceEntitlementNumber(PluginSetting.getSen());
-        event.setSharedSecret(PluginSetting.getSharedSecret());
+        event.setServiceEntitlementNumber(SenUtils.getSen());
+        event.setSharedSecret(KeyUtils.getSharedSecret());
 
         sendInstall(installedUrl, event);
       }
@@ -86,13 +89,13 @@ public class PluginLifeCycleEventListener implements InitializingBean, Disposabl
 
   private void sendInstall(String installedUrl, PluginLifeCycleEvent event) {
     try {
-      String installedUri = PluginSetting.getInstalledUri();
+      String installedUri = LifeCycleUtils.getInstalledUri();
       HttpClient httpClient = HttpClientFactory.build();
       HttpPost post = new HttpPost(installedUrl);
       String json = JsonUtils.toJson(event);
       post.setEntity(new StringEntity(json));
       post.addHeader(HttpHeaders.CONTENT_TYPE, "application/json");
-      String jwt = JwtComposer.compose(PluginSetting.getClientKey(), PluginSetting.getSharedSecret(), "POST", installedUri, null, null);
+      String jwt = JwtComposer.compose(KeyUtils.getClientKey(), KeyUtils.getSharedSecret(), "POST", installedUri, null, null);
       post.addHeader("Authorization", "JWT " + jwt);
       httpClient.execute(post);
     } catch (Exception e) {

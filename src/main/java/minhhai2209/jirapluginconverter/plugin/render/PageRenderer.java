@@ -24,6 +24,7 @@ import com.atlassian.templaterenderer.TemplateRenderer;
 
 import minhhai2209.jirapluginconverter.connect.descriptor.page.Page;
 import minhhai2209.jirapluginconverter.plugin.iframe.HostConfig;
+import minhhai2209.jirapluginconverter.plugin.setting.PageUtils;
 import minhhai2209.jirapluginconverter.plugin.setting.PluginSetting;
 import minhhai2209.jirapluginconverter.plugin.utils.LocaleUtils;
 import minhhai2209.jirapluginconverter.plugin.utils.RequestUtils;
@@ -66,12 +67,12 @@ public class PageRenderer extends HttpServlet {
       boolean isAdmin = false;
 
       String moduleKey = RequestUtils.getModuleKey(request);
-      Page page = PluginSetting.getGeneralPage(moduleKey);
+      Page page = PageUtils.getGeneralPage(moduleKey);
       if (page == null) {
         isAdmin = true;
-        page = PluginSetting.getAdminPage(moduleKey);
+        page = PageUtils.getAdminPage(moduleKey);
       }
-      String url = PluginSetting.getUrl(page);
+      String url = PageUtils.getUrl(page);
 
       String title = page.getName().getValue();
 
