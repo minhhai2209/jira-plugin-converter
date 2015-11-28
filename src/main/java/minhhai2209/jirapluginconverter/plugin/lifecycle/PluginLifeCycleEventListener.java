@@ -11,7 +11,9 @@ import com.atlassian.event.api.EventPublisher;
 import com.atlassian.oauth.consumer.ConsumerService;
 import com.atlassian.plugin.Plugin;
 import com.atlassian.plugin.event.PluginEventListener;
+import com.atlassian.plugin.event.events.PluginDisabledEvent;
 import com.atlassian.plugin.event.events.PluginEnabledEvent;
+import com.atlassian.plugin.event.events.PluginUninstalledEvent;
 import com.atlassian.sal.api.ApplicationProperties;
 import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
 import com.atlassian.sal.api.transaction.TransactionTemplate;
@@ -67,45 +69,84 @@ public class PluginLifeCycleEventListener implements InitializingBean, Disposabl
   }
 
   @PluginEventListener
-  public void onPluginEnabled(PluginEnabledEvent enabledEvent) throws Exception {
-    Plugin enabledPlugin = enabledEvent.getPlugin();
-    String enabledPluginKey = enabledPlugin.getKey();
-    if (PluginSetting.PLUGIN_KEY.equals(enabledPluginKey)) {
-      PluginSetting.load(pluginSettingsFactory, transactionTemplate, pluginLicenseManager, consumerService);
-      String installedUrl = LifeCycleUtils.getInstalledUrl();
-      if (installedUrl != null) {
-
-        PluginLifeCycleEvent event = new PluginLifeCycleEvent();
-        event.setBaseUrl(PluginSetting.getJiraBaseUrl());
-        event.setClientKey(KeyUtils.getClientKey());
-        event.setDescription("");
-        event.setEventType(EventType.enabled);
-        event.setKey(PluginSetting.PLUGIN_KEY);
-        event.setPluginsVersion(enabledPlugin.getPluginInformation().getVersion());
-        event.setProductType(ProductType.jira);
-        event.setPublicKey(KeyUtils.getPublicKey());
-        event.setServerVersion(applicationProperties.getVersion());
-        event.setServiceEntitlementNumber(SenUtils.getSen());
-        event.setSharedSecret(KeyUtils.getSharedSecret());
-
-        sendInstall(installedUrl, event);
+  public void onPluginEnabled(PluginEnabledEvent event) throws Exception {
+    Plugin plugin = event.getPlugin();
+    String pluginKey = plugin.getKey();
+    if (PluginSetting.PLUGIN_KEY.equals(pluginKey)) {
+      String sharedSecret = KeyUtils.getSharedSecret();
+      String uri;
+      EventType eventType;
+      if (sharedSecret == null) {
+        eventType = EventType.installed;
+        uri = LifeCycleUtils.getInstalledUri();
+      } else {
+        eventType = EventType.enabled;
+        uri = LifeCycleUtils.getEnabledUri();
       }
+      PluginSetting.load(pluginSettingsFactory, transactionTemplate, pluginLicenseManager, consumerService);
+      notify(eventType, uri, plugin);
     }
   }
 
-  private void sendInstall(String installedUrl, PluginLifeCycleEvent event) {
+  @PluginEventListener
+  public void onPluginDisabled(PluginDisabledEvent event) throws Exception {
+    Plugin plugin = event.getPlugin();
+    String pluginKey = plugin.getKey();
+    if (PluginSetting.PLUGIN_KEY.equals(pluginKey)) {
+      String uri = LifeCycleUtils.getDisabledUri();
+      notify(EventType.disabled, uri, plugin);
+    }
+  }
+
+  @PluginEventListener
+  public void onPluginUninstalled(PluginUninstalledEvent event) throws Exception {
+    Plugin plugin = event.getPlugin();
+    String pluginKey = plugin.getKey();
+    if (PluginSetting.PLUGIN_KEY.equals(pluginKey)) {
+      KeyUtils.deleteSharedSecret(pluginSettingsFactory, transactionTemplate);
+      String uri = LifeCycleUtils.getUninstalledUri();
+      notify(EventType.uninstalled, uri, plugin);
+    }
+  }
+
+  private void notify(EventType eventType, String uri, Plugin plugin) throws Exception {
+
+    if (uri != null) {
+
+      PluginLifeCycleEvent event = new PluginLifeCycleEvent();
+      event.setBaseUrl(PluginSetting.getJiraBaseUrl());
+      event.setClientKey(KeyUtils.getClientKey());
+      event.setDescription("");
+      event.setEventType(eventType);
+      event.setKey(PluginSetting.PLUGIN_KEY);
+      event.setPluginsVersion(plugin.getPluginInformation().getVersion());
+      event.setProductType(ProductType.jira);
+      event.setPublicKey(KeyUtils.getPublicKey());
+      event.setServerVersion(applicationProperties.getVersion());
+      event.setServiceEntitlementNumber(SenUtils.getSen());
+      event.setSharedSecret(KeyUtils.getSharedSecret());
+
+      notify(uri, event);
+    }
+  }
+
+  private void notify(String uri, PluginLifeCycleEvent event) {
     try {
-      String installedUri = LifeCycleUtils.getInstalledUri();
+      String url = getUrl(uri);
       HttpClient httpClient = HttpClientFactory.build();
-      HttpPost post = new HttpPost(installedUrl);
+      HttpPost post = new HttpPost(url);
       String json = JsonUtils.toJson(event);
       post.setEntity(new StringEntity(json));
       post.addHeader(HttpHeaders.CONTENT_TYPE, "application/json");
-      String jwt = JwtComposer.compose(KeyUtils.getClientKey(), KeyUtils.getSharedSecret(), "POST", installedUri, null, null);
+      String jwt = JwtComposer.compose(KeyUtils.getClientKey(), KeyUtils.getSharedSecret(), "POST", uri, null, null);
       post.addHeader("Authorization", "JWT " + jwt);
       httpClient.execute(post);
     } catch (Exception e) {
       ExceptionUtils.throwUnchecked(e);
     }
+  }
+
+  private static String getUrl(String uri) {
+    return uri == null ? null : PluginSetting.getPluginBaseUrl() + uri;
   }
 }
