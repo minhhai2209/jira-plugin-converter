@@ -6,6 +6,7 @@ import org.apache.commons.io.IOUtils;
 
 import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.config.properties.APKeys;
+import com.atlassian.oauth.consumer.ConsumerService;
 import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
 import com.atlassian.sal.api.transaction.TransactionTemplate;
 import com.atlassian.upm.api.license.PluginLicenseManager;
@@ -30,9 +31,10 @@ public class PluginSetting {
   public static void load(
       PluginSettingsFactory pluginSettingsFactory,
       TransactionTemplate transactionTemplate,
-      PluginLicenseManager pluginLicenseManager) throws Exception {
+      PluginLicenseManager pluginLicenseManager,
+      ConsumerService consumerService) throws Exception {
     readDescriptor();
-    KeyUtils.loadJiraConsumer();
+    KeyUtils.loadJiraConsumer(consumerService);
     KeyUtils.generateSharedSecret(pluginSettingsFactory, transactionTemplate);
   }
 

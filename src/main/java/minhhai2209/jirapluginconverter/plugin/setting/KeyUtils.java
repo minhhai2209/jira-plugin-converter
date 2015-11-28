@@ -1,27 +1,15 @@
 package minhhai2209.jirapluginconverter.plugin.setting;
 
-import java.io.StringReader;
 import java.util.UUID;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.util.EntityUtils;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-
+import com.atlassian.oauth.Consumer;
+import com.atlassian.oauth.consumer.ConsumerService;
+import com.atlassian.oauth.util.RSAKeys;
 import com.atlassian.sal.api.pluginsettings.PluginSettings;
 import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
 import com.atlassian.sal.api.transaction.TransactionCallback;
 import com.atlassian.sal.api.transaction.TransactionTemplate;
-
-import minhhai2209.jirapluginconverter.plugin.utils.HttpClientFactory;
+import com.google.common.base.Strings;
 
 public class KeyUtils {
 
@@ -51,25 +39,10 @@ public class KeyUtils {
     });
   }
 
-  public static void loadJiraConsumer() throws Exception {
-    String baseJiraUrl = PluginSetting.getJiraBaseUrl();
-    String url = baseJiraUrl + "/plugins/servlet/oauth/consumer-info";
-    HttpClient client = HttpClientFactory.build();
-    HttpGet httpGet = new HttpGet(url);
-    HttpResponse response = client.execute(httpGet);
-    HttpEntity entity = response.getEntity();
-    String xmlString = EntityUtils.toString(entity);
-    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-    DocumentBuilder db = factory.newDocumentBuilder();
-    InputSource inStream = new InputSource();
-    inStream.setCharacterStream(new StringReader(xmlString));
-    Document doc = db.parse(inStream);
-    NodeList nl = doc.getElementsByTagName("publicKey");
-    Element publicKeyElement = (Element) nl.item(0);
-    publicKey = publicKeyElement.getFirstChild().getNodeValue().trim();
-    NodeList keyList = doc.getElementsByTagName("key");
-    Element keyElement = (Element) keyList.item(0);
-    clientKey = keyElement.getFirstChild().getNodeValue().trim();
+  public static void loadJiraConsumer(ConsumerService consumerService) throws Exception {
+    Consumer consumer = consumerService.getConsumer();
+    clientKey = Strings.nullToEmpty(consumer.getKey());
+    publicKey = Strings.nullToEmpty(RSAKeys.toPemEncoding(consumer.getPublicKey()));
   }
 
   public static String getClientKey() {

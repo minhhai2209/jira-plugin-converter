@@ -8,6 +8,7 @@ import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 
 import com.atlassian.event.api.EventPublisher;
+import com.atlassian.oauth.consumer.ConsumerService;
 import com.atlassian.plugin.Plugin;
 import com.atlassian.plugin.event.PluginEventListener;
 import com.atlassian.plugin.event.events.PluginEnabledEvent;
@@ -37,17 +38,22 @@ public class PluginLifeCycleEventListener implements InitializingBean, Disposabl
 
   private PluginLicenseManager pluginLicenseManager;
 
+  private ConsumerService consumerService;
+
   public PluginLifeCycleEventListener(
       EventPublisher eventPublisher,
       PluginSettingsFactory pluginSettingsFactory,
       TransactionTemplate transactionTemplate,
       ApplicationProperties applicationProperties,
-      PluginLicenseManager pluginLicenseManager) {
+      PluginLicenseManager pluginLicenseManager,
+      ConsumerService consumerService) {
+
     this.eventPublisher = eventPublisher;
     this.pluginSettingsFactory = pluginSettingsFactory;
     this.transactionTemplate = transactionTemplate;
     this.applicationProperties = applicationProperties;
     this.pluginLicenseManager = pluginLicenseManager;
+    this.consumerService = consumerService;
   }
 
   @Override
@@ -66,7 +72,7 @@ public class PluginLifeCycleEventListener implements InitializingBean, Disposabl
       Plugin enabledPlugin = enabledEvent.getPlugin();
       String enabledPluginKey = enabledPlugin.getKey();
       if (PluginSetting.PLUGIN_KEY.equals(enabledPluginKey)) {
-        PluginSetting.load(pluginSettingsFactory, transactionTemplate, pluginLicenseManager);
+        PluginSetting.load(pluginSettingsFactory, transactionTemplate, pluginLicenseManager, consumerService);
         String installedUrl = LifeCycleUtils.getInstalledUrl();
         if (installedUrl != null) {
 
