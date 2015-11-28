@@ -60,7 +60,6 @@ public class PluginLifeCycleEventListener implements InitializingBean, Disposabl
 
   @Override
   public void destroy() throws Exception {
-    eventPublisher.unregister(this);
   }
 
   @Override
@@ -90,6 +89,7 @@ public class PluginLifeCycleEventListener implements InitializingBean, Disposabl
 
   @PluginEventListener
   public void onPluginDisabled(PluginDisabledEvent event) throws Exception {
+    eventPublisher.unregister(this);
     Plugin plugin = event.getPlugin();
     String pluginKey = plugin.getKey();
     if (PluginSetting.PLUGIN_KEY.equals(pluginKey)) {
@@ -100,6 +100,7 @@ public class PluginLifeCycleEventListener implements InitializingBean, Disposabl
 
   @PluginEventListener
   public void onPluginUninstalled(PluginUninstalledEvent event) throws Exception {
+    eventPublisher.unregister(this);
     Plugin plugin = event.getPlugin();
     String pluginKey = plugin.getKey();
     if (PluginSetting.PLUGIN_KEY.equals(pluginKey)) {
