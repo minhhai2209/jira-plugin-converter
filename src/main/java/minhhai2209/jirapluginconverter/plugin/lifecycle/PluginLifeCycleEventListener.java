@@ -74,6 +74,7 @@ public class PluginLifeCycleEventListener implements InitializingBean, Disposabl
     String pluginKey = plugin.getKey();
     if (PluginSetting.PLUGIN_KEY.equals(pluginKey)) {
       String sharedSecret = KeyUtils.getSharedSecret();
+      PluginSetting.load(pluginSettingsFactory, transactionTemplate, pluginLicenseManager, consumerService);
       String uri;
       EventType eventType;
       if (sharedSecret == null) {
@@ -83,7 +84,6 @@ public class PluginLifeCycleEventListener implements InitializingBean, Disposabl
         eventType = EventType.enabled;
         uri = LifeCycleUtils.getEnabledUri();
       }
-      PluginSetting.load(pluginSettingsFactory, transactionTemplate, pluginLicenseManager, consumerService);
       notify(eventType, uri, plugin);
     }
   }
