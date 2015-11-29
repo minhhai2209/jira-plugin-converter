@@ -4,15 +4,14 @@ import org.apache.http.HttpHeaders;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 
 import com.atlassian.oauth.consumer.ConsumerService;
 import com.atlassian.plugin.Plugin;
 import com.atlassian.plugin.event.PluginEventListener;
 import com.atlassian.plugin.event.PluginEventManager;
-import com.atlassian.plugin.event.events.PluginDisabledEvent;
 import com.atlassian.plugin.event.events.PluginEnabledEvent;
-import com.atlassian.plugin.event.events.PluginUninstalledEvent;
 import com.atlassian.sal.api.ApplicationProperties;
 import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
 import com.atlassian.sal.api.transaction.TransactionTemplate;
@@ -27,7 +26,7 @@ import minhhai2209.jirapluginconverter.plugin.utils.HttpClientFactory;
 import minhhai2209.jirapluginconverter.utils.ExceptionUtils;
 import minhhai2209.jirapluginconverter.utils.JsonUtils;
 
-public class PluginLifeCycleEventListener implements InitializingBean {
+public class PluginLifeCycleEventListener implements InitializingBean, DisposableBean {
 
   private PluginEventManager pluginEventManager;
 
@@ -43,7 +42,7 @@ public class PluginLifeCycleEventListener implements InitializingBean {
 
   private String jiraVersion;
 
-  private boolean installed;
+  private String pluginVersion;
 
   public PluginLifeCycleEventListener(
       PluginEventManager pluginEventManager,
@@ -64,8 +63,6 @@ public class PluginLifeCycleEventListener implements InitializingBean {
   @Override
   public void afterPropertiesSet() throws Exception {
     pluginEventManager.register(this);
-    String sharedSecret = KeyUtils.getSharedSecret();
-    installed = sharedSecret == null;
     jiraVersion = applicationProperties.getVersion();
     PluginSetting.load(pluginSettingsFactory, transactionTemplate, pluginLicenseManager, consumerService);
   }
@@ -83,70 +80,24 @@ public class PluginLifeCycleEventListener implements InitializingBean {
     if (!PluginSetting.PLUGIN_KEY.equals(pluginKey)) {
       return;
     }
-    String uri;
-    EventType eventType;
-    if (installed) {
-      eventType = EventType.installed;
-      uri = LifeCycleUtils.getInstalledUri();
-    } else {
-      eventType = EventType.enabled;
-      uri = LifeCycleUtils.getEnabledUri();
-    }
-    notify(eventType, uri, plugin);
+    pluginVersion = plugin.getPluginInformation().getVersion();
+    notify(EventType.enabled, LifeCycleUtils.getEnabledUri());
   }
 
-  @PluginEventListener
-  public void onPluginDisabled(PluginDisabledEvent event) throws Exception {
-    if (event == null) {
-      return;
-    }
-    Plugin plugin = event.getPlugin();
-    if (plugin == null) {
-      return;
-    }
-    String pluginKey = plugin.getKey();
-    if (!PluginSetting.PLUGIN_KEY.equals(pluginKey)) {
-      return;
-    }
-    String uri = LifeCycleUtils.getDisabledUri();
-    notify(EventType.disabled, uri, plugin);
-  }
-
-  @PluginEventListener
-  public void onPluginUninstalled(PluginUninstalledEvent event) throws Exception {
-    if (event == null) {
-      return;
-    }
-    Plugin plugin = event.getPlugin();
-    if (plugin == null) {
-      return;
-    }
-    String pluginKey = plugin.getKey();
-    if (PluginSetting.PLUGIN_KEY.equals(pluginKey)) {
-      return;
-    }
-    KeyUtils.deleteSharedSecret(pluginSettingsFactory, transactionTemplate);
-    String uri = LifeCycleUtils.getUninstalledUri();
-    notify(EventType.uninstalled, uri, plugin);
-  }
-
-  private void notify(EventType eventType, String uri, Plugin plugin) throws Exception {
-
+  private void notify(EventType eventType, String uri) throws Exception {
     if (uri != null) {
-
       PluginLifeCycleEvent event = new PluginLifeCycleEvent();
       event.setBaseUrl(PluginSetting.getJiraBaseUrl());
       event.setClientKey(KeyUtils.getClientKey());
       event.setDescription("");
       event.setEventType(eventType);
       event.setKey(PluginSetting.PLUGIN_KEY);
-      event.setPluginsVersion(plugin.getPluginInformation().getVersion());
+      event.setPluginsVersion(pluginVersion);
       event.setProductType(ProductType.jira);
       event.setPublicKey(KeyUtils.getPublicKey());
       event.setServerVersion(jiraVersion);
       event.setServiceEntitlementNumber(SenUtils.getSen());
       event.setSharedSecret(KeyUtils.getSharedSecret());
-
       notify(uri, event);
     }
   }
@@ -169,5 +120,10 @@ public class PluginLifeCycleEventListener implements InitializingBean {
 
   private static String getUrl(String uri) {
     return uri == null ? null : PluginSetting.getPluginBaseUrl() + uri;
+  }
+
+  @Override
+  public void destroy() throws Exception {
+    notify(EventType.disabled, LifeCycleUtils.getDisabledUri());
   }
 }

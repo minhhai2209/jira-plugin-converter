@@ -28,30 +28,13 @@ public class KeyUtils {
       @Override
       public String doInTransaction() {
         PluginSettings settings = pluginSettingsFactory.createGlobalSettings();
-        String settingKey = getSharedSecretSettingKey();
+        String settingKey = PluginSetting.PLUGIN_KEY + ".sharedSecret";
         String sharedSecret = (String) settings.get(settingKey);
         if (sharedSecret == null) {
           sharedSecret = UUID.randomUUID().toString();
           settings.put(settingKey, sharedSecret);
         }
         return sharedSecret;
-      }
-    });
-  }
-
-  public static void deleteSharedSecret(
-      final PluginSettingsFactory pluginSettingsFactory,
-      TransactionTemplate transactionTemplate) {
-
-    sharedSecret = null;
-    transactionTemplate.execute(new TransactionCallback<Void>() {
-
-      @Override
-      public Void doInTransaction() {
-        PluginSettings settings = pluginSettingsFactory.createGlobalSettings();
-        String settingKey = getSharedSecretSettingKey();
-        settings.remove(settingKey);
-        return null;
       }
     });
   }
@@ -72,10 +55,5 @@ public class KeyUtils {
 
   public static String getSharedSecret() {
     return sharedSecret;
-  }
-
-  private static String getSharedSecretSettingKey() {
-    String settingKey = PluginSetting.PLUGIN_KEY + ".sharedSecret";
-    return settingKey;
   }
 }
