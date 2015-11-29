@@ -1,8 +1,11 @@
 package minhhai2209.jirapluginconverter.converter.descriptor;
 
+import java.io.IOException;
 import java.io.StringWriter;
 import java.util.List;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import minhhai2209.jirapluginconverter.connect.descriptor.Descriptor;
@@ -26,10 +29,8 @@ public class DescriptorConverter {
   private static PageConverter generalPageConverter = new PageConverter("system.top.navigation.bar");
   private static PageConverter adminPageConverter = new PageConverter("advanced_menu_section/advanced_section");
 
-  public static String convert(String descriptorFile) {
+  public static String convert(Modules modules) {
     try {
-      Descriptor descriptor = mapper.readValue(descriptorFile, Descriptor.class);
-      Modules modules = descriptor.getModules();
       StringWriter writer = new StringWriter();
 
       List<WebItem> webItems = modules.getWebItems();
@@ -77,6 +78,20 @@ public class DescriptorConverter {
       ExceptionUtils.throwUnchecked(e);
     }
     return null;
+  }
+
+  public static Modules analyze(String descriptorFile)
+      throws IOException, JsonParseException, JsonMappingException {
+    Descriptor descriptor = mapper.readValue(descriptorFile, Descriptor.class);
+    return descriptor.getModules();
+  }
+
+  public static String convertConfigurePage(Page configurePage) {
+    if (configurePage == null) {
+      return null;
+    }
+    return "<param name=\"configure.url\">/plugins/servlet/${project.groupId}-${project.artifactId}/page/" +
+        configurePage.getKey() + "</param>";
   }
 
 }

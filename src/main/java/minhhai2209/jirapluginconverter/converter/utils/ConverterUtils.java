@@ -8,6 +8,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.zeroturnaround.zip.ZipUtil;
 
+import minhhai2209.jirapluginconverter.connect.descriptor.Modules;
 import minhhai2209.jirapluginconverter.converter.descriptor.DescriptorConverter;
 import minhhai2209.jirapluginconverter.utils.ExceptionUtils;
 
@@ -37,11 +38,20 @@ public class ConverterUtils {
     }
   }
 
-  public static void replaceTextInDescriptor(File root, String connectFile) {
+  public static void replaceTextInDescriptor(File root, Modules modules) {
     File pluginDescriptorFile = new File(root, "/src/main/resources/atlassian-plugin.xml");
     String placeholder = "<!-- <generated_xml /> -->";
-    String pluginDescriptor = DescriptorConverter.convert(connectFile);
+    String pluginDescriptor = DescriptorConverter.convert(modules);
     replaceTextInFile(pluginDescriptorFile, placeholder, pluginDescriptor);
+  }
+
+  public static void replaceTextInConfigure(File root, Modules modules) {
+    File pluginDescriptorFile = new File(root, "/src/main/resources/atlassian-plugin.xml");
+    String placeholder = "<!-- <configure_xml /> -->";
+    String configureDescriptor = DescriptorConverter.convertConfigurePage(modules.getConfigurePage());
+    if (configureDescriptor != null) {
+      replaceTextInFile(pluginDescriptorFile, placeholder, configureDescriptor);
+    }
   }
 
   public static void copy(File root, String connectFile) {
