@@ -43,6 +43,8 @@ public class PluginLifeCycleEventListener implements InitializingBean {
 
   private String jiraVersion;
 
+  private boolean installed;
+
   public PluginLifeCycleEventListener(
       PluginEventManager pluginEventManager,
       PluginSettingsFactory pluginSettingsFactory,
@@ -62,7 +64,10 @@ public class PluginLifeCycleEventListener implements InitializingBean {
   @Override
   public void afterPropertiesSet() throws Exception {
     pluginEventManager.register(this);
+    String sharedSecret = KeyUtils.getSharedSecret();
+    installed = sharedSecret == null;
     jiraVersion = applicationProperties.getVersion();
+    PluginSetting.load(pluginSettingsFactory, transactionTemplate, pluginLicenseManager, consumerService);
   }
 
   @PluginEventListener
@@ -78,11 +83,9 @@ public class PluginLifeCycleEventListener implements InitializingBean {
     if (!PluginSetting.PLUGIN_KEY.equals(pluginKey)) {
       return;
     }
-    String sharedSecret = KeyUtils.getSharedSecret();
-    PluginSetting.load(pluginSettingsFactory, transactionTemplate, pluginLicenseManager, consumerService);
     String uri;
     EventType eventType;
-    if (sharedSecret == null) {
+    if (installed) {
       eventType = EventType.installed;
       uri = LifeCycleUtils.getInstalledUri();
     } else {
