@@ -27,6 +27,9 @@ import minhhai2209.jirapluginconverter.connect.descriptor.webitem.WebItem;
 import minhhai2209.jirapluginconverter.connect.descriptor.webitem.WebItemTarget;
 import minhhai2209.jirapluginconverter.connect.descriptor.webitem.WebItemTarget.Type;
 import minhhai2209.jirapluginconverter.plugin.iframe.HostConfig;
+import minhhai2209.jirapluginconverter.plugin.jwt.JwtComposer;
+import minhhai2209.jirapluginconverter.plugin.setting.AuthenticationUtils;
+import minhhai2209.jirapluginconverter.plugin.setting.KeyUtils;
 import minhhai2209.jirapluginconverter.plugin.setting.PluginSetting;
 import minhhai2209.jirapluginconverter.plugin.setting.WebItemUtils;
 import minhhai2209.jirapluginconverter.plugin.utils.EnumUtils;
@@ -71,7 +74,7 @@ public class WebItemRenderer extends HttpServlet {
       String moduleKey = RequestUtils.getModuleKey(request);
       WebItem webItem = WebItemUtils.getWebItem(moduleKey);
       String webItemUrl = webItem.getUrl();
-      String url = WebItemUtils.getUrl(webItem);
+      String path = WebItemUtils.getPath(webItem);
       WebItemTarget target = webItem.getTarget();
       Type type = null;
       if (target != null) {
@@ -110,9 +113,9 @@ public class WebItemRenderer extends HttpServlet {
       String cv = "";
 
       ParameterContextBuilder paramContextBuilder = new ParameterContextBuilder();
-      url = paramContextBuilder.buildUrl(request, url);
+      String pathWithContext = paramContextBuilder.buildUrl(request, path);
 
-      URIBuilder uriBuilder = new URIBuilder(url);
+      URIBuilder uriBuilder = new URIBuilder(pathWithContext);
       if (EnumUtils.equals(type, Type.dialog) ||
           (EnumUtils.equals(type, Type.page)
           && EnumUtils.equals(context, Context.addon)
@@ -131,7 +134,13 @@ public class WebItemRenderer extends HttpServlet {
         uriBuilder.addParameter("dialog", dlg)
             .addParameter("simpleDialog", simpleDlg);
       }
-      url = uriBuilder.toString();
+
+      if (AuthenticationUtils.needsAuthentication()) {
+        String jwt =
+            JwtComposer.compose(KeyUtils.getClientKey(), KeyUtils.getSharedSecret(), "GET", uriBuilder, userKey, path);
+        uriBuilder.addParameter("jwt", jwt);
+      }
+      String url = uriBuilder.toString();
 
       if (EnumUtils.equals(type, Type.page)) {
 

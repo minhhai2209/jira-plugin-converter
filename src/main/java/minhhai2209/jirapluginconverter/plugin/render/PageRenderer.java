@@ -24,6 +24,9 @@ import com.atlassian.templaterenderer.TemplateRenderer;
 
 import minhhai2209.jirapluginconverter.connect.descriptor.page.Page;
 import minhhai2209.jirapluginconverter.plugin.iframe.HostConfig;
+import minhhai2209.jirapluginconverter.plugin.jwt.JwtComposer;
+import minhhai2209.jirapluginconverter.plugin.setting.AuthenticationUtils;
+import minhhai2209.jirapluginconverter.plugin.setting.KeyUtils;
 import minhhai2209.jirapluginconverter.plugin.setting.PageUtils;
 import minhhai2209.jirapluginconverter.plugin.setting.PluginSetting;
 import minhhai2209.jirapluginconverter.plugin.utils.LocaleUtils;
@@ -79,7 +82,7 @@ public class PageRenderer extends HttpServlet {
       } else {
         pageType = PageType.GENERAL;
       }
-      String url = PageUtils.getUrl(page);
+      String path = PageUtils.getPath(page);
 
       String title = page.getName().getValue();
 
@@ -108,9 +111,9 @@ public class PageRenderer extends HttpServlet {
       String cv = "";
 
       ParameterContextBuilder paramContextBuilder = new ParameterContextBuilder();
-      url = paramContextBuilder.buildUrl(request, url);
+      String pathWithContext = paramContextBuilder.buildUrl(request, path);
 
-      url = new URIBuilder(url)
+      URIBuilder uriBuilder = new URIBuilder(pathWithContext)
           .addParameter("tz", timezone)
           .addParameter("loc", loc)
           .addParameter("user_id", userId)
@@ -119,8 +122,14 @@ public class PageRenderer extends HttpServlet {
           .addParameter("xdm_c", xdm_c)
           .addParameter("cp", cp)
           .addParameter("lic", lic)
-          .addParameter("cv", cv)
-          .toString();
+          .addParameter("cv", cv);
+
+      if (AuthenticationUtils.needsAuthentication()) {
+        String jwt =
+            JwtComposer.compose(KeyUtils.getClientKey(), KeyUtils.getSharedSecret(), "GET", uriBuilder, userKey, path);
+        uriBuilder.addParameter("jwt", jwt);
+      }
+      String url = uriBuilder.toString();
 
       HostConfig hostConfig = new HostConfig();
       hostConfig.setNs(ns);

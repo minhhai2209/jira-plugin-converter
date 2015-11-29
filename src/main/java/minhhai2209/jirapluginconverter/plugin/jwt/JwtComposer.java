@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.http.NameValuePair;
+import org.apache.http.client.utils.URIBuilder;
 
 import com.atlassian.jwt.SigningAlgorithm;
 import com.atlassian.jwt.core.writer.JsonSmartJwtJsonBuilder;
@@ -47,5 +48,20 @@ public class JwtComposer {
       ExceptionUtils.throwUnchecked(e);
     }
     return apiPath;
+  }
+
+  public static String compose(
+      String key, String sharedSecret, String method, URIBuilder uriBuilder, String userKey, String path) {
+    List<NameValuePair> pairs = uriBuilder.getQueryParams();
+    int index = path.indexOf("?");
+    if (index >= 0) {
+      path = path.substring(0, index);
+    }
+    JwtContext context = new JwtContext();
+    JwtContextUser user = new JwtContextUser();
+    user.setUserKey(userKey);
+    context.setUser(user);
+    String jwt = compose(key, sharedSecret, method, path, pairs, context);
+    return jwt;
   }
 }

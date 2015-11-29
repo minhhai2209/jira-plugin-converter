@@ -15,7 +15,7 @@ public class PageUtils {
 
   private static Map<String, Page> configurePageLookup;
 
-  public static String getUrl(Page page) {
+  public static String getPath(Page page) {
     String baseUrl = PluginSetting.getPluginBaseUrl();
     String pageUrl = page.getUrl();
     String url = baseUrl + pageUrl;

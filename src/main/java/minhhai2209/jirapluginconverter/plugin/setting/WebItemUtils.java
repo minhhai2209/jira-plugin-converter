@@ -27,7 +27,7 @@ public class WebItemUtils {
     }
   }
 
-  public static String getUrl(WebItem webItem) {
+  public static String getPath(WebItem webItem) {
     String webItemUrl = webItem.getUrl();
     if (webItemUrl.startsWith("http://") || webItemUrl.startsWith("https://")) {
       return webItemUrl;

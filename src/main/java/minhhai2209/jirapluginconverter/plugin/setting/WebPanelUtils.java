@@ -23,7 +23,7 @@ public class WebPanelUtils {
     }
   }
 
-  public static String getUrl(WebPanel webPanel) {
+  public static String getPath(WebPanel webPanel) {
 
     String baseUrl = PluginSetting.getPluginBaseUrl();
     String webPanelUrl = webPanel.getUrl();

@@ -22,6 +22,9 @@ import com.atlassian.templaterenderer.TemplateRenderer;
 
 import minhhai2209.jirapluginconverter.connect.descriptor.webpanel.WebPanel;
 import minhhai2209.jirapluginconverter.plugin.iframe.HostConfig;
+import minhhai2209.jirapluginconverter.plugin.jwt.JwtComposer;
+import minhhai2209.jirapluginconverter.plugin.setting.AuthenticationUtils;
+import minhhai2209.jirapluginconverter.plugin.setting.KeyUtils;
 import minhhai2209.jirapluginconverter.plugin.setting.PluginSetting;
 import minhhai2209.jirapluginconverter.plugin.setting.WebPanelUtils;
 import minhhai2209.jirapluginconverter.plugin.utils.LocaleUtils;
@@ -62,7 +65,7 @@ public class WebPanelRenderer implements com.atlassian.plugin.web.renderer.WebPa
     try {
 
       WebPanel webPanel = WebPanelUtils.getWebPanel(templateName);
-      String url = WebPanelUtils.getUrl(webPanel);
+      String path = WebPanelUtils.getPath(webPanel);
 
       JiraAuthenticationContext authenticationContext = ComponentAccessor.getJiraAuthenticationContext();
       ApplicationUser user = authenticationContext != null ? authenticationContext.getUser() : null;
@@ -88,7 +91,7 @@ public class WebPanelRenderer implements com.atlassian.plugin.web.renderer.WebPa
       String lic = "none";
       String cv = "";
 
-      url = new URIBuilder(url)
+      URIBuilder uriBuilder = new URIBuilder(path)
           .addParameter("tz", timezone)
           .addParameter("loc", loc)
           .addParameter("user_id", userId)
@@ -97,8 +100,14 @@ public class WebPanelRenderer implements com.atlassian.plugin.web.renderer.WebPa
           .addParameter("xdm_c", xdm_c)
           .addParameter("cp", cp)
           .addParameter("lic", lic)
-          .addParameter("cv", cv)
-          .toString();
+          .addParameter("cv", cv);
+
+      if (AuthenticationUtils.needsAuthentication()) {
+        String jwt =
+            JwtComposer.compose(KeyUtils.getClientKey(), KeyUtils.getSharedSecret(), "GET", uriBuilder, userKey, path);
+        uriBuilder.addParameter("jwt", jwt);
+      }
+      String url = uriBuilder.toString();
 
       HostConfig hostConfig = new HostConfig();
       hostConfig.setNs(ns);
