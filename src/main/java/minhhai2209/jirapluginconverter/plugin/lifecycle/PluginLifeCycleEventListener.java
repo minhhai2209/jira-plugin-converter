@@ -12,9 +12,6 @@ import com.atlassian.plugin.event.PluginEventListener;
 import com.atlassian.plugin.event.PluginEventManager;
 import com.atlassian.plugin.event.events.PluginDisabledEvent;
 import com.atlassian.plugin.event.events.PluginEnabledEvent;
-import com.atlassian.plugin.event.events.PluginFrameworkShutdownEvent;
-import com.atlassian.plugin.event.events.PluginFrameworkWarmRestartingEvent;
-import com.atlassian.plugin.event.events.PluginRefreshedEvent;
 import com.atlassian.plugin.event.events.PluginUninstalledEvent;
 import com.atlassian.sal.api.ApplicationProperties;
 import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
@@ -60,35 +57,9 @@ public class PluginLifeCycleEventListener implements InitializingBean {
     this.consumerService = consumerService;
   }
 
-  public void unregister() {
-    pluginEventManager.unregister(this);
-  }
-
   @Override
   public void afterPropertiesSet() throws Exception {
     pluginEventManager.register(this);
-  }
-
-  @PluginEventListener
-  public void onShutdown(PluginFrameworkShutdownEvent event) {
-    unregister();
-  }
-
-  @PluginEventListener
-  public void onFrameworkRestarting(PluginFrameworkWarmRestartingEvent event) {
-    unregister();
-  }
-
-  @PluginEventListener
-  public void onPluginRefreshedEvent(PluginRefreshedEvent event) {
-    if (event == null) {
-      return;
-    }
-    Plugin plugin = event.getPlugin();
-    String pluginKey = plugin.getKey();
-    if (PluginSetting.PLUGIN_KEY.equals(pluginKey)) {
-      unregister();
-    }
   }
 
   @PluginEventListener
@@ -97,21 +68,25 @@ public class PluginLifeCycleEventListener implements InitializingBean {
       return;
     }
     Plugin plugin = event.getPlugin();
-    String pluginKey = plugin.getKey();
-    if (PluginSetting.PLUGIN_KEY.equals(pluginKey)) {
-      String sharedSecret = KeyUtils.getSharedSecret();
-      PluginSetting.load(pluginSettingsFactory, transactionTemplate, pluginLicenseManager, consumerService);
-      String uri;
-      EventType eventType;
-      if (sharedSecret == null) {
-        eventType = EventType.installed;
-        uri = LifeCycleUtils.getInstalledUri();
-      } else {
-        eventType = EventType.enabled;
-        uri = LifeCycleUtils.getEnabledUri();
-      }
-      notify(eventType, uri, plugin);
+    if (plugin == null) {
+      return;
     }
+    String pluginKey = plugin.getKey();
+    if (!PluginSetting.PLUGIN_KEY.equals(pluginKey)) {
+      return;
+    }
+    String sharedSecret = KeyUtils.getSharedSecret();
+    PluginSetting.load(pluginSettingsFactory, transactionTemplate, pluginLicenseManager, consumerService);
+    String uri;
+    EventType eventType;
+    if (sharedSecret == null) {
+      eventType = EventType.installed;
+      uri = LifeCycleUtils.getInstalledUri();
+    } else {
+      eventType = EventType.enabled;
+      uri = LifeCycleUtils.getEnabledUri();
+    }
+    notify(eventType, uri, plugin);
   }
 
   @PluginEventListener
@@ -120,12 +95,15 @@ public class PluginLifeCycleEventListener implements InitializingBean {
       return;
     }
     Plugin plugin = event.getPlugin();
-    String pluginKey = plugin.getKey();
-    if (PluginSetting.PLUGIN_KEY.equals(pluginKey)) {
-      unregister();
-      String uri = LifeCycleUtils.getDisabledUri();
-      notify(EventType.disabled, uri, plugin);
+    if (plugin == null) {
+      return;
     }
+    String pluginKey = plugin.getKey();
+    if (!PluginSetting.PLUGIN_KEY.equals(pluginKey)) {
+      return;
+    }
+    String uri = LifeCycleUtils.getDisabledUri();
+    notify(EventType.disabled, uri, plugin);
   }
 
   @PluginEventListener
@@ -134,13 +112,16 @@ public class PluginLifeCycleEventListener implements InitializingBean {
       return;
     }
     Plugin plugin = event.getPlugin();
+    if (plugin == null) {
+      return;
+    }
     String pluginKey = plugin.getKey();
     if (PluginSetting.PLUGIN_KEY.equals(pluginKey)) {
-      unregister();
-      KeyUtils.deleteSharedSecret(pluginSettingsFactory, transactionTemplate);
-      String uri = LifeCycleUtils.getUninstalledUri();
-      notify(EventType.uninstalled, uri, plugin);
+      return;
     }
+    KeyUtils.deleteSharedSecret(pluginSettingsFactory, transactionTemplate);
+    String uri = LifeCycleUtils.getUninstalledUri();
+    notify(EventType.uninstalled, uri, plugin);
   }
 
   private void notify(EventType eventType, String uri, Plugin plugin) throws Exception {
