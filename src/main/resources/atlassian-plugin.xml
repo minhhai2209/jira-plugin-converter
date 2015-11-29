@@ -133,7 +133,7 @@
 
   <!-- life cycle events -->
 
-  <component-import key="eventPublisher" interface="com.atlassian.event.api.EventPublisher" />
+  <component-import key="pluginEventManager" interface="com.atlassian.plugin.event.PluginEventManager" />
 
   <component key="pluginLifeCycleEventListener" 
       class="minhhai2209.jirapluginconverter.plugin.lifecycle.PluginLifeCycleEventListener" />

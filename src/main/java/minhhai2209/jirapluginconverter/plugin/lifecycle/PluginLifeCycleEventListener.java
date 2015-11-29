@@ -4,15 +4,17 @@ import org.apache.http.HttpHeaders;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
-import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 
-import com.atlassian.event.api.EventPublisher;
 import com.atlassian.oauth.consumer.ConsumerService;
 import com.atlassian.plugin.Plugin;
 import com.atlassian.plugin.event.PluginEventListener;
+import com.atlassian.plugin.event.PluginEventManager;
 import com.atlassian.plugin.event.events.PluginDisabledEvent;
 import com.atlassian.plugin.event.events.PluginEnabledEvent;
+import com.atlassian.plugin.event.events.PluginFrameworkShutdownEvent;
+import com.atlassian.plugin.event.events.PluginFrameworkWarmRestartingEvent;
+import com.atlassian.plugin.event.events.PluginRefreshedEvent;
 import com.atlassian.plugin.event.events.PluginUninstalledEvent;
 import com.atlassian.sal.api.ApplicationProperties;
 import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
@@ -28,9 +30,9 @@ import minhhai2209.jirapluginconverter.plugin.utils.HttpClientFactory;
 import minhhai2209.jirapluginconverter.utils.ExceptionUtils;
 import minhhai2209.jirapluginconverter.utils.JsonUtils;
 
-public class PluginLifeCycleEventListener implements InitializingBean, DisposableBean {
+public class PluginLifeCycleEventListener implements InitializingBean {
 
-  private EventPublisher eventPublisher;
+  private PluginEventManager pluginEventManager;
 
   private PluginSettingsFactory pluginSettingsFactory;
 
@@ -43,14 +45,14 @@ public class PluginLifeCycleEventListener implements InitializingBean, Disposabl
   private ConsumerService consumerService;
 
   public PluginLifeCycleEventListener(
-      EventPublisher eventPublisher,
+      PluginEventManager pluginEventManager,
       PluginSettingsFactory pluginSettingsFactory,
       TransactionTemplate transactionTemplate,
       ApplicationProperties applicationProperties,
       PluginLicenseManager pluginLicenseManager,
       ConsumerService consumerService) {
 
-    this.eventPublisher = eventPublisher;
+    this.pluginEventManager = pluginEventManager;
     this.pluginSettingsFactory = pluginSettingsFactory;
     this.transactionTemplate = transactionTemplate;
     this.applicationProperties = applicationProperties;
@@ -58,17 +60,42 @@ public class PluginLifeCycleEventListener implements InitializingBean, Disposabl
     this.consumerService = consumerService;
   }
 
-  @Override
-  public void destroy() throws Exception {
+  public void unregister() {
+    pluginEventManager.unregister(this);
   }
 
   @Override
   public void afterPropertiesSet() throws Exception {
-    eventPublisher.register(this);
+    pluginEventManager.register(this);
+  }
+
+  @PluginEventListener
+  public void onShutdown(PluginFrameworkShutdownEvent event) {
+    unregister();
+  }
+
+  @PluginEventListener
+  public void onFrameworkRestarting(PluginFrameworkWarmRestartingEvent event) {
+    unregister();
+  }
+
+  @PluginEventListener
+  public void onPluginRefreshedEvent(PluginRefreshedEvent event) {
+    if (event == null) {
+      return;
+    }
+    Plugin plugin = event.getPlugin();
+    String pluginKey = plugin.getKey();
+    if (PluginSetting.PLUGIN_KEY.equals(pluginKey)) {
+      unregister();
+    }
   }
 
   @PluginEventListener
   public void onPluginEnabled(PluginEnabledEvent event) throws Exception {
+    if (event == null) {
+      return;
+    }
     Plugin plugin = event.getPlugin();
     String pluginKey = plugin.getKey();
     if (PluginSetting.PLUGIN_KEY.equals(pluginKey)) {
@@ -89,10 +116,13 @@ public class PluginLifeCycleEventListener implements InitializingBean, Disposabl
 
   @PluginEventListener
   public void onPluginDisabled(PluginDisabledEvent event) throws Exception {
-    eventPublisher.unregister(this);
+    if (event == null) {
+      return;
+    }
     Plugin plugin = event.getPlugin();
     String pluginKey = plugin.getKey();
     if (PluginSetting.PLUGIN_KEY.equals(pluginKey)) {
+      unregister();
       String uri = LifeCycleUtils.getDisabledUri();
       notify(EventType.disabled, uri, plugin);
     }
@@ -100,10 +130,13 @@ public class PluginLifeCycleEventListener implements InitializingBean, Disposabl
 
   @PluginEventListener
   public void onPluginUninstalled(PluginUninstalledEvent event) throws Exception {
-    eventPublisher.unregister(this);
+    if (event == null) {
+      return;
+    }
     Plugin plugin = event.getPlugin();
     String pluginKey = plugin.getKey();
     if (PluginSetting.PLUGIN_KEY.equals(pluginKey)) {
+      unregister();
       KeyUtils.deleteSharedSecret(pluginSettingsFactory, transactionTemplate);
       String uri = LifeCycleUtils.getUninstalledUri();
       notify(EventType.uninstalled, uri, plugin);
