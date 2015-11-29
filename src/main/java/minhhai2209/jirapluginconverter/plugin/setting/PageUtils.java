@@ -13,6 +13,8 @@ public class PageUtils {
 
   private static Map<String, Page> adminPageLookup;
 
+  private static Map<String, Page> configurePageLookup;
+
   public static String getUrl(Page page) {
     String baseUrl = PluginSetting.getPluginBaseUrl();
     String pageUrl = page.getUrl();
@@ -44,11 +46,25 @@ public class PageUtils {
     }
   }
 
+  public static void buildConfigurePageLookup() {
+    Modules modules = PluginSetting.getModules();
+    Page page = modules.getConfigurePage();
+    configurePageLookup = new HashMap<String, Page>();
+    if (page != null) {
+      String key = page.getKey();
+      configurePageLookup.put(key, page);
+    }
+  }
+
   public static Page getGeneralPage(String key) {
     return generalPageLookup.get(key);
   }
 
   public static Page getAdminPage(String key) {
     return adminPageLookup.get(key);
+  }
+
+  public static Page getConfigurePage(String key) {
+    return configurePageLookup.get(key);
   }
 }

@@ -64,13 +64,20 @@ public class PageRenderer extends HttpServlet {
 
     try {
 
-      boolean isAdmin = false;
+      PageType pageType;
 
       String moduleKey = RequestUtils.getModuleKey(request);
       Page page = PageUtils.getGeneralPage(moduleKey);
       if (page == null) {
-        isAdmin = true;
         page = PageUtils.getAdminPage(moduleKey);
+        if (page == null) {
+          page = PageUtils.getConfigurePage(moduleKey);
+          pageType = PageType.CONFIGURE;
+        } else {
+          pageType = PageType.ADMIN;
+        }
+      } else {
+        pageType = PageType.GENERAL;
       }
       String url = PageUtils.getUrl(page);
 
@@ -132,9 +139,19 @@ public class PageRenderer extends HttpServlet {
 
       String hostConfigJson = JsonUtils.toJson(hostConfig);
 
-      String template = "general-page";
-      if (isAdmin) {
-        template = "admin-page";
+      String template;
+      switch (pageType) {
+        case GENERAL:
+          template = "general-page";
+          break;
+        case ADMIN:
+          template = "admin-page";
+          break;
+        case CONFIGURE:
+          template = "configure-page";
+          break;
+        default:
+          throw new IllegalStateException();
       }
 
       Map<String, Object> context = new HashMap<String, Object>();

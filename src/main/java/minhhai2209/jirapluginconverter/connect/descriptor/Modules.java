@@ -26,7 +26,7 @@ public class Modules {
   private List<Page> generalPages ;
   private List<Page> adminPages;
   private List<Page> profilePages;
-  private List<Page> configurePage;
+  private Page configurePage;
   private List<Webhook> webhooks;
   private List<DashboardItem> jiraDashboardItems;
   private List<EntityProperty> jiraEntityProperties;
@@ -37,7 +37,7 @@ public class Modules {
   private List<TabPanel> jiraProjectTabPanels;
   private List<TabPanel> jiraProfileTabPanels;
   private List<WorkflowPostFuntion> jiraWorkflowPostFunctions;
-  
+
   public List<WebItem> getWebItems() {
     return webItems;
   }
@@ -86,11 +86,11 @@ public class Modules {
     this.profilePages = profilePages;
   }
 
-  public List<Page> getConfigurePage() {
+  public Page getConfigurePage() {
     return configurePage;
   }
 
-  public void setConfigurePage(List<Page> configurePage) {
+  public void setConfigurePage(Page configurePage) {
     this.configurePage = configurePage;
   }
 

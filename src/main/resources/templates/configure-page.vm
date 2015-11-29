@@ -1,0 +1,18 @@
+#enable_html_escaping()
+
+#set($hostConfigJsonWithHtml = $hostConfigJson)
+
+<html>
+  <head>
+    <meta name="decorator" content="atl.admin"/>
+    <title>$!title</title>
+  </head>
+  <body>
+    <div id="embedded-$ns"></div>
+    <script>
+      require(['connect-host', 'ac/cookie', 'ac/env', 'ac/inline-dialog', 'ac/dialog', 'ac/messages', 'ac/request', 'ac/history'], function(host){
+        host.create($hostConfigJsonWithHtml);
+      });
+    </script>
+  </body>
+</html>
