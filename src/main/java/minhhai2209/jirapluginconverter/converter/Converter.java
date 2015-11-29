@@ -23,6 +23,7 @@ public class Converter {
       String connectFile = ConverterUtils.getConnectFile(info.getUrl());
       Modules modules = DescriptorConverter.analyze(connectFile);
       ConverterUtils.replaceTextInDescriptor(root, modules);
+      ConverterUtils.replaceTextInConfigure(root, modules);
 
       ConverterUtils.copy(root, connectFile);
     } catch (Exception e) {
