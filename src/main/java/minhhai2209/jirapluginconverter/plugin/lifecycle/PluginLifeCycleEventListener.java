@@ -41,6 +41,8 @@ public class PluginLifeCycleEventListener implements InitializingBean {
 
   private ConsumerService consumerService;
 
+  private String jiraVersion;
+
   public PluginLifeCycleEventListener(
       PluginEventManager pluginEventManager,
       PluginSettingsFactory pluginSettingsFactory,
@@ -60,6 +62,7 @@ public class PluginLifeCycleEventListener implements InitializingBean {
   @Override
   public void afterPropertiesSet() throws Exception {
     pluginEventManager.register(this);
+    jiraVersion = applicationProperties.getVersion();
   }
 
   @PluginEventListener
@@ -137,7 +140,7 @@ public class PluginLifeCycleEventListener implements InitializingBean {
       event.setPluginsVersion(plugin.getPluginInformation().getVersion());
       event.setProductType(ProductType.jira);
       event.setPublicKey(KeyUtils.getPublicKey());
-      event.setServerVersion(applicationProperties.getVersion());
+      event.setServerVersion(jiraVersion);
       event.setServiceEntitlementNumber(SenUtils.getSen());
       event.setSharedSecret(KeyUtils.getSharedSecret());
 
