@@ -124,6 +124,7 @@ public class PluginLifeCycleEventListener implements InitializingBean, Disposabl
 
   @Override
   public void destroy() throws Exception {
+    pluginEventManager.unregister(this);
     notify(EventType.disabled, LifeCycleUtils.getDisabledUri());
   }
 }
