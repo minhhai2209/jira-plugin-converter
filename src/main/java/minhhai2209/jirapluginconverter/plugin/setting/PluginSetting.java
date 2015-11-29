@@ -48,6 +48,7 @@ public class PluginSetting {
       WebPanelUtils.buildWebPanelLookup();
       PageUtils.buildGeneralPageLookup();
       PageUtils.buildAdminPageLookup();
+      PageUtils.buildConfigurePageLookup();
     } catch (Exception e1) {
       if (is != null) {
         try {
