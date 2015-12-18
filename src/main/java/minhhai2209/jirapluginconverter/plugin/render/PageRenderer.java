@@ -82,7 +82,7 @@ public class PageRenderer extends HttpServlet {
       } else {
         pageType = PageType.GENERAL;
       }
-      String path = PageUtils.getPath(page);
+      String fullUrl = PageUtils.getFullUrl(page);
 
       String title = page.getName().getValue();
 
@@ -111,9 +111,9 @@ public class PageRenderer extends HttpServlet {
       String cv = "";
 
       ParameterContextBuilder paramContextBuilder = new ParameterContextBuilder();
-      String pathWithContext = paramContextBuilder.buildUrl(request, path);
+      String urlWithContext = paramContextBuilder.buildUrl(request, fullUrl);
 
-      URIBuilder uriBuilder = new URIBuilder(pathWithContext)
+      URIBuilder uriBuilder = new URIBuilder(urlWithContext)
           .addParameter("tz", timezone)
           .addParameter("loc", loc)
           .addParameter("user_id", userId)
@@ -125,8 +125,13 @@ public class PageRenderer extends HttpServlet {
           .addParameter("cv", cv);
 
       if (AuthenticationUtils.needsAuthentication()) {
-        String jwt =
-            JwtComposer.compose(KeyUtils.getClientKey(), KeyUtils.getSharedSecret(), "GET", uriBuilder, userKey, path);
+        String jwt = JwtComposer.compose(
+            KeyUtils.getClientKey(),
+            KeyUtils.getSharedSecret(),
+            "GET",
+            uriBuilder,
+            userKey,
+            page.getUrl());
         uriBuilder.addParameter("jwt", jwt);
       }
       String url = uriBuilder.toString();

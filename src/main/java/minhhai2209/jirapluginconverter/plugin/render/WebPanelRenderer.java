@@ -65,7 +65,7 @@ public class WebPanelRenderer implements com.atlassian.plugin.web.renderer.WebPa
     try {
 
       WebPanel webPanel = WebPanelUtils.getWebPanel(templateName);
-      String path = WebPanelUtils.getPath(webPanel);
+      String fullUrl = WebPanelUtils.getFullUrl(webPanel);
 
       JiraAuthenticationContext authenticationContext = ComponentAccessor.getJiraAuthenticationContext();
       ApplicationUser user = authenticationContext != null ? authenticationContext.getUser() : null;
@@ -91,7 +91,7 @@ public class WebPanelRenderer implements com.atlassian.plugin.web.renderer.WebPa
       String lic = "none";
       String cv = "";
 
-      URIBuilder uriBuilder = new URIBuilder(path)
+      URIBuilder uriBuilder = new URIBuilder(fullUrl)
           .addParameter("tz", timezone)
           .addParameter("loc", loc)
           .addParameter("user_id", userId)
@@ -103,8 +103,13 @@ public class WebPanelRenderer implements com.atlassian.plugin.web.renderer.WebPa
           .addParameter("cv", cv);
 
       if (AuthenticationUtils.needsAuthentication()) {
-        String jwt =
-            JwtComposer.compose(KeyUtils.getClientKey(), KeyUtils.getSharedSecret(), "GET", uriBuilder, userKey, path);
+        String jwt = JwtComposer.compose(
+            KeyUtils.getClientKey(),
+            KeyUtils.getSharedSecret(),
+            "GET",
+            uriBuilder,
+            userKey,
+            webPanel.getUrl());
         uriBuilder.addParameter("jwt", jwt);
       }
       String url = uriBuilder.toString();

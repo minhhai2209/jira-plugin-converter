@@ -74,7 +74,7 @@ public class WebItemRenderer extends HttpServlet {
       String moduleKey = RequestUtils.getModuleKey(request);
       WebItem webItem = WebItemUtils.getWebItem(moduleKey);
       String webItemUrl = webItem.getUrl();
-      String path = WebItemUtils.getPath(webItem);
+      String fullUrl = WebItemUtils.getFullUrl(webItem);
       WebItemTarget target = webItem.getTarget();
       Type type = null;
       if (target != null) {
@@ -113,9 +113,9 @@ public class WebItemRenderer extends HttpServlet {
       String cv = "";
 
       ParameterContextBuilder paramContextBuilder = new ParameterContextBuilder();
-      String pathWithContext = paramContextBuilder.buildUrl(request, path);
+      String urlWithContext = paramContextBuilder.buildUrl(request, fullUrl);
 
-      URIBuilder uriBuilder = new URIBuilder(pathWithContext);
+      URIBuilder uriBuilder = new URIBuilder(urlWithContext);
       if (EnumUtils.equals(type, Type.dialog) ||
           (EnumUtils.equals(type, Type.page)
           && EnumUtils.equals(context, Context.addon)
@@ -136,8 +136,13 @@ public class WebItemRenderer extends HttpServlet {
       }
 
       if (AuthenticationUtils.needsAuthentication()) {
-        String jwt =
-            JwtComposer.compose(KeyUtils.getClientKey(), KeyUtils.getSharedSecret(), "GET", uriBuilder, userKey, path);
+        String jwt = JwtComposer.compose(
+            KeyUtils.getClientKey(),
+            KeyUtils.getSharedSecret(),
+            "GET",
+            uriBuilder,
+            userKey,
+            webItemUrl);
         uriBuilder.addParameter("jwt", jwt);
       }
       String url = uriBuilder.toString();

@@ -47,7 +47,7 @@ public class JwtComposer {
     } catch (Exception e) {
       ExceptionUtils.throwUnchecked(e);
     }
-    return apiPath;
+    return null;
   }
 
   public static String compose(
