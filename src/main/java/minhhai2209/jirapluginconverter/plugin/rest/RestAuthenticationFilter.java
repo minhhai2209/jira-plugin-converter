@@ -24,6 +24,7 @@ import minhhai2209.jirapluginconverter.plugin.jwt.JwtClaim;
 import minhhai2209.jirapluginconverter.plugin.jwt.JwtVerifier;
 import minhhai2209.jirapluginconverter.plugin.setting.JiraUtils;
 import minhhai2209.jirapluginconverter.plugin.setting.KeyUtils;
+import minhhai2209.jirapluginconverter.plugin.setting.PluginSetting;
 
 public class RestAuthenticationFilter implements Filter {
 
@@ -41,7 +42,6 @@ public class RestAuthenticationFilter implements Filter {
     String authorization = request.getHeader("Authorization");
     if (authorization != null) {
       if (authorization.startsWith("JWT")) {
-        authorization = authorization.substring(4);
         String url = request.getRequestURL().toString();
         String queryString = request.getQueryString();
         if (queryString != null) {
@@ -52,7 +52,7 @@ public class RestAuthenticationFilter implements Filter {
             url,
             authorization,
             JiraUtils.getJiraBaseUrl(),
-            KeyUtils.getClientKey(),
+            PluginSetting.getDescriptor().getKey(),
             KeyUtils.getSharedSecret(),
             method);
         if (claim != null) {

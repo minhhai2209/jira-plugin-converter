@@ -9,7 +9,6 @@ import java.util.Map;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
-import org.slf4j.Logger;
 
 import com.atlassian.jwt.CanonicalHttpRequest;
 import com.atlassian.jwt.Jwt;
@@ -26,11 +25,8 @@ import com.atlassian.jwt.reader.JwtReaderFactory;
 
 import minhhai2209.jirapluginconverter.utils.ExceptionUtils;
 import minhhai2209.jirapluginconverter.utils.JsonUtils;
-import minhhai2209.jirapluginconverter.utils.LogFactory;
 
 public class JwtVerifier {
-
-  private static final Logger log = LogFactory.getLogger();
 
   private static final int JWT_REALM_LENGTH = "JWT ".length();
 
@@ -38,8 +34,6 @@ public class JwtVerifier {
       String url, String authorization, String baseUrl, final String issuer, final String sharedSecret, String method) {
 
     try {
-
-      log.info("Read and verify JWT {} {} {} {}", url, baseUrl, issuer, sharedSecret);
 
       JwtIssuerValidator jwtIssuerValidator = getJwtIssuerValidator(issuer);
 
@@ -69,10 +63,8 @@ public class JwtVerifier {
       return claim;
 
     } catch (JwtVerificationException e) {
-      log.info("JWT is invalid", e);
       return null;
     } catch (Exception e) {
-      log.error("Failed to read and verify JWT", e);
       ExceptionUtils.throwUnchecked(e);
     }
     return null;
