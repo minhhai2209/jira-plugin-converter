@@ -83,7 +83,6 @@ public class ConverterUtils {
 
   public static File getTemplate(String templatePath) {
     try {
-      templatePath += "-" + System.currentTimeMillis();
       URL source = new URL("https://github.com/minhhai2209/jira-plugin-converter/archive/master.zip");
       File zip = new File(templatePath);
       FileUtils.copyURLToFile(source, zip);
