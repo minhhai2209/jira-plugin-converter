@@ -18,6 +18,7 @@ import com.atlassian.sal.api.transaction.TransactionTemplate;
 import com.atlassian.upm.api.license.PluginLicenseManager;
 
 import minhhai2209.jirapluginconverter.plugin.jwt.JwtComposer;
+import minhhai2209.jirapluginconverter.plugin.setting.JiraUtils;
 import minhhai2209.jirapluginconverter.plugin.setting.KeyUtils;
 import minhhai2209.jirapluginconverter.plugin.setting.LifeCycleUtils;
 import minhhai2209.jirapluginconverter.plugin.setting.PluginSetting;
@@ -87,7 +88,7 @@ public class PluginLifeCycleEventListener implements InitializingBean, Disposabl
   private void notify(EventType eventType, String uri) throws Exception {
     if (uri != null) {
       PluginLifeCycleEvent event = new PluginLifeCycleEvent();
-      event.setBaseUrl(PluginSetting.getJiraBaseUrl());
+      event.setBaseUrl(JiraUtils.getJiraBaseUrl());
       event.setClientKey(KeyUtils.getClientKey());
       event.setDescription("");
       event.setEventType(eventType);

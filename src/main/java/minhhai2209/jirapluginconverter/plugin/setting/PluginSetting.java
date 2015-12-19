@@ -4,8 +4,6 @@ import java.io.InputStream;
 
 import org.apache.commons.io.IOUtils;
 
-import com.atlassian.jira.component.ComponentAccessor;
-import com.atlassian.jira.config.properties.APKeys;
 import com.atlassian.oauth.consumer.ConsumerService;
 import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
 import com.atlassian.sal.api.transaction.TransactionTemplate;
@@ -63,10 +61,6 @@ public class PluginSetting {
 
   public static Descriptor getDescriptor() {
     return descriptor;
-  }
-
-  public static String getJiraBaseUrl() {
-    return ComponentAccessor.getApplicationProperties().getString(APKeys.JIRA_BASEURL);
   }
 
   public static String getPluginBaseUrl() {
