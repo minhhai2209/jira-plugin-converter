@@ -16,7 +16,9 @@ The generated plugin's source code will be placed at `path_to_generated_plugin`.
 
 Example:
 
-`atlas-package && java -cp target\generated_artifact_id-1.0-SNAPSHOT-jar-with-dependencies.jar minhhai2209.jirapluginconverter.converter.Converter example-plugin com.example "Example, Inc." http://localhost:7777/homepage "This is an example plugin" http://localhost:7777/descriptor D:\tmp\plugin`
+`java -cp target\generated_artifact_id-1.0-SNAPSHOT-jar-with-dependencies.jar minhhai2209.jirapluginconverter.converter.Converter example-plugin com.example "Example, Inc." http://localhost:7777/homepage "This is an example plugin" http://localhost:7777/descriptor D:\tmp\plugin`
+
+For a quick test, use [this simple Atlassian Connect add-on](https://github.com/minhhai2209/jira-plugin-converter-demo).
 
 ## Status
 
