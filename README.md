@@ -6,9 +6,11 @@ This project is originally a submission to [Atlassian's Codegeist 2015](http://d
 
 ## Usage
 
-1. Check out the source code.
-2. Package with Atlassian SDK: `atlas-clean && atlas-package`.
-3. Convert Atlassian Connect add-on:
+1. Install Atlassian SDK. This project is currently tested under Atlassian SDK 5.1.10.
+2. Check out the source code.
+3. `cd` to the project's root directory.
+4. Package with Atlassian SDK: `atlas-clean && atlas-package`.
+5. Convert Atlassian Connect add-on:
 
 `java -cp target\generated_artifact_id-1.0-SNAPSHOT-jar-with-dependencies.jar minhhai2209.jirapluginconverter.converter.Converter <artifact_id> <group_id> <company_name> <company_url> <description> <descriptor_url> <path_to_generated_plugin>`
 
