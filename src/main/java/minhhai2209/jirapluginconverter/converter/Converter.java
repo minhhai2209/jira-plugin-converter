@@ -10,10 +10,10 @@ import minhhai2209.jirapluginconverter.utils.ExceptionUtils;
 
 public class Converter {
 
-  public static void generate(String templatePath, PluginProperties info) {
+  public static void generate(String templatePath, PluginProperties info, String version) {
 
     try {
-      File root = ConverterUtils.getTemplate(templatePath);
+      File root = ConverterUtils.getTemplate(templatePath, version);
       ConverterUtils.replaceTextInFolder(root, "generated_artifact_id", info.getArtifactId());
       ConverterUtils.replaceTextInFolder(root, "generated_group_id", info.getGroupId());
       ConverterUtils.replaceTextInFolder(root, "generated_company_name", info.getCompany());
@@ -40,6 +40,6 @@ public class Converter {
     info.setCompanyUrl(args[3]);
     info.setDescription(args[4]);
     info.setUrl(args[5]);
-    generate(args[6], info);
+    generate(args[6], info, args[7]);
   }
 }

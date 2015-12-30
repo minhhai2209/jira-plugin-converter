@@ -81,9 +81,9 @@ public class ConverterUtils {
     return null;
   }
 
-  public static File getTemplate(String templatePath) {
+  public static File getTemplate(String templatePath, String version) {
     try {
-      URL source = new URL("https://github.com/minhhai2209/jira-plugin-converter/archive/master.zip");
+      URL source = new URL("https://github.com/minhhai2209/jira-plugin-converter/archive/" + version + ".zip");
       File zip = new File(templatePath);
       FileUtils.copyURLToFile(source, zip);
       ZipUtil.explode(zip);
