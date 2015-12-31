@@ -80,7 +80,7 @@ public class ParameterContextBuilder {
   public String buildUrl(HttpServletRequest request, String url) {
     Map<String, String> contextParams = new HashMap<String, String>();
     buildContextParams(request, contextParams);
-    StrSubstitutor substitutor = new StrSubstitutor(contextParams, "{", "}");
+    StrSubstitutor substitutor = new StrSubstitutor(contextParams, "${", "}");
     url = substitutor.replace(url);
     return url;
   }
