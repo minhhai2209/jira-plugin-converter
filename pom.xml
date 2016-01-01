@@ -206,7 +206,7 @@
   </build>
 
   <properties>
-    <jira.version>7.0.5</jira.version>
+    <jira.version>6.4.4</jira.version>
     <amps.version>6.2.1</amps.version>
     <plugin.testrunner.version>1.2.0</plugin.testrunner.version>
     <!-- TestKit version 5.x for JIRA 5.x, 6.x for JIRA 6.x -->
