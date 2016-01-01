@@ -27,9 +27,13 @@
     <!-- Add dependency on jira-core if you want access to JIRA implementation classes as well as the sanctioned API. -->
     <!-- This is not normally recommended, but may be required eg when migrating a plugin originally developed against JIRA 
       4.x -->
-  
-    <!-- <dependency> <groupId>com.atlassian.jira</groupId> <artifactId>jira-core</artifactId> <version>${jira.version}</version> 
-      <scope>provided</scope> </dependency> -->
+
+    <dependency>
+      <groupId>com.atlassian.jira</groupId>
+      <artifactId>jira-core</artifactId>
+      <version>${jira.version}</version>
+      <scope>provided</scope>
+    </dependency>
   
     <dependency>
       <groupId>com.atlassian.upm</groupId>
@@ -202,8 +206,8 @@
   </build>
 
   <properties>
-    <jira.version>6.4.4</jira.version>
-    <amps.version>5.0.4</amps.version>
+    <jira.version>7.0.5</jira.version>
+    <amps.version>6.2.1</amps.version>
     <plugin.testrunner.version>1.2.0</plugin.testrunner.version>
     <!-- TestKit version 5.x for JIRA 5.x, 6.x for JIRA 6.x -->
     <testkit.version>5.2.26</testkit.version>

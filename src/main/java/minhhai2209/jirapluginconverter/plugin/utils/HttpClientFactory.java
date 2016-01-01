@@ -15,6 +15,7 @@ import org.apache.http.impl.client.HttpClientBuilder;
 
 import minhhai2209.jirapluginconverter.utils.ExceptionUtils;
 
+@SuppressWarnings("deprecation")
 public class HttpClientFactory {
 
   // private static final Logger log = LogFactory.getLogger();

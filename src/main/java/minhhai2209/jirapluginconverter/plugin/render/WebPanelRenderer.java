@@ -16,7 +16,6 @@ import com.atlassian.jira.user.ApplicationUser;
 import com.atlassian.plugin.Plugin;
 import com.atlassian.plugin.web.renderer.RendererException;
 import com.atlassian.sal.api.ApplicationProperties;
-import com.atlassian.sal.api.UrlMode;
 import com.atlassian.sal.api.message.LocaleResolver;
 import com.atlassian.templaterenderer.TemplateRenderer;
 
@@ -24,6 +23,7 @@ import minhhai2209.jirapluginconverter.connect.descriptor.webpanel.WebPanel;
 import minhhai2209.jirapluginconverter.plugin.iframe.HostConfig;
 import minhhai2209.jirapluginconverter.plugin.jwt.JwtComposer;
 import minhhai2209.jirapluginconverter.plugin.setting.AuthenticationUtils;
+import minhhai2209.jirapluginconverter.plugin.setting.JiraUtils;
 import minhhai2209.jirapluginconverter.plugin.setting.KeyUtils;
 import minhhai2209.jirapluginconverter.plugin.setting.PluginSetting;
 import minhhai2209.jirapluginconverter.plugin.setting.WebPanelUtils;
@@ -34,8 +34,6 @@ import minhhai2209.jirapluginconverter.utils.JsonUtils;
 public class WebPanelRenderer implements com.atlassian.plugin.web.renderer.WebPanelRenderer {
 
   private TemplateRenderer renderer;
-
-  private ApplicationProperties applicationProperties;
 
   private TimeZoneService timeZoneService;
 
@@ -48,7 +46,6 @@ public class WebPanelRenderer implements com.atlassian.plugin.web.renderer.WebPa
       LocaleResolver localeResolver) {
 
     this.renderer = renderer;
-    this.applicationProperties = applicationProperties;
     this.timeZoneService = timeZoneService;
     this.localeResolver = localeResolver;
   }
@@ -68,14 +65,16 @@ public class WebPanelRenderer implements com.atlassian.plugin.web.renderer.WebPa
       String fullUrl = WebPanelUtils.getFullUrl(webPanel);
 
       JiraAuthenticationContext authenticationContext = ComponentAccessor.getJiraAuthenticationContext();
-      ApplicationUser user = authenticationContext != null ? authenticationContext.getUser() : null;
+      ApplicationUser user = authenticationContext != null ? authenticationContext.getLoggedInUser() : null;
       JiraServiceContextImpl jiraServiceContext = new JiraServiceContextImpl(user);
       TimeZone timeZone = user == null ?
           timeZoneService.getDefaultTimeZoneInfo(jiraServiceContext).toTimeZone() :
           timeZoneService.getUserTimeZoneInfo(jiraServiceContext).toTimeZone();
 
-      String xdm_e = applicationProperties.getBaseUrl(UrlMode.ABSOLUTE);
-      String cp = applicationProperties.getBaseUrl(UrlMode.RELATIVE);
+      Map<String, String> productContext = ParameterContextBuilder.buildContext(null, context, null);
+
+      String xdm_e = JiraUtils.getBaseUrl();
+      String cp = JiraUtils.getContextPath();
       String ns = PluginSetting.URL_SAFE_PLUGIN_KEY + "__" + templateName;
       String xdm_c = "channel-" + ns;
       String dlg = "";
@@ -83,7 +82,7 @@ public class WebPanelRenderer implements com.atlassian.plugin.web.renderer.WebPa
       String general = "";
       String w = "";
       String h = "";
-      String productCtx = "";
+      String productCtx = JsonUtils.toJson(productContext);
       String timezone = timeZone.getID();
       String loc = LocaleUtils.getLocale(localeResolver);
       String userId = user != null ? user.getUsername() : "";
@@ -91,7 +90,9 @@ public class WebPanelRenderer implements com.atlassian.plugin.web.renderer.WebPa
       String lic = "none";
       String cv = "";
 
-      URIBuilder uriBuilder = new URIBuilder(fullUrl)
+      String urlWithContext = ParameterContextBuilder.buildUrl(fullUrl, productContext);
+
+      URIBuilder uriBuilder = new URIBuilder(urlWithContext)
           .addParameter("tz", timezone)
           .addParameter("loc", loc)
           .addParameter("user_id", userId)

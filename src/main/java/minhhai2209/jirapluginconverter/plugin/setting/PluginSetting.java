@@ -47,6 +47,7 @@ public class PluginSetting {
       PageUtils.buildGeneralPageLookup();
       PageUtils.buildAdminPageLookup();
       PageUtils.buildConfigurePageLookup();
+      TabPanelUtils.buildJiraIssueTabPanelLookup();
     } catch (Exception e1) {
       if (is != null) {
         try {

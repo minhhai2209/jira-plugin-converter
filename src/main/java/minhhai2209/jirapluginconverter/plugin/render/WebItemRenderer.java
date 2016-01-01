@@ -17,8 +17,6 @@ import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.security.JiraAuthenticationContext;
 import com.atlassian.jira.timezone.TimeZoneService;
 import com.atlassian.jira.user.ApplicationUser;
-import com.atlassian.sal.api.ApplicationProperties;
-import com.atlassian.sal.api.UrlMode;
 import com.atlassian.sal.api.message.LocaleResolver;
 import com.atlassian.templaterenderer.TemplateRenderer;
 
@@ -29,6 +27,7 @@ import minhhai2209.jirapluginconverter.connect.descriptor.webitem.WebItemTarget.
 import minhhai2209.jirapluginconverter.plugin.iframe.HostConfig;
 import minhhai2209.jirapluginconverter.plugin.jwt.JwtComposer;
 import minhhai2209.jirapluginconverter.plugin.setting.AuthenticationUtils;
+import minhhai2209.jirapluginconverter.plugin.setting.JiraUtils;
 import minhhai2209.jirapluginconverter.plugin.setting.KeyUtils;
 import minhhai2209.jirapluginconverter.plugin.setting.PluginSetting;
 import minhhai2209.jirapluginconverter.plugin.setting.WebItemUtils;
@@ -46,20 +45,16 @@ public class WebItemRenderer extends HttpServlet {
 
   private TemplateRenderer renderer;
 
-  private ApplicationProperties applicationProperties;
-
   private TimeZoneService timeZoneService;
 
   private LocaleResolver localeResolver;
 
   public WebItemRenderer(
       TemplateRenderer renderer,
-      ApplicationProperties applicationProperties,
       TimeZoneService timeZoneService,
       LocaleResolver localeResolver) {
 
     this.renderer = renderer;
-    this.applicationProperties = applicationProperties;
     this.timeZoneService = timeZoneService;
     this.localeResolver = localeResolver;
   }
@@ -89,14 +84,16 @@ public class WebItemRenderer extends HttpServlet {
       }
 
       JiraAuthenticationContext authenticationContext = ComponentAccessor.getJiraAuthenticationContext();
-      ApplicationUser user = authenticationContext != null ? authenticationContext.getUser() : null;
+      ApplicationUser user = authenticationContext != null ? authenticationContext.getLoggedInUser() : null;
       JiraServiceContextImpl jiraServiceContext = new JiraServiceContextImpl(user);
       TimeZone timeZone = user == null ?
           timeZoneService.getDefaultTimeZoneInfo(jiraServiceContext).toTimeZone() :
           timeZoneService.getUserTimeZoneInfo(jiraServiceContext).toTimeZone();
 
-      String xdm_e = applicationProperties.getBaseUrl(UrlMode.ABSOLUTE);
-      String cp = applicationProperties.getBaseUrl(UrlMode.RELATIVE);
+      Map<String, String> productContext = ParameterContextBuilder.buildContext(request, null, null);
+
+      String xdm_e = JiraUtils.getBaseUrl();
+      String cp = JiraUtils.getContextPath();
       String ns = PluginSetting.URL_SAFE_PLUGIN_KEY + "__" + moduleKey;
       String xdm_c = "channel-" + ns;
       String dlg = EnumUtils.equals(type, Type.dialog) ? "1" : "";
@@ -104,7 +101,7 @@ public class WebItemRenderer extends HttpServlet {
       String general = "";
       String w = "100%";
       String h = "100%";
-      String productCtx = "{}";
+      String productCtx = JsonUtils.toJson(productContext);
       String timezone = timeZone.getID();
       String loc = LocaleUtils.getLocale(localeResolver);
       String userId = user != null ? user.getUsername() : "";
@@ -112,8 +109,7 @@ public class WebItemRenderer extends HttpServlet {
       String lic = "none";
       String cv = "";
 
-      ParameterContextBuilder paramContextBuilder = new ParameterContextBuilder();
-      String urlWithContext = paramContextBuilder.buildUrl(request, fullUrl);
+      String urlWithContext = ParameterContextBuilder.buildUrl(fullUrl, productContext);
 
       URIBuilder uriBuilder = new URIBuilder(urlWithContext);
       if (EnumUtils.equals(type, Type.dialog) ||

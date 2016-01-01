@@ -11,10 +11,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import minhhai2209.jirapluginconverter.connect.descriptor.Descriptor;
 import minhhai2209.jirapluginconverter.connect.descriptor.Modules;
 import minhhai2209.jirapluginconverter.connect.descriptor.page.Page;
+import minhhai2209.jirapluginconverter.connect.descriptor.tabpanel.TabPanel;
 import minhhai2209.jirapluginconverter.connect.descriptor.webitem.WebItem;
 import minhhai2209.jirapluginconverter.connect.descriptor.webpanel.WebPanel;
 import minhhai2209.jirapluginconverter.connect.descriptor.websection.WebSection;
 import minhhai2209.jirapluginconverter.converter.utils.XmlUtils;
+import minhhai2209.jirapluginconverter.plugin.descriptor.IssueTabPanelModule;
 import minhhai2209.jirapluginconverter.plugin.descriptor.WebItemModule;
 import minhhai2209.jirapluginconverter.plugin.descriptor.WebPanelModule;
 import minhhai2209.jirapluginconverter.plugin.descriptor.WebSectionModule;
@@ -28,6 +30,7 @@ public class DescriptorConverter {
   private static WebSectionConverter webSectionConverter = new WebSectionConverter();
   private static PageConverter generalPageConverter = new PageConverter("system.top.navigation.bar");
   private static PageConverter adminPageConverter = new PageConverter("advanced_menu_section/advanced_section");
+  private static IssueTabPanelConverter issueTabPanelConverter = new IssueTabPanelConverter();
 
   public static String convert(Modules modules) {
     try {
@@ -69,6 +72,14 @@ public class DescriptorConverter {
       if (adminPages != null) {
         for (Page page : adminPages) {
           WebItemModule pluginModule = adminPageConverter.toPluginModule(page, modules);
+          XmlUtils.toXml(pluginModule, writer);
+        }
+      }
+
+      List<TabPanel> jiraIssueTabPanels = modules.getJiraIssueTabPanels();
+      if (jiraIssueTabPanels != null) {
+        for (TabPanel tabPanel : jiraIssueTabPanels) {
+          IssueTabPanelModule pluginModule = issueTabPanelConverter.toPluginModule(tabPanel, modules);
           XmlUtils.toXml(pluginModule, writer);
         }
       }

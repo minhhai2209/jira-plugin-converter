@@ -66,6 +66,7 @@ public class PluginLifeCycleEventListener implements InitializingBean, Disposabl
     pluginEventManager.register(this);
     jiraVersion = applicationProperties.getVersion();
     PluginSetting.load(pluginSettingsFactory, transactionTemplate, pluginLicenseManager, consumerService);
+    JiraUtils.setApplicationProperties(applicationProperties);
   }
 
   @PluginEventListener
@@ -88,7 +89,7 @@ public class PluginLifeCycleEventListener implements InitializingBean, Disposabl
   private void notify(EventType eventType, String uri) throws Exception {
     if (uri != null) {
       PluginLifeCycleEvent event = new PluginLifeCycleEvent();
-      event.setBaseUrl(JiraUtils.getJiraBaseUrl());
+      event.setBaseUrl(JiraUtils.getFullBaseUrl());
       event.setClientKey(KeyUtils.getClientKey());
       event.setDescription("");
       event.setEventType(eventType);

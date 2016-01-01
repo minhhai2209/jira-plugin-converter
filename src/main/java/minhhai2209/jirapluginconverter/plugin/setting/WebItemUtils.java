@@ -55,11 +55,11 @@ public class WebItemUtils {
           break;
         case product:
         case PRODUCT:
-          baseUrl = JiraUtils.getJiraBaseUrl();
+          baseUrl = JiraUtils.getFullBaseUrl();
           break;
         case page:
         case PAGE:
-          baseUrl = JiraUtils.getJiraBaseUrl() + "/plugins/servlet/" + PluginSetting.URL_SAFE_PLUGIN_KEY + "/page/";
+          baseUrl = JiraUtils.getFullBaseUrl() + "/plugins/servlet/" + PluginSetting.URL_SAFE_PLUGIN_KEY + "/page/";
           break;
         default:
           throw new IllegalStateException();
