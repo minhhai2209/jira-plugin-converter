@@ -82,7 +82,7 @@ public class PageRenderer extends HttpServlet {
       String title = page.getName().getValue();
 
       JiraAuthenticationContext authenticationContext = ComponentAccessor.getJiraAuthenticationContext();
-      ApplicationUser user = authenticationContext != null ? authenticationContext.getLoggedInUser() : null;
+      ApplicationUser user = authenticationContext != null ? authenticationContext.getUser() : null;
       JiraServiceContextImpl jiraServiceContext = new JiraServiceContextImpl(user);
       TimeZone timeZone = user == null ?
           timeZoneService.getDefaultTimeZoneInfo(jiraServiceContext).toTimeZone() :

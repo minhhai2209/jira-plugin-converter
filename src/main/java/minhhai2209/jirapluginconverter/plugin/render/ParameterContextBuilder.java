@@ -16,6 +16,7 @@ import com.atlassian.jira.project.ProjectManager;
 
 public class ParameterContextBuilder {
 
+  @SuppressWarnings("unchecked")
   private static void buildContextParams(HttpServletRequest request, Map<String, String> acContext) {
 
     acContext.put("issue.id", "");

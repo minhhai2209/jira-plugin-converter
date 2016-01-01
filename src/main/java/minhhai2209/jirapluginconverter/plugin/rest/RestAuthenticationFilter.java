@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.atlassian.crowd.embedded.api.User;
 import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.user.ApplicationUser;
 import com.atlassian.jira.user.util.UserUtil;
@@ -61,8 +62,10 @@ public class RestAuthenticationFilter implements Filter {
         } else {
 
           UserUtil userUtil = ComponentAccessor.getUserUtil();
-          Collection<ApplicationUser> admins = userUtil.getJiraAdministrators();
-          ApplicationUser applicationAdmin = Iterables.get(admins, 0);
+          Collection<User> admins = userUtil.getJiraAdministrators();
+          User admin = Iterables.get(admins, 0);
+          String adminName = admin.getName();
+          ApplicationUser applicationAdmin = userUtil.getUserByName(adminName);
           HttpSession httpSession = request.getSession();
           httpSession.setAttribute(DefaultAuthenticator.LOGGED_IN_KEY, applicationAdmin);
           httpSession.setAttribute(DefaultAuthenticator.LOGGED_OUT_KEY, null);

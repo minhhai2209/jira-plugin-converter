@@ -65,7 +65,7 @@ public class WebPanelRenderer implements com.atlassian.plugin.web.renderer.WebPa
       String fullUrl = WebPanelUtils.getFullUrl(webPanel);
 
       JiraAuthenticationContext authenticationContext = ComponentAccessor.getJiraAuthenticationContext();
-      ApplicationUser user = authenticationContext != null ? authenticationContext.getLoggedInUser() : null;
+      ApplicationUser user = authenticationContext != null ? authenticationContext.getUser() : null;
       JiraServiceContextImpl jiraServiceContext = new JiraServiceContextImpl(user);
       TimeZone timeZone = user == null ?
           timeZoneService.getDefaultTimeZoneInfo(jiraServiceContext).toTimeZone() :

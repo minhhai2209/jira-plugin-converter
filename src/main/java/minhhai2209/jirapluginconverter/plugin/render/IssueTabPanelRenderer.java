@@ -8,6 +8,7 @@ import java.util.TimeZone;
 
 import org.apache.http.client.utils.URIBuilder;
 
+import com.atlassian.crowd.embedded.api.User;
 import com.atlassian.jira.bc.JiraServiceContextImpl;
 import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.config.properties.APKeys;
@@ -17,6 +18,7 @@ import com.atlassian.jira.issue.tabpanels.GenericMessageAction;
 import com.atlassian.jira.plugin.issuetabpanel.AbstractIssueTabPanel;
 import com.atlassian.jira.timezone.TimeZoneService;
 import com.atlassian.jira.user.ApplicationUser;
+import com.atlassian.jira.user.util.UserUtil;
 import com.atlassian.jira.util.VelocityParamFactory;
 import com.atlassian.sal.api.message.LocaleResolver;
 import com.atlassian.velocity.VelocityManager;
@@ -49,7 +51,7 @@ public class IssueTabPanelRenderer extends AbstractIssueTabPanel {
 
   @SuppressWarnings({ "unchecked", "rawtypes" })
   @Override
-  public List getActions(Issue issue, ApplicationUser user) {
+  public List getActions(Issue issue, User remoteUser) {
 
     try {
 
@@ -57,6 +59,9 @@ public class IssueTabPanelRenderer extends AbstractIssueTabPanel {
       TabPanel tabPanel = TabPanelUtils.getJiraIssueTabPanel(moduleKey);
       String fullUrl = TabPanelUtils.getFullUrl(tabPanel);
 
+      UserUtil userUtil = ComponentAccessor.getUserUtil();
+      String userName = remoteUser.getName();
+      ApplicationUser user = userUtil.getUserByName(userName);
       JiraServiceContextImpl jiraServiceContext = new JiraServiceContextImpl(user);
       TimeZone timeZone = user == null ?
           timeZoneService.getDefaultTimeZoneInfo(jiraServiceContext).toTimeZone() :
@@ -149,7 +154,7 @@ public class IssueTabPanelRenderer extends AbstractIssueTabPanel {
   }
 
   @Override
-  public boolean showPanel(Issue issue, ApplicationUser user) {
+  public boolean showPanel(Issue issue, User remoteUser) {
     return true;
   }
 
