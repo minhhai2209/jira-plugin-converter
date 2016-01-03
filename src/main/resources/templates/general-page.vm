@@ -4,7 +4,9 @@
 
 <html>
   <head>
-    <meta name="decorator" content="atl.general"/>
+    #if($chrome)
+      <meta name="decorator" content="atl.general"/>
+    #end
     <title>$!title</title>
   </head>
   <body>
