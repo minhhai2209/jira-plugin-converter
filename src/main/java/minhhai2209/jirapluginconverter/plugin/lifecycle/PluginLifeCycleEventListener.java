@@ -87,20 +87,24 @@ public class PluginLifeCycleEventListener implements InitializingBean, Disposabl
   }
 
   private void notify(EventType eventType, String uri) throws Exception {
-    if (uri != null) {
-      PluginLifeCycleEvent event = new PluginLifeCycleEvent();
-      event.setBaseUrl(JiraUtils.getFullBaseUrl());
-      event.setClientKey(KeyUtils.getClientKey());
-      event.setDescription("");
-      event.setEventType(eventType);
-      event.setKey(PluginSetting.PLUGIN_KEY);
-      event.setPluginsVersion(pluginVersion);
-      event.setProductType(ProductType.jira);
-      event.setPublicKey(KeyUtils.getPublicKey());
-      event.setServerVersion(jiraVersion);
-      event.setServiceEntitlementNumber(SenUtils.getSen());
-      event.setSharedSecret(KeyUtils.getSharedSecret());
-      notify(uri, event);
+    try {
+      if (uri != null) {
+        PluginLifeCycleEvent event = new PluginLifeCycleEvent();
+        event.setBaseUrl(JiraUtils.getFullBaseUrl());
+        event.setClientKey(KeyUtils.getClientKey());
+        event.setDescription("");
+        event.setEventType(eventType);
+        event.setKey(PluginSetting.PLUGIN_KEY);
+        event.setPluginsVersion(pluginVersion);
+        event.setProductType(ProductType.jira);
+        event.setPublicKey(KeyUtils.getPublicKey());
+        event.setServerVersion(jiraVersion);
+        event.setServiceEntitlementNumber(SenUtils.getSen());
+        event.setSharedSecret(KeyUtils.getSharedSecret());
+        notify(uri, event);
+      }
+    } catch (Exception e) {
+
     }
   }
 
