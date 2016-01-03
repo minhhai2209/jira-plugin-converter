@@ -87,7 +87,7 @@ public class ConverterUtils {
       File zip = new File(templatePath);
       FileUtils.copyURLToFile(source, zip);
       ZipUtil.explode(zip);
-      File template = new File(templatePath, "jira-plugin-converter-master");
+      File template = new File(templatePath, "jira-plugin-converter-" + version);
       return template;
     } catch (Exception e) {
       ExceptionUtils.throwUnchecked(e);
