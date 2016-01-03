@@ -164,10 +164,14 @@ public class PageRenderer extends HttpServlet {
           throw new IllegalStateException();
       }
 
+      String location = page.getLocation();
+      boolean chrome = !location.equalsIgnoreCase("none");
+
       Map<String, Object> context = new HashMap<String, Object>();
       context.put("hostConfigJson", hostConfigJson);
       context.put("ns", ns);
       context.put("title", title);
+      context.put("chrome", chrome);
       render(template, response, context);
 
     } catch (Exception e) {
