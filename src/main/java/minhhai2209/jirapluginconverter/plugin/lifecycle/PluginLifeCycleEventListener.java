@@ -83,7 +83,7 @@ public class PluginLifeCycleEventListener implements InitializingBean, Disposabl
       return;
     }
     pluginVersion = plugin.getPluginInformation().getVersion();
-    notify(EventType.installed, LifeCycleUtils.getEnabledUri());
+    notify(EventType.installed, LifeCycleUtils.getInstalledUri());
   }
 
   private void notify(EventType eventType, String uri) throws Exception {
@@ -131,6 +131,6 @@ public class PluginLifeCycleEventListener implements InitializingBean, Disposabl
   @Override
   public void destroy() throws Exception {
     pluginEventManager.unregister(this);
-    notify(EventType.uninstalled, LifeCycleUtils.getDisabledUri());
+    notify(EventType.uninstalled, LifeCycleUtils.getUninstalledUri());
   }
 }
