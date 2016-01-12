@@ -10,11 +10,11 @@ public class LifeCycleUtils {
     return uri;
   }
 
-  public static String getDisabledUri() {
-    LifeCycle lifeCycle = PluginSetting.getDescriptor().getLifecycle();
-    String uri = lifeCycle == null ? null : lifeCycle.getDisabled();
-    return uri;
-  }
+//  public static String getDisabledUri() {
+//    LifeCycle lifeCycle = PluginSetting.getDescriptor().getLifecycle();
+//    String uri = lifeCycle == null ? null : lifeCycle.getDisabled();
+//    return uri;
+//  }
 
   public static String getUninstalledUri() {
     LifeCycle lifeCycle = PluginSetting.getDescriptor().getLifecycle();
@@ -22,9 +22,9 @@ public class LifeCycleUtils {
     return uri;
   }
 
-  public static String getEnabledUri() {
-    LifeCycle lifeCycle = PluginSetting.getDescriptor().getLifecycle();
-    String uri = lifeCycle == null ? null : lifeCycle.getEnabled();
-    return uri;
-  }
+//  public static String getEnabledUri() {
+//    LifeCycle lifeCycle = PluginSetting.getDescriptor().getLifecycle();
+//    String uri = lifeCycle == null ? null : lifeCycle.getEnabled();
+//    return uri;
+//  }
 }
