@@ -165,7 +165,7 @@ public class PageRenderer extends HttpServlet {
       }
 
       String location = page.getLocation();
-      boolean chrome = !location.equalsIgnoreCase("none");
+      boolean chrome = !(location == null || location.equals("none") || location.equals("no-location"));
 
       Map<String, Object> context = new HashMap<String, Object>();
       context.put("hostConfigJson", hostConfigJson);
