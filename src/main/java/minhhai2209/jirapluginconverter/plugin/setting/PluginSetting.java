@@ -26,6 +26,8 @@ public class PluginSetting {
 
   private static Descriptor descriptor;
 
+  private static Plugin plugin;
+
   public static void load(
       PluginSettingsFactory pluginSettingsFactory,
       TransactionTemplate transactionTemplate,
@@ -48,6 +50,10 @@ public class PluginSetting {
       PageUtils.buildAdminPageLookup();
       PageUtils.buildConfigurePageLookup();
       TabPanelUtils.buildJiraIssueTabPanelLookup();
+
+      plugin = new Plugin();
+      plugin.setName(descriptor.getName());
+      plugin.setBaseUrl(getPluginBaseUrl());
     } catch (Exception e1) {
       if (is != null) {
         try {
@@ -70,5 +76,9 @@ public class PluginSetting {
 
   public static Modules getModules() {
     return descriptor.getModules();
+  }
+
+  public static Plugin getPlugin() {
+    return plugin;
   }
 }

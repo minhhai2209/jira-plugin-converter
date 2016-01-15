@@ -172,6 +172,7 @@ public class PageRenderer extends HttpServlet {
       context.put("ns", ns);
       context.put("title", title);
       context.put("chrome", chrome);
+      context.put("plugin", PluginSetting.getPlugin());
       render(template, response, context);
 
     } catch (Exception e) {

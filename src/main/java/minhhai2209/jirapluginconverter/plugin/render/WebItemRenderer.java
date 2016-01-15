@@ -169,6 +169,7 @@ public class WebItemRenderer extends HttpServlet {
         Map<String, Object> viewContext = new HashMap<String, Object>();
         viewContext.put("hostConfigJson", hostConfigJson);
         viewContext.put("ns", ns);
+        viewContext.put("plugin", PluginSetting.getPlugin());
         render("web-item", response, viewContext);
       }
 

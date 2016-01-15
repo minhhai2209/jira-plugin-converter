@@ -135,6 +135,7 @@ public class WebPanelRenderer implements com.atlassian.plugin.web.renderer.WebPa
       Map<String, Object> viewContext = new HashMap<String, Object>();
       viewContext.put("hostConfigJson", hostConfigJson);
       viewContext.put("ns", ns);
+      viewContext.put("plugin", PluginSetting.getPlugin());
       render("web-item", writer, viewContext);
 
     } catch (Exception e) {
