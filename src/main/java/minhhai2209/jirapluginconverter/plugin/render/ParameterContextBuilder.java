@@ -6,6 +6,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.text.StrSubstitutor;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.type.TypeReference;
 
 import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.issue.Issue;
@@ -16,56 +18,71 @@ import com.atlassian.jira.project.ProjectManager;
 
 public class ParameterContextBuilder {
 
+  private static final ObjectMapper objectMapper = new ObjectMapper();
+
   @SuppressWarnings("unchecked")
   private static void buildContextParams(HttpServletRequest request, Map<String, String> acContext) {
 
-    acContext.put("issue.id", "");
-    acContext.put("issue.key", "");
-    acContext.put("issuetype.id", "");
-    acContext.put("project.id", "");
-    acContext.put("project.key", "");
-    acContext.put("version.id", "");
-    acContext.put("component.id", "");
+    try {
 
-    Map<String, String[]> contextParams = request.getParameterMap();
-    ProjectManager projectManager = ComponentAccessor.getProjectManager();
-    IssueManager issueManager = ComponentAccessor.getIssueManager();
+      acContext.put("issue.id", "");
+      acContext.put("issue.key", "");
+      acContext.put("issuetype.id", "");
+      acContext.put("project.id", "");
+      acContext.put("project.key", "");
+      acContext.put("version.id", "");
+      acContext.put("component.id", "");
 
-    if (contextParams.containsKey("issueKey")) {
-      String issueKey = contextParams.get("issueKey")[0];
-      if (!issueKey.contains("$")) {
-        acContext.put("issue.key", issueKey);
-        MutableIssue issue = issueManager.getIssueByCurrentKey(issueKey);
-        if (issue != null) {
-          acContext.put("issue.id", issue.getId().toString());
-          acContext.put("issuetype.id", issue.getIssueTypeId());
+      Map<String, String[]> contextParams = request.getParameterMap();
+      String[] productContexts = contextParams.get("produt-context");
+      if (productContexts != null && productContexts.length > 0) {
+        String productContextAsString = productContexts[0];
+        TypeReference<Map<String, String>> typeReference = new TypeReference<Map<String, String>>() {};
+        Map<String, String> productContext = objectMapper.readValue(productContextAsString, typeReference);
+        acContext.putAll(productContext);
+      }
+
+      ProjectManager projectManager = ComponentAccessor.getProjectManager();
+      IssueManager issueManager = ComponentAccessor.getIssueManager();
+
+      if (contextParams.containsKey("issueKey")) {
+        String issueKey = contextParams.get("issueKey")[0];
+        if (!issueKey.contains("$")) {
+          acContext.put("issue.key", issueKey);
+          MutableIssue issue = issueManager.getIssueByCurrentKey(issueKey);
+          if (issue != null) {
+            acContext.put("issue.id", issue.getId().toString());
+            acContext.put("issuetype.id", issue.getIssueTypeId());
+          }
         }
       }
-    }
 
-    if (contextParams.containsKey("projectKey")) {
-      String projectKey = contextParams.get("projectKey")[0];
-      if (!projectKey.contains("$")) {
-        acContext.put("project.key", projectKey);
-        Project project = projectManager.getProjectByCurrentKey(projectKey);
-        if (project != null) {
-          acContext.put("project.id", project.getId().toString());
+      if (contextParams.containsKey("projectKey")) {
+        String projectKey = contextParams.get("projectKey")[0];
+        if (!projectKey.contains("$")) {
+          acContext.put("project.key", projectKey);
+          Project project = projectManager.getProjectByCurrentKey(projectKey);
+          if (project != null) {
+            acContext.put("project.id", project.getId().toString());
+          }
         }
       }
-    }
 
-    if (contextParams.containsKey("versionId")) {
-      String versionId = contextParams.get("versionId")[0];
-      if (!versionId.contains("$")) {
-        acContext.put("version.id", versionId);
+      if (contextParams.containsKey("versionId")) {
+        String versionId = contextParams.get("versionId")[0];
+        if (!versionId.contains("$")) {
+          acContext.put("version.id", versionId);
+        }
       }
-    }
 
-    if (contextParams.containsKey("componentId")) {
-      String componentId = contextParams.get("componentId")[0];
-      if (!componentId.contains("$")) {
-        acContext.put("component.id", componentId);
+      if (contextParams.containsKey("componentId")) {
+        String componentId = contextParams.get("componentId")[0];
+        if (!componentId.contains("$")) {
+          acContext.put("component.id", componentId);
+        }
       }
+    } catch (Exception e) {
+
     }
   }
 
