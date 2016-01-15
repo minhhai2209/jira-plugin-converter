@@ -34,7 +34,7 @@ public class ParameterContextBuilder {
       acContext.put("component.id", "");
 
       Map<String, String[]> contextParams = request.getParameterMap();
-      String[] productContexts = contextParams.get("produt-context");
+      String[] productContexts = contextParams.get("product-context");
       if (productContexts != null && productContexts.length > 0) {
         String productContextAsString = productContexts[0];
         TypeReference<Map<String, String>> typeReference = new TypeReference<Map<String, String>>() {};
