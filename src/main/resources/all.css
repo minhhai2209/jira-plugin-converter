@@ -1,0 +1,44 @@
+.page-type-admin.ac-content-page .aui-page-panel-content{padding:0}
+html,body,p,div,h1,h2,h3,h4,h5,h6,img,pre,form,fieldset{margin:0;padding:0}
+html,body{height:100%}
+ul,ol,dl{margin:0}
+img,fieldset{border:0}
+article,aside,details,figcaption,figure,footer,header,hgroup,nav,section{display:block}
+audio,canvas,video{display:inline-block;*display:inline;*zoom:1}
+body{color:#333;font-family:sans-serif;font-size:14px;line-height:1.42857142857143}
+p,ul,ol,dl,h1,h2,h3,h4,h5,h6,blockquote,pre,form.aui,table.aui,.aui-tabs,.aui-panel,.aui-group{margin:10px 0 0 0}
+p:first-child,ul:first-child,ol:first-child,dl:first-child,h1:first-child,h2:first-child,h3:first-child,h4:first-child,h5:first-child,h6:first-child,blockquote:first-child,pre:first-child,form.aui:first-child,table.aui:first-child,.aui-tabs:first-child,.aui-panel:first-child,.aui-group:first-child{margin-top:0}
+h1{font-size:24px;font-weight:normal;line-height:1.25;margin:40px 0 0 0}
+h2{font-size:20px;font-weight:normal;line-height:1.5;margin:40px 0 0 0}
+h3{font-size:16px;line-height:1.5625;margin:30px 0 0 0}
+h4{font-size:14px;line-height:1.5;margin:20px 0 0 0}
+h5{color:#707070;font-size:12px;line-height:1.66666666666667;margin:20px 0 0 0;text-transform:uppercase}
+h6{color:#707070;font-size:12px;line-height:1.66666666666667;margin:20px 0 0 0}
+h1:first-child,h2:first-child,h3:first-child,h4:first-child,h5:first-child,h6:first-child{margin-top:0}
+h1+h2,h2+h3,h3+h4,h4+h5,h5+h6{margin-top:10px}
+.aui-group>.aui-item>h1:first-child,.aui-group>.aui-item>h2:first-child,.aui-group>.aui-item>h3:first-child,.aui-group>.aui-item>h4:first-child,.aui-group>.aui-item>h5:first-child,.aui-group>.aui-item>h6:first-child{margin-top:20px}
+.aui-group:first-child>.aui-item>h1:first-child,.aui-group:first-child>.aui-item>h2:first-child,.aui-group:first-child>.aui-item>h3:first-child,.aui-group:first-child>.aui-item>h4:first-child,.aui-group:first-child>.aui-item>h5:first-child,.aui-group:first-child>.aui-item>h6:first-child{margin-top:0}
+small{color:#707070;font-size:12px;line-height:1.33333333333333}
+code,kbd{font-family:monospace}
+var,address,dfn,cite{font-style:italic}
+cite:before{content:"\2014 \2009"}
+blockquote{border-left:1px solid #ccc;color:#707070;padding:10px 30px}
+blockquote>cite{display:block;margin-top:10px}
+q{color:#707070}
+q:before{content:open-quote}
+q:after{content:close-quote}
+abbr{border-bottom:1px #707070 dotted;cursor:help}
+.aui-dialog2-content{height:-webkit-calc(100% - 107px);height:calc(100% - 107px)}
+.ap-status small{color:#707070}
+.ap-loading,.ap-load-timeout{padding-left:4px}
+.ap-dialog-content{padding:0!important;overflow:hidden!important}
+.ap-dialog-content .ap-stats{padding:5px 10px;background:#f5f5f5;border-top:1px solid #e9e9e9}
+.ap-link-disabled,.ap-link-disabled:hover,.ap-link-disabled:visited,.ap-link-disabled:focus{color:gray!important;text-decoration:none}
+.ap-container .ap-content{font-size:0}
+.ap-container iframe{border:0}
+.ap-container iframe.full-size-general-page{border-bottom:1px solid #ccc}
+.ap-stats .small-spinner{width:20px;height:20px;float:left;margin-right:4px}
+.aui-inline-dialog .ap-stats,.ap-dialog-content .ap-stats{display:block}
+.ap-aui-message{margin:10px}
+.ap-content{line-height:0;margin:0;padding:0;font-size:0}
+.ap-postFunction>.ap-container{margin-right:120px}
