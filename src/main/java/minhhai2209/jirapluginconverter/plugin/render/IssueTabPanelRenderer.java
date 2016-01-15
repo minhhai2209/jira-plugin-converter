@@ -131,6 +131,7 @@ public class IssueTabPanelRenderer extends AbstractIssueTabPanel {
       Map<String, Object> context = new HashMap<String, Object>();
       context.put("hostConfigJson", hostConfigJson);
       context.put("ns", ns);
+      context.put("plugin", PluginSetting.getPlugin());
       String html = render("issue-tab-panel", context);
 
       return Collections.singletonList(new GenericMessageAction(html));
