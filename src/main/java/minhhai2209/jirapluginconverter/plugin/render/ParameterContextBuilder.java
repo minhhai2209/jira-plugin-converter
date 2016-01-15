@@ -51,8 +51,11 @@ public class ParameterContextBuilder {
           acContext.put("issue.key", issueKey);
           MutableIssue issue = issueManager.getIssueByCurrentKey(issueKey);
           if (issue != null) {
+            Project project = issue.getProjectObject();
             acContext.put("issue.id", issue.getId().toString());
             acContext.put("issuetype.id", issue.getIssueTypeId());
+            acContext.put("project.id", project.getId().toString());
+            acContext.put("project.key", project.getKey());
           }
         }
       }
