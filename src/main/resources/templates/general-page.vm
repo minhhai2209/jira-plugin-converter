@@ -2,14 +2,14 @@
 
 #set($hostConfigJsonWithHtml = $hostConfigJson)
 
+#if($chrome)
 <html>
   <head>
-    #if($chrome)
       <meta name="decorator" content="atl.general"/>
-    #end
-    <title>$!title</title>
+      <title>$!title</title>
   </head>
   <body>
+#end
     <div class="ap-container" id="ap-$ns">
       <div class="ap-content" id="embedded-$ns"></div>
       <div class="ap-stats hidden">
@@ -30,5 +30,7 @@
         });
       </script>
     </div>
+#if($chrome)
   </body>
 </html>
+#end
