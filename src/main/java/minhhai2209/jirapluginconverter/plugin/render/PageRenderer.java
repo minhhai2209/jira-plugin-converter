@@ -88,17 +88,32 @@ public class PageRenderer extends HttpServlet {
           timeZoneService.getDefaultTimeZoneInfo(jiraServiceContext).toTimeZone() :
           timeZoneService.getUserTimeZoneInfo(jiraServiceContext).toTimeZone();
 
+      String location = page.getLocation();
+      boolean chrome = !(location == null || location.equals("none") || location.equals("no-location"));
+
       Map<String, String> productContext = ParameterContextBuilder.buildContext(request, null, null);
+
+      String dlg;
+      String general;
+      String w;
+      String h;
 
       String xdm_e = JiraUtils.getBaseUrl();
       String cp = JiraUtils.getContextPath();
       String ns = PluginSetting.URL_SAFE_PLUGIN_KEY + "__" + moduleKey;
       String xdm_c = "channel-" + ns;
-      String dlg = "";
       String simpleDlg = "";
-      String general = "1";
-      String w = "";
-      String h = "";
+      if (chrome) {
+        dlg = "";
+        general = "1";
+        w = "";
+        h = "";
+      } else {
+        dlg = "1";
+        general = "";
+        w = "100%";
+        h = "100%";
+      }
       String productCtx = JsonUtils.toJson(productContext);
       String timezone = timeZone.getID();
       String loc = LocaleUtils.getLocale(localeResolver);
@@ -163,9 +178,6 @@ public class PageRenderer extends HttpServlet {
         default:
           throw new IllegalStateException();
       }
-
-      String location = page.getLocation();
-      boolean chrome = !(location == null || location.equals("none") || location.equals("no-location"));
 
       Map<String, Object> context = new HashMap<String, Object>();
       context.put("hostConfigJson", hostConfigJson);
