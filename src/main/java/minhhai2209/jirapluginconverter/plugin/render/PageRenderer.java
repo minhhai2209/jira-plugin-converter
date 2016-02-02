@@ -89,7 +89,7 @@ public class PageRenderer extends HttpServlet {
           timeZoneService.getUserTimeZoneInfo(jiraServiceContext).toTimeZone();
 
       String location = page.getLocation();
-      boolean chrome = !(location == null || location.equals("none") || location.equals("no-location"));
+      boolean chrome = !("none".equals(location) || "no-location".equals(location));
 
       Map<String, String> productContext = ParameterContextBuilder.buildContext(request, null, null);
 
