@@ -15,9 +15,9 @@ import minhhai2209.jirapluginconverter.utils.ExceptionUtils;
 
 public class PluginLifeCycleEventListener implements DisposableBean {
 
-  private static EventType currentPluginStatus = null;
+  private EventType currentPluginStatus = null;
 
-  private static boolean registered = false;
+  private boolean registered = false;
 
   private PluginLifeCycleEventHandler pluginLifeCycleEventHandler;
 
