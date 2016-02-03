@@ -1,136 +1,121 @@
 package minhhai2209.jirapluginconverter.plugin.lifecycle;
 
-import org.apache.http.HttpHeaders;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
 import org.springframework.beans.factory.DisposableBean;
-import org.springframework.beans.factory.InitializingBean;
 
-import com.atlassian.oauth.consumer.ConsumerService;
+import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.plugin.Plugin;
 import com.atlassian.plugin.event.PluginEventListener;
 import com.atlassian.plugin.event.PluginEventManager;
+import com.atlassian.plugin.event.events.PluginDisabledEvent;
 import com.atlassian.plugin.event.events.PluginEnabledEvent;
-import com.atlassian.sal.api.ApplicationProperties;
-import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
-import com.atlassian.sal.api.transaction.TransactionTemplate;
-import com.atlassian.upm.api.license.PluginLicenseManager;
+import com.atlassian.plugin.event.events.PluginUninstalledEvent;
 
-import minhhai2209.jirapluginconverter.plugin.jwt.JwtComposer;
-import minhhai2209.jirapluginconverter.plugin.setting.JiraUtils;
-import minhhai2209.jirapluginconverter.plugin.setting.KeyUtils;
-import minhhai2209.jirapluginconverter.plugin.setting.LifeCycleUtils;
 import minhhai2209.jirapluginconverter.plugin.setting.PluginSetting;
-import minhhai2209.jirapluginconverter.plugin.setting.SenUtils;
-import minhhai2209.jirapluginconverter.plugin.utils.HttpClientFactory;
 import minhhai2209.jirapluginconverter.utils.ExceptionUtils;
-import minhhai2209.jirapluginconverter.utils.JsonUtils;
 
-public class PluginLifeCycleEventListener implements InitializingBean, DisposableBean {
+public class PluginLifeCycleEventListener implements DisposableBean {
 
-  private PluginEventManager pluginEventManager;
+  private static EventType currentPluginStatus = null;
 
-  private PluginSettingsFactory pluginSettingsFactory;
+  private static boolean registered = false;
 
-  private TransactionTemplate transactionTemplate;
+  private PluginLifeCycleEventHandler pluginLifeCycleEventHandler;
 
-  private ApplicationProperties applicationProperties;
-
-  private PluginLicenseManager pluginLicenseManager;
-
-  private ConsumerService consumerService;
-
-  private String jiraVersion;
-
-  private String pluginVersion;
-
-  public PluginLifeCycleEventListener(
-      PluginEventManager pluginEventManager,
-      PluginSettingsFactory pluginSettingsFactory,
-      TransactionTemplate transactionTemplate,
-      ApplicationProperties applicationProperties,
-      PluginLicenseManager pluginLicenseManager,
-      ConsumerService consumerService) {
-
-    this.pluginEventManager = pluginEventManager;
-    this.pluginSettingsFactory = pluginSettingsFactory;
-    this.transactionTemplate = transactionTemplate;
-    this.applicationProperties = applicationProperties;
-    this.pluginLicenseManager = pluginLicenseManager;
-    this.consumerService = consumerService;
+  public PluginLifeCycleEventListener(PluginLifeCycleEventHandler pluginLifeCycleEventHandler) {
+    this.pluginLifeCycleEventHandler = pluginLifeCycleEventHandler;
+    register();
   }
 
-  @Override
-  public void afterPropertiesSet() throws Exception {
-    pluginEventManager.register(this);
-    jiraVersion = applicationProperties.getVersion();
-    PluginSetting.load(pluginSettingsFactory, transactionTemplate, pluginLicenseManager, consumerService);
-    JiraUtils.setApplicationProperties(applicationProperties);
+  private void handle(EventType nextPluginStatus, Plugin plugin) {
+    if (plugin != null && PluginSetting.PLUGIN_KEY.equals(plugin.getKey())) {
+      if (EventType.uninstalled.equals(currentPluginStatus)) {
+        deregister();
+        return;
+      } else if (currentPluginStatus == null) {
+        if (EventType.enabled.equals(nextPluginStatus)) {
+          setPluginStatus(EventType.installed, plugin);
+        } else {
+          setPluginStatus(nextPluginStatus, plugin);
+        }
+      } else {
+        if (currentPluginStatus.equals(nextPluginStatus)) {
+          return;
+        } else {
+          setPluginStatus(nextPluginStatus, plugin);
+        }
+      }
+      if (EventType.uninstalled.equals(currentPluginStatus)) {
+        deregister();
+      }
+    }
   }
 
-  @PluginEventListener
-  public void onPluginEnabled(PluginEnabledEvent event) throws Exception {
-    if (event == null) {
-      return;
-    }
-    Plugin plugin = event.getPlugin();
-    if (plugin == null) {
-      return;
-    }
-    String pluginKey = plugin.getKey();
-    if (!PluginSetting.PLUGIN_KEY.equals(pluginKey)) {
-      return;
-    }
-    pluginVersion = plugin.getPluginInformation().getVersion();
-    notify(EventType.installed, LifeCycleUtils.getInstalledUri());
-  }
-
-  private void notify(EventType eventType, String uri) throws Exception {
+  private void deregister() {
     try {
-      if (uri != null) {
-        PluginLifeCycleEvent event = new PluginLifeCycleEvent();
-        event.setBaseUrl(JiraUtils.getFullBaseUrl());
-        event.setClientKey(KeyUtils.getClientKey());
-        event.setDescription("");
-        event.setEventType(eventType);
-        event.setKey(PluginSetting.PLUGIN_KEY);
-        event.setPluginsVersion(pluginVersion);
-        event.setProductType(ProductType.jira);
-        event.setPublicKey(KeyUtils.getPublicKey());
-        event.setServerVersion(jiraVersion);
-        event.setServiceEntitlementNumber(SenUtils.getSen());
-        event.setSharedSecret(KeyUtils.getSharedSecret());
-        notify(uri, event);
+      if (registered) {
+        PluginEventManager pluginEventManager = ComponentAccessor.getComponent(PluginEventManager.class);
+        pluginEventManager.unregister(this);
+        registered = false;
       }
     } catch (Exception e) {
-
     }
   }
 
-  private void notify(String uri, PluginLifeCycleEvent event) {
+  private void register() {
     try {
-      String url = getUrl(uri);
-      HttpClient httpClient = HttpClientFactory.build();
-      HttpPost post = new HttpPost(url);
-      String json = JsonUtils.toJson(event);
-      post.setEntity(new StringEntity(json));
-      post.addHeader(HttpHeaders.CONTENT_TYPE, "application/json");
-      String jwt = JwtComposer.compose(KeyUtils.getClientKey(), KeyUtils.getSharedSecret(), "POST", uri, null, null);
-      post.addHeader("Authorization", "JWT " + jwt);
-      httpClient.execute(post);
+      if (!registered) {
+        PluginEventManager pluginEventManager = ComponentAccessor.getComponent(PluginEventManager.class);
+        pluginEventManager.register(this);
+        registered = true;
+      }
+    } catch (Exception e) {
+    }
+  }
+
+  private void setPluginStatus(EventType nextPluginStatus, Plugin plugin) {
+    try {
+      currentPluginStatus = nextPluginStatus;
+      switch (currentPluginStatus) {
+        case installed:
+          pluginLifeCycleEventHandler.onInstalled(plugin);
+          break;
+        case uninstalled:
+          pluginLifeCycleEventHandler.onUninstalled();
+          break;
+        case enabled:
+          pluginLifeCycleEventHandler.onEnabled();
+          break;
+        case disabled:
+          pluginLifeCycleEventHandler.onDisabled();
+          break;
+        default:
+          throw new IllegalArgumentException();
+      }
     } catch (Exception e) {
       ExceptionUtils.throwUnchecked(e);
     }
   }
 
-  private static String getUrl(String uri) {
-    return uri == null ? null : PluginSetting.getPluginBaseUrl() + uri;
+  @PluginEventListener
+  public void onPluginEnabled(PluginEnabledEvent event) {
+    if (event == null) return;
+    handle(EventType.enabled, event.getPlugin());
+  }
+
+  @PluginEventListener
+  public void onPluginDisabled(PluginDisabledEvent event) {
+    if (event == null) return;
+    handle(EventType.disabled, event.getPlugin());
+  }
+
+  @PluginEventListener
+  public void onPluginUninstalledEvent(PluginUninstalledEvent event) {
+    if (event == null) return;
+    handle(EventType.uninstalled, event.getPlugin());
   }
 
   @Override
   public void destroy() throws Exception {
-    pluginEventManager.unregister(this);
-    notify(EventType.uninstalled, LifeCycleUtils.getUninstalledUri());
+    handle(EventType.disabled, null);
   }
 }
