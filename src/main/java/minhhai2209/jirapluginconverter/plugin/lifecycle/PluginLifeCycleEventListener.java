@@ -1,5 +1,7 @@
 package minhhai2209.jirapluginconverter.plugin.lifecycle;
 
+import java.util.UUID;
+
 import org.springframework.beans.factory.DisposableBean;
 
 import com.atlassian.jira.component.ComponentAccessor;
@@ -19,52 +21,89 @@ public class PluginLifeCycleEventListener implements DisposableBean {
 
   private boolean registered = false;
 
+  private String source = UUID.randomUUID().toString();
+
+  private boolean newlyInstalled = true;
+
   private PluginLifeCycleEventHandler pluginLifeCycleEventHandler;
 
   public PluginLifeCycleEventListener(PluginLifeCycleEventHandler pluginLifeCycleEventHandler) {
+
     this.pluginLifeCycleEventHandler = pluginLifeCycleEventHandler;
     register();
   }
 
   private void handle(EventType nextPluginStatus, Plugin plugin) {
+    if (currentPluginStatus == null && EventType.enabled.equals(nextPluginStatus)) {
+      fireNullToEnabledEvent(plugin);
+    }
     if (plugin != null && PluginSetting.PLUGIN_KEY.equals(plugin.getKey())) {
+      log("current " + currentPluginStatus + " next " + nextPluginStatus + " " + newlyInstalled);
       if (EventType.uninstalled.equals(currentPluginStatus)) {
-        deregister();
+        unregister();
         return;
+      } else if (EventType.disabled.equals(currentPluginStatus) && EventType.enabled.equals(nextPluginStatus)) {
+        if (newlyInstalled) {
+          setPluginStatus(EventType.enabled, plugin);
+        } else {
+          fireDisabledToEnabledEvent(plugin);
+          unregister();
+          return;
+        }
       } else if (currentPluginStatus == null) {
         if (EventType.enabled.equals(nextPluginStatus)) {
           setPluginStatus(EventType.installed, plugin);
         } else {
           setPluginStatus(nextPluginStatus, plugin);
         }
-      } else {
-        if (currentPluginStatus.equals(nextPluginStatus)) {
-          return;
-        } else {
-          setPluginStatus(nextPluginStatus, plugin);
-        }
+      } else if (!currentPluginStatus.equals(nextPluginStatus)) {
+        setPluginStatus(nextPluginStatus, plugin);
       }
       if (EventType.uninstalled.equals(currentPluginStatus)) {
-        deregister();
+        unregister();
       }
     }
   }
 
-  private void deregister() {
+  private void log(String message) {
+//    System.out.println(source + " " + message);
+  }
+
+  private void fireNullToEnabledEvent(Plugin plugin) {
+    log("fire null to enabled");
+    PluginNullToEnabledEvent event = new PluginNullToEnabledEvent(plugin, source);
+    PluginEventManager pluginEventManager = getPluginEventManager();
+    pluginEventManager.broadcast(event);
+  }
+
+  private void fireDisabledToEnabledEvent(Plugin plugin) {
+    log("fire disabled to enabled");
+    PluginDisabledToEnabledEvent event = new PluginDisabledToEnabledEvent(plugin, source);
+    PluginEventManager pluginEventManager = getPluginEventManager();
+    pluginEventManager.broadcast(event);
+  }
+
+  private PluginEventManager getPluginEventManager() {
+    PluginEventManager pluginEventManager = ComponentAccessor.getComponent(PluginEventManager.class);
+    return pluginEventManager;
+  }
+
+  private void unregister() {
     try {
       if (registered) {
-        PluginEventManager pluginEventManager = ComponentAccessor.getComponent(PluginEventManager.class);
+        PluginEventManager pluginEventManager = getPluginEventManager();
         pluginEventManager.unregister(this);
         registered = false;
       }
     } catch (Exception e) {
+      log(e.getMessage());
     }
   }
 
   private void register() {
     try {
       if (!registered) {
-        PluginEventManager pluginEventManager = ComponentAccessor.getComponent(PluginEventManager.class);
+        PluginEventManager pluginEventManager = getPluginEventManager();
         pluginEventManager.register(this);
         registered = true;
       }
@@ -73,7 +112,9 @@ public class PluginLifeCycleEventListener implements DisposableBean {
   }
 
   private void setPluginStatus(EventType nextPluginStatus, Plugin plugin) {
+    log("status " + currentPluginStatus + " to " + nextPluginStatus);
     try {
+      newlyInstalled = false;
       currentPluginStatus = nextPluginStatus;
       switch (currentPluginStatus) {
         case installed:
@@ -92,7 +133,28 @@ public class PluginLifeCycleEventListener implements DisposableBean {
           throw new IllegalArgumentException();
       }
     } catch (Exception e) {
+      log(e.getMessage());
       ExceptionUtils.throwUnchecked(e);
+    }
+  }
+
+  @PluginEventListener
+  public void onPluginDisabledToEnabled(PluginDisabledToEnabledEvent event) {
+    if (event == null) return;
+    log("pre receive disabled to enabled");
+    if (!source.equals(event.getSource())) {
+      log("receive disabled to enabled");
+      currentPluginStatus = EventType.disabled;
+    }
+  }
+
+  @PluginEventListener
+  public void onPluginNullToEnabled(PluginNullToEnabledEvent event) {
+    if (event == null) return;
+    log("pre receive null to enabled");
+    if (!source.equals(event.getSource())) {
+      log("receive null to enabled");
+      handle(EventType.enabled, event.getPlugin());
     }
   }
 
