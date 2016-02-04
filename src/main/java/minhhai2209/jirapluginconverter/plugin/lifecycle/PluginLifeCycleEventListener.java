@@ -10,6 +10,7 @@ import com.atlassian.plugin.event.PluginEventListener;
 import com.atlassian.plugin.event.PluginEventManager;
 import com.atlassian.plugin.event.events.PluginDisabledEvent;
 import com.atlassian.plugin.event.events.PluginEnabledEvent;
+import com.atlassian.plugin.event.events.PluginFrameworkShutdownEvent;
 import com.atlassian.plugin.event.events.PluginUninstalledEvent;
 
 import minhhai2209.jirapluginconverter.plugin.setting.PluginSetting;
@@ -37,7 +38,7 @@ public class PluginLifeCycleEventListener implements DisposableBean {
     if (currentPluginStatus == null && EventType.enabled.equals(nextPluginStatus)) {
       fireNullToEnabledEvent(plugin);
     }
-    if (plugin != null && PluginSetting.PLUGIN_KEY.equals(plugin.getKey())) {
+    if (plugin == null || PluginSetting.PLUGIN_KEY.equals(plugin.getKey())) {
       log("current " + currentPluginStatus + " next " + nextPluginStatus + " " + newlyInstalled);
       if (EventType.uninstalled.equals(currentPluginStatus)) {
         unregister();
@@ -156,6 +157,11 @@ public class PluginLifeCycleEventListener implements DisposableBean {
       log("receive null to enabled");
       handle(EventType.enabled, event.getPlugin());
     }
+  }
+
+  @PluginEventListener
+  public void onPluginFrameworkShutdown(PluginFrameworkShutdownEvent event) {
+    handle(EventType.disabled, null);
   }
 
   @PluginEventListener
