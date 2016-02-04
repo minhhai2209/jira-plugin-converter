@@ -66,7 +66,7 @@ public class PluginLifeCycleEventListener implements DisposableBean {
   }
 
   private void log(String message) {
-//    System.out.println(source + " " + message);
+    System.out.println(source + " " + message);
   }
 
   private void fireNullToEnabledEvent(Plugin plugin) {
