@@ -5,10 +5,13 @@ import com.atlassian.sal.api.UrlMode;
 
 public class JiraUtils {
 
-  private static ApplicationProperties applicationProperties;
+  private static String fullBaseUrl;
+
+  private static String contextPath;
 
   public static void setApplicationProperties(ApplicationProperties applicationProperties) {
-    JiraUtils.applicationProperties = applicationProperties;
+    fullBaseUrl = applicationProperties.getBaseUrl(UrlMode.CANONICAL);
+    contextPath = applicationProperties.getBaseUrl(UrlMode.RELATIVE_CANONICAL);
   }
 
   public static String getBaseUrl() {
@@ -25,10 +28,10 @@ public class JiraUtils {
   }
 
   public static String getFullBaseUrl() {
-    return applicationProperties.getBaseUrl(UrlMode.CANONICAL);
+    return fullBaseUrl;
   }
 
   public static String getContextPath() {
-    return applicationProperties.getBaseUrl(UrlMode.RELATIVE_CANONICAL);
+    return contextPath;
   }
 }
