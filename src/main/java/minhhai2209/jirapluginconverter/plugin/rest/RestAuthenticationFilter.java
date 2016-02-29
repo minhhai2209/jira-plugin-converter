@@ -1,29 +1,22 @@
 package minhhai2209.jirapluginconverter.plugin.rest;
 
-import java.io.IOException;
-import java.util.Collection;
-
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
 import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.user.ApplicationUser;
 import com.atlassian.jira.user.util.UserUtil;
 import com.atlassian.seraph.auth.DefaultAuthenticator;
 import com.google.common.collect.Iterables;
-
 import minhhai2209.jirapluginconverter.plugin.jwt.JwtClaim;
 import minhhai2209.jirapluginconverter.plugin.jwt.JwtVerifier;
 import minhhai2209.jirapluginconverter.plugin.setting.JiraUtils;
 import minhhai2209.jirapluginconverter.plugin.setting.KeyUtils;
 import minhhai2209.jirapluginconverter.plugin.setting.PluginSetting;
+
+import javax.servlet.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
+import java.util.Collection;
 
 public class RestAuthenticationFilter implements Filter {
 
@@ -41,6 +34,7 @@ public class RestAuthenticationFilter implements Filter {
     String authorization = request.getHeader("Authorization");
     if (authorization != null) {
       if (authorization.startsWith("JWT")) {
+        // only process if Authorization header is JWT token
         String url = request.getRequestURL().toString();
         String queryString = request.getQueryString();
         if (queryString != null) {
@@ -54,7 +48,8 @@ public class RestAuthenticationFilter implements Filter {
             PluginSetting.getDescriptor().getKey(),
             KeyUtils.getSharedSecret(),
             method);
-        if (claim != null) {
+        if (claim == null) {
+          // only in this case does this filter block the request
           authorized = false;
           HttpServletResponse response = (HttpServletResponse) servletResponse;
           response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
