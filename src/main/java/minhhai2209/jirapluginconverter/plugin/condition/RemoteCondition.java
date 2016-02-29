@@ -3,6 +3,7 @@ package minhhai2209.jirapluginconverter.plugin.condition;
 import com.atlassian.plugin.PluginParseException;
 import com.atlassian.plugin.web.Condition;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import minhhai2209.jirapluginconverter.plugin.render.ParameterContextBuilder;
 import minhhai2209.jirapluginconverter.plugin.utils.HttpClientFactory;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -26,11 +27,14 @@ public class RemoteCondition implements Condition {
 
   @Override
   public boolean shouldDisplay(Map<String, Object> context) {
-    return conditionUrl == null || getRemoteCondition();
+    return conditionUrl == null || getRemoteCondition(context);
   }
   
-  private boolean getRemoteCondition() {
+  private boolean getRemoteCondition(Map<String, Object> context) {
     try {
+      Map<String, String> productContext = ParameterContextBuilder.buildContext(null, context, null);
+      conditionUrl = ParameterContextBuilder.buildUrl(conditionUrl, productContext);
+
       HttpClient client = HttpClientFactory.build();
       URIBuilder builder = new URIBuilder(conditionUrl);
       if (params != null) {
