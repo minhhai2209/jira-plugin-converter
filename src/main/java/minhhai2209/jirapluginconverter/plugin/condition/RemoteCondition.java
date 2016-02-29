@@ -1,19 +1,17 @@
 package minhhai2209.jirapluginconverter.plugin.condition;
 
-import java.util.Map;
-
+import com.atlassian.plugin.PluginParseException;
+import com.atlassian.plugin.web.Condition;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import minhhai2209.jirapluginconverter.plugin.utils.HttpClientFactory;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URIBuilder;
 
-import com.atlassian.plugin.PluginParseException;
-import com.atlassian.plugin.web.Condition;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.Map;
 
-import minhhai2209.jirapluginconverter.plugin.utils.HttpClientFactory;
-
-public class SingleCondition implements Condition {
+public class RemoteCondition implements Condition {
   
   private Map<String, String> params;
   private String conditionUrl;
