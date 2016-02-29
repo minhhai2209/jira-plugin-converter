@@ -1,7 +1,5 @@
 package minhhai2209.jirapluginconverter.plugin.descriptor;
 
-import minhhai2209.jirapluginconverter.plugin.condition.RemoteCondition;
-
 import javax.xml.bind.annotation.*;
 import java.util.List;
 
@@ -9,7 +7,7 @@ import java.util.List;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Condition {
 
-  private static String CONDITION_CLASS = RemoteCondition.class.getName();
+  private static String CONDITION_CLASS = "minhhai2209.jirapluginconverter.plugin.condition.RemoteCondition";
   
   @XmlAttribute(name="class")
   private String clazz = CONDITION_CLASS;
