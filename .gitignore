@@ -1,5 +1,6 @@
-/target/
 .project
 .settings
 target
 .classpath
+.idea
+generated_artifact_id.iml
