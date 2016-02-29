@@ -1,20 +1,18 @@
 package minhhai2209.jirapluginconverter.plugin.render;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.lang.text.StrSubstitutor;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.type.TypeReference;
-
 import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.issue.Issue;
 import com.atlassian.jira.issue.IssueManager;
 import com.atlassian.jira.issue.MutableIssue;
 import com.atlassian.jira.project.Project;
 import com.atlassian.jira.project.ProjectManager;
+import org.apache.commons.lang.text.StrSubstitutor;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.type.TypeReference;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ParameterContextBuilder {
 
@@ -85,16 +83,16 @@ public class ParameterContextBuilder {
         }
       }
     } catch (Exception e) {
-
+      // do nothing
     }
   }
 
   private static void buildContextParams(Map<String, Object> contextParams, Map<String, String> acContext) {
 
     Object o = contextParams.get("issue");
-    if (o instanceof Issue) {
-      Issue issue = (Issue) o;
-      if (issue != null) {
+    if (o != null) {
+      if (o instanceof Issue) {
+        Issue issue = (Issue) o;
         acContext.put("issue.key", issue.getKey());
         acContext.put("issue.id", issue.getId().toString());
         acContext.put("issuetype.id", issue.getIssueTypeId());
@@ -102,9 +100,9 @@ public class ParameterContextBuilder {
     }
 
     o = contextParams.get("project");
-    if (o instanceof Project) {
-      Project project = (Project) o;
-      if (project != null) {
+    if (o != null) {
+      if (o instanceof Project) {
+        Project project = (Project) o;
         acContext.put("project.key", project.getKey());
         acContext.put("project.id", project.getId().toString());
       }
@@ -121,7 +119,7 @@ public class ParameterContextBuilder {
   }
 
   public static String buildUrl(String url, Map<String, String> acContext) {
-    StrSubstitutor substitutor = new StrSubstitutor(acContext, "${", "}");
+    StrSubstitutor substitutor = new StrSubstitutor(acContext);
     url = substitutor.replace(url);
     return url;
   }
