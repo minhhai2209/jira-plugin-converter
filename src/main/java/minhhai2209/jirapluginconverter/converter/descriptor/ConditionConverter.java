@@ -1,12 +1,12 @@
 package minhhai2209.jirapluginconverter.converter.descriptor;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import minhhai2209.jirapluginconverter.connect.descriptor.Modules;
 import minhhai2209.jirapluginconverter.plugin.descriptor.Condition;
 import minhhai2209.jirapluginconverter.plugin.descriptor.Param;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class ConditionConverter extends ModuleConverter<Condition, minhhai2209.jirapluginconverter.connect.descriptor.condition.Condition>{
 
@@ -16,7 +16,6 @@ public class ConditionConverter extends ModuleConverter<Condition, minhhai2209.j
     Condition conditionModule = new Condition();
     conditionModule.setInvert(connectCondition.isInvert());
     List<Param> clauses = new ArrayList<Param>();
-    clauses.add(new Param("condition", connectCondition.getCondition()));
 
     Map<String, String> params = connectCondition.getParams();
     if (params != null) {
