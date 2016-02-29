@@ -119,7 +119,7 @@ public class ParameterContextBuilder {
   }
 
   public static String buildUrl(String url, Map<String, String> acContext) {
-    StrSubstitutor substitutor = new StrSubstitutor(acContext);
+    StrSubstitutor substitutor = new StrSubstitutor(acContext, "{", "}");
     url = substitutor.replace(url);
     return url;
   }
