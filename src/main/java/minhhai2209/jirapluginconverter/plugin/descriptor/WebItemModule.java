@@ -3,7 +3,6 @@ package minhhai2209.jirapluginconverter.plugin.descriptor;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 @XmlRootElement(name="web-item")
 public class WebItemModule {
@@ -26,10 +25,7 @@ public class WebItemModule {
 
   private String styleClass;
 
-  @XmlTransient
   private Condition condition;
-
-  @XmlTransient
   private Conditions conditions;
 
   public Icon getIcon() {
@@ -112,7 +108,6 @@ public class WebItemModule {
     this.styleClass = styleClass;
   }
 
-  @XmlTransient
   public Condition getCondition() {
     return condition;
   }
@@ -121,7 +116,6 @@ public class WebItemModule {
     this.condition = condition;
   }
 
-  @XmlTransient
   public Conditions getConditions() {
     return conditions;
   }
