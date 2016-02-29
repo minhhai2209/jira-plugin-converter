@@ -16,6 +16,7 @@ public class ConditionConverter extends ModuleConverter<Condition, minhhai2209.j
     Condition conditionModule = new Condition();
     conditionModule.setInvert(connectCondition.isInvert());
     List<Param> clauses = new ArrayList<Param>();
+    clauses.add(new Param("condition", connectCondition.getCondition()));
 
     Map<String, String> params = connectCondition.getParams();
     if (params != null) {

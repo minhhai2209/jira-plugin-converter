@@ -30,7 +30,6 @@ public class RemoteCondition implements Condition {
   public void init(Map<String, String> params) throws PluginParseException {
     this.params = params;
     this.conditionUrl = params.get("condition");
-    
   }
 
   @Override
@@ -49,7 +48,9 @@ public class RemoteCondition implements Condition {
       URIBuilder builder = new URIBuilder(urlWithContext);
       if (params != null) {
         for (String key : params.keySet()) {
-          builder.addParameter(key, params.get(key));
+          if (!key.equals("condition")) {
+            builder.addParameter(key, params.get(key));
+          }
         }
       }
 
