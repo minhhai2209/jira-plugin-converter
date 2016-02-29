@@ -1,6 +1,9 @@
 package minhhai2209.jirapluginconverter.plugin.descriptor;
 
-import javax.xml.bind.annotation.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name="web-section")
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -8,23 +11,16 @@ public class WebSectionModule {
 
   @XmlAttribute
   private String clazz;
-
   @XmlAttribute(required=true)
   private String key;
-
   @XmlAttribute
   private String name;
-
   @XmlAttribute(required=true)
   private String location;
-
   @XmlAttribute(required=true)
   private int weight;
-
-  @XmlTransient
+  
   private Condition condition;
-
-  @XmlTransient
   private Conditions conditions;
   
   private Label label = new Label();

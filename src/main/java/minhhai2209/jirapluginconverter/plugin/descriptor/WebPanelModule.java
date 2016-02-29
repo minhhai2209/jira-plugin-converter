@@ -1,6 +1,10 @@
 package minhhai2209.jirapluginconverter.plugin.descriptor;
 
-import javax.xml.bind.annotation.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name="web-panel")
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -8,16 +12,12 @@ public class WebPanelModule {
 
   @XmlAttribute
   private String clazz;
-
   @XmlAttribute(required=true)
   private String key;
-
   @XmlAttribute
   private String name;
-
   @XmlAttribute
   private int weight;
-
   @XmlAttribute(required=true)
   private String location;
   
@@ -26,11 +26,8 @@ public class WebPanelModule {
   
   @XmlElement
   private Resource resource;
-
-  @XmlTransient
+  
   private Condition condition;
-
-  @XmlTransient
   private Conditions conditions;
 
   public String getClazz() {
@@ -78,7 +75,7 @@ public class WebPanelModule {
   }
 
   public void setLabel(String label) {
-    this.label.setKey(label);
+    this.label.setKey(label);;
   }
 
   public Condition getCondition() {
