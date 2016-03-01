@@ -55,24 +55,40 @@ public class PluginLifeCycleEventHandler {
   public void onInstalled(Plugin plugin) throws Exception {
     jiraVersion = applicationProperties.getVersion();
     PluginSetting.load(pluginSettingsFactory, transactionTemplate, pluginLicenseManager, consumerService);
+    String existingSharedSecret = KeyUtils.getSharedSecret();
+    if (existingSharedSecret == null) {
+      KeyUtils.generateSharedSecret(pluginSettingsFactory, transactionTemplate);
+    }
+    String currentSharedSecret = KeyUtils.getSharedSecret();
+
     JiraUtils.setApplicationProperties(applicationProperties);
     pluginVersion = plugin.getPluginInformation().getVersion();
-    notify(EventType.installed, LifeCycleUtils.getInstalledUri());
+    String uri = LifeCycleUtils.getInstalledUri();
+    String jwt = (existingSharedSecret == null) ? null :
+      JwtComposer.compose(KeyUtils.getClientKey(), existingSharedSecret, "POST", uri, null, null);
+
+    notify(EventType.installed, uri, currentSharedSecret, jwt);
   }
 
   public void onEnabled() throws Exception {
-    notify(EventType.enabled, LifeCycleUtils.getEnabledUri());
+    String uri = LifeCycleUtils.getEnabledUri();
+    String jwt = JwtComposer.compose(KeyUtils.getClientKey(), KeyUtils.getSharedSecret(), "POST", uri, null, null);
+    notify(EventType.enabled, uri, null, jwt);
   }
 
   public void onDisabled() throws Exception {
-    notify(EventType.disabled, LifeCycleUtils.getDisabledUri());
+    String uri = LifeCycleUtils.getDisabledUri();
+    String jwt = JwtComposer.compose(KeyUtils.getClientKey(), KeyUtils.getSharedSecret(), "POST", uri, null, null);
+    notify(EventType.disabled, uri, null, jwt);
   }
 
   public void onUninstalled() throws Exception {
-    notify(EventType.uninstalled, LifeCycleUtils.getUninstalledUri());
+    String uri = LifeCycleUtils.getUninstalledUri();
+    String jwt = JwtComposer.compose(KeyUtils.getClientKey(), KeyUtils.getSharedSecret(), "POST", uri, null, null);
+    notify(EventType.uninstalled, uri, null, jwt);
   }
 
-  private void notify(EventType eventType, String uri) throws Exception {
+  private void notify(EventType eventType, String uri, String sharedSecret, String jwt) throws Exception {
     try {
       if (uri != null) {
         PluginLifeCycleEvent event = new PluginLifeCycleEvent();
@@ -86,15 +102,16 @@ public class PluginLifeCycleEventHandler {
         event.setPublicKey(KeyUtils.getPublicKey());
         event.setServerVersion(jiraVersion);
         event.setServiceEntitlementNumber(SenUtils.getSen());
-        event.setSharedSecret(KeyUtils.getSharedSecret());
-        notify(uri, event);
+        event.setSharedSecret(sharedSecret);
+        notify(uri, event, jwt);
       }
     } catch (Exception e) {
-
+      System.out.println(PluginSetting.PLUGIN_KEY + " PLUGIN NOTIFY EVENT '" +
+        eventType.toString() + "' FAILED: " + e.getMessage());
     }
   }
 
-  private void notify(String uri, PluginLifeCycleEvent event) {
+  private void notify(String uri, PluginLifeCycleEvent event, String jwt) {
     try {
       String url = getUrl(uri);
       HttpClient httpClient = HttpClientFactory.build();
@@ -102,8 +119,9 @@ public class PluginLifeCycleEventHandler {
       String json = JsonUtils.toJson(event);
       post.setEntity(new StringEntity(json));
       post.addHeader(HttpHeaders.CONTENT_TYPE, "application/json");
-      String jwt = JwtComposer.compose(KeyUtils.getClientKey(), KeyUtils.getSharedSecret(), "POST", uri, null, null);
-      post.addHeader("Authorization", "JWT " + jwt);
+      if (jwt != null) {
+        post.addHeader("Authorization", "JWT " + jwt);
+      }
       httpClient.execute(post);
     } catch (Exception e) {
       ExceptionUtils.throwUnchecked(e);

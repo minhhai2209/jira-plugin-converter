@@ -1,5 +1,7 @@
 package minhhai2209.jirapluginconverter.plugin.lifecycle;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 public class PluginLifeCycleEvent {
 
   private String key;
@@ -48,6 +50,7 @@ public class PluginLifeCycleEvent {
     this.publicKey = publicKey;
   }
 
+  @JsonInclude(JsonInclude.Include.NON_NULL)
   public String getSharedSecret() {
     return sharedSecret;
   }
