@@ -1,16 +1,15 @@
 package minhhai2209.jirapluginconverter.converter.utils;
 
-import java.io.File;
-import java.io.InputStream;
-import java.net.URL;
-
+import minhhai2209.jirapluginconverter.connect.descriptor.Modules;
+import minhhai2209.jirapluginconverter.converter.descriptor.DescriptorConverter;
+import minhhai2209.jirapluginconverter.utils.ExceptionUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.zeroturnaround.zip.ZipUtil;
 
-import minhhai2209.jirapluginconverter.connect.descriptor.Modules;
-import minhhai2209.jirapluginconverter.converter.descriptor.DescriptorConverter;
-import minhhai2209.jirapluginconverter.utils.ExceptionUtils;
+import java.io.File;
+import java.io.InputStream;
+import java.net.URL;
 
 public class ConverterUtils {
 
@@ -85,6 +84,13 @@ public class ConverterUtils {
     try {
       URL source = new URL("https://github.com/minhhai2209/jira-plugin-converter/archive/" + version + ".zip");
       File zip = new File(templatePath);
+      if (zip.exists()) {
+        if (zip.isDirectory()) {
+          FileUtils.deleteDirectory(zip);
+        } else {
+          zip.delete();
+        }
+      }
       FileUtils.copyURLToFile(source, zip);
       ZipUtil.explode(zip);
       File template = new File(templatePath, "jira-plugin-converter-" + version);
