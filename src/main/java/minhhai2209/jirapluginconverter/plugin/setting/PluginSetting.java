@@ -35,7 +35,7 @@ public class PluginSetting {
       ConsumerService consumerService) throws Exception {
     readDescriptor();
     KeyUtils.loadJiraConsumer(consumerService);
-    KeyUtils.generateSharedSecret(pluginSettingsFactory, transactionTemplate);
+    KeyUtils.loadSharedSecret(pluginSettingsFactory);
   }
 
   private static void readDescriptor() {

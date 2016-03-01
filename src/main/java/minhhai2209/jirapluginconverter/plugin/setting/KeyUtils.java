@@ -39,6 +39,12 @@ public class KeyUtils {
     });
   }
 
+  public static void loadSharedSecret(final PluginSettingsFactory pluginSettingsFactory) {
+    PluginSettings settings = pluginSettingsFactory.createGlobalSettings();
+    String settingKey = PluginSetting.PLUGIN_KEY + ".sharedSecret";
+    sharedSecret = (String) settings.get(settingKey);
+  }
+
   public static void loadJiraConsumer(ConsumerService consumerService) throws Exception {
     Consumer consumer = consumerService.getConsumer();
     clientKey = Strings.nullToEmpty(consumer.getKey());
