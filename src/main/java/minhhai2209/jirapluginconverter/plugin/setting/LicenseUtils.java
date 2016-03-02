@@ -19,7 +19,7 @@ public class LicenseUtils {
     Option<PluginLicense> option = pluginLicenseManager.getLicense();
     try {
       PluginLicense license = option.get();
-      if (license.isActive()) {
+      if (license.isActive() && license.isValid()) {
         lic = "active";
       } else {
         lic = "none";
