@@ -1,13 +1,8 @@
 package minhhai2209.jirapluginconverter.converter.descriptor;
 
-import java.io.IOException;
-import java.io.StringWriter;
-import java.util.List;
-
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import minhhai2209.jirapluginconverter.connect.descriptor.Descriptor;
 import minhhai2209.jirapluginconverter.connect.descriptor.Modules;
 import minhhai2209.jirapluginconverter.connect.descriptor.page.Page;
@@ -21,6 +16,10 @@ import minhhai2209.jirapluginconverter.plugin.descriptor.WebItemModule;
 import minhhai2209.jirapluginconverter.plugin.descriptor.WebPanelModule;
 import minhhai2209.jirapluginconverter.plugin.descriptor.WebSectionModule;
 import minhhai2209.jirapluginconverter.utils.ExceptionUtils;
+
+import java.io.IOException;
+import java.io.StringWriter;
+import java.util.List;
 
 public class DescriptorConverter {
 
@@ -91,18 +90,28 @@ public class DescriptorConverter {
     return null;
   }
 
-  public static Modules analyze(String descriptorFile)
+  public static Descriptor analyze(String descriptorFile)
       throws IOException, JsonParseException, JsonMappingException {
     Descriptor descriptor = mapper.readValue(descriptorFile, Descriptor.class);
-    return descriptor.getModules();
+    return descriptor;
   }
 
-  public static String convertConfigurePage(Page configurePage) {
-    if (configurePage == null) {
-      return null;
+  public static String convertPluginInfoXml(Descriptor descriptor) {
+    String pluginInfoXml = "";
+    // configure page
+    Modules modules = descriptor.getModules();
+    if (modules != null) {
+      Page configurePage = modules.getConfigurePage();
+      if (configurePage != null) {
+        pluginInfoXml += "<param name=\"configure.url\">/plugins/servlet/${project.groupId}-${project.artifactId}/page/" +
+            configurePage.getKey() + "</param>";
+      }
     }
-    return "<param name=\"configure.url\">/plugins/servlet/${project.groupId}-${project.artifactId}/page/" +
-        configurePage.getKey() + "</param>";
+    // enable license
+    if (descriptor.isEnableLicensing()) {
+      pluginInfoXml += "<param name=\"atlassian-licensing-enabled\">true</param>";
+    }
+    return pluginInfoXml;
   }
 
 }
