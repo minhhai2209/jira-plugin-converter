@@ -11,6 +11,7 @@ import minhhai2209.jirapluginconverter.plugin.jwt.JwtComposer;
 import minhhai2209.jirapluginconverter.plugin.render.ParameterContextBuilder;
 import minhhai2209.jirapluginconverter.plugin.setting.AuthenticationUtils;
 import minhhai2209.jirapluginconverter.plugin.setting.KeyUtils;
+import minhhai2209.jirapluginconverter.plugin.setting.LicenseUtils;
 import minhhai2209.jirapluginconverter.plugin.setting.PluginSetting;
 import minhhai2209.jirapluginconverter.plugin.utils.HttpClientFactory;
 import org.apache.http.HttpResponse;
@@ -53,6 +54,8 @@ public class RemoteCondition implements Condition {
           }
         }
       }
+
+      builder.addParameter("lic", LicenseUtils.getLic());
 
       if (AuthenticationUtils.needsAuthentication()) {
 
