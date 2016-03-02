@@ -1,5 +1,6 @@
 package minhhai2209.jirapluginconverter.converter.utils;
 
+import minhhai2209.jirapluginconverter.connect.descriptor.Descriptor;
 import minhhai2209.jirapluginconverter.connect.descriptor.Modules;
 import minhhai2209.jirapluginconverter.converter.descriptor.DescriptorConverter;
 import minhhai2209.jirapluginconverter.utils.ExceptionUtils;
@@ -44,10 +45,10 @@ public class ConverterUtils {
     replaceTextInFile(pluginDescriptorFile, placeholder, pluginDescriptor);
   }
 
-  public static void replaceTextInConfigure(File root, Modules modules) {
+  public static void replaceTextInConfigure(File root, Descriptor descriptor) {
     File pluginDescriptorFile = new File(root, "/src/main/resources/atlassian-plugin.xml");
-    String placeholder = "<!-- <configure_xml /> -->";
-    String configureDescriptor = DescriptorConverter.convertConfigurePage(modules.getConfigurePage());
+    String placeholder = "<!-- <plugin_info_xml /> -->";
+    String configureDescriptor = DescriptorConverter.convertPluginInfoXml(descriptor);
     if (configureDescriptor != null) {
       replaceTextInFile(pluginDescriptorFile, placeholder, configureDescriptor);
     }
