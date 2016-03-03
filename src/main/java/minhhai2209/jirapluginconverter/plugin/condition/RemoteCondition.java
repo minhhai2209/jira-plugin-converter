@@ -3,7 +3,6 @@ package minhhai2209.jirapluginconverter.plugin.condition;
 import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.security.JiraAuthenticationContext;
 import com.atlassian.jira.user.ApplicationUser;
-import com.atlassian.jira.user.util.UserUtil;
 import com.atlassian.plugin.PluginParseException;
 import com.atlassian.plugin.web.Condition;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -44,7 +43,7 @@ public class RemoteCondition implements Condition {
       String fullUrl = baseUrl + conditionUrl;
 
       JiraAuthenticationContext authenticationContext = ComponentAccessor.getJiraAuthenticationContext();
-      ApplicationUser user = authenticationContext != null ? authenticationContext.getUser() : null;
+      ApplicationUser user = authenticationContext != null ? authenticationContext.getLoggedInUser() : null;
 
       Map<String, String> productContext = ParameterContextBuilder.buildContext(null, context, null);
       String userKey = user != null ? user.getKey() : "";
