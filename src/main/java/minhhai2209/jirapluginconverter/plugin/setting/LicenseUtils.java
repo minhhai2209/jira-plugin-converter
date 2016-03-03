@@ -10,21 +10,28 @@ public class LicenseUtils {
 
   private static PluginLicenseManager pluginLicenseManager;
 
+  private static boolean enableLicensing;
+
   public static void setPluginLicenseManager(PluginLicenseManager pluginLicenseManager) {
     LicenseUtils.pluginLicenseManager = pluginLicenseManager;
+    enableLicensing = PluginSetting.getDescriptor().isEnableLicensing();
   }
 
   public static final String getLic() {
     String lic;
-    Option<PluginLicense> option = pluginLicenseManager.getLicense();
-    try {
-      PluginLicense license = option.get();
-      if (license.isActive() && license.isValid()) {
+    if (enableLicensing) {
+      Option<PluginLicense> option = pluginLicenseManager.getLicense();
+      try {
+        PluginLicense license = option.get();
+        if (license.isActive() && license.isValid()) {
+          lic = "active";
+        } else {
+          lic = "none";
+        }
+      } catch (NoSuchElementException e) {
         lic = "active";
-      } else {
-        lic = "none";
       }
-    } catch (NoSuchElementException e) {
+    } else {
       lic = "none";
     }
     return lic;
