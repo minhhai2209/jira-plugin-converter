@@ -1,7 +1,7 @@
 package minhhai2209.jirapluginconverter.plugin.condition;
 
-import com.atlassian.crowd.embedded.api.User;
 import com.atlassian.jira.component.ComponentAccessor;
+import com.atlassian.jira.security.JiraAuthenticationContext;
 import com.atlassian.jira.user.ApplicationUser;
 import com.atlassian.jira.user.util.UserUtil;
 import com.atlassian.plugin.PluginParseException;
@@ -43,7 +43,13 @@ public class RemoteCondition implements Condition {
       String baseUrl = PluginSetting.getPluginBaseUrl();
       String fullUrl = baseUrl + conditionUrl;
 
+      JiraAuthenticationContext authenticationContext = ComponentAccessor.getJiraAuthenticationContext();
+      ApplicationUser user = authenticationContext != null ? authenticationContext.getUser() : null;
+
       Map<String, String> productContext = ParameterContextBuilder.buildContext(null, context, null);
+      String userKey = user != null ? user.getKey() : "";
+      String lic = LicenseUtils.getLic();
+
       String urlWithContext = ParameterContextBuilder.buildUrl(fullUrl, productContext);
 
       URIBuilder builder = new URIBuilder(urlWithContext);
@@ -54,21 +60,17 @@ public class RemoteCondition implements Condition {
           }
         }
       }
-
-      builder.addParameter("lic", LicenseUtils.getLic());
+      builder.addParameter("lic", LicenseUtils.getLic())
+          .addParameter("user_key", userKey);
 
       if (AuthenticationUtils.needsAuthentication()) {
-
-        User user = (User) context.get("user");
-        UserUtil userUtil = ComponentAccessor.getUserUtil();
-        ApplicationUser applicationUser = userUtil.getUserByName(user.getName());
 
         String jwt = JwtComposer.compose(
             KeyUtils.getClientKey(),
             KeyUtils.getSharedSecret(),
             "GET",
             builder,
-            applicationUser.getKey(),
+            userKey,
             conditionUrl);
         builder.addParameter("jwt", jwt);
       }
