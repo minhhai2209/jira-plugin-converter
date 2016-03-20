@@ -10,10 +10,10 @@ import java.io.File;
 
 public class Converter {
 
-  public static void generate(String templatePath, PluginProperties info, String version) {
+  public static void generate(String templatePath, PluginProperties info) {
 
     try {
-      File root = ConverterUtils.getTemplate(templatePath, version);
+      File root = ConverterUtils.getTemplate(templatePath);
       ConverterUtils.replaceTextInFolder(root, "generated_artifact_id", info.getArtifactId());
       ConverterUtils.replaceTextInFolder(root, "generated_group_id", info.getGroupId());
       ConverterUtils.replaceTextInFolder(root, "generated_company_name", info.getCompany());
@@ -24,6 +24,7 @@ public class Converter {
       Descriptor descriptor = DescriptorConverter.analyze(connectFile);
       ConverterUtils.replaceTextInDescriptor(root, descriptor.getModules());
       ConverterUtils.replaceTextInConfigure(root, descriptor);
+      ConverterUtils.replaceNameSpace(root, info.getGroupId());
 
       ConverterUtils.copy(root, connectFile);
     } catch (Exception e) {
@@ -40,6 +41,6 @@ public class Converter {
     info.setCompanyUrl(args[3]);
     info.setDescription(args[4]);
     info.setUrl(args[5]);
-    generate(args[6], info, args[7]);
+    generate(args[6], info);
   }
 }
