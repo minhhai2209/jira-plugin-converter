@@ -1,12 +1,12 @@
 package minhhai2209.jirapluginconverter.converter;
 
-import java.io.File;
-
-import minhhai2209.jirapluginconverter.connect.descriptor.Modules;
+import minhhai2209.jirapluginconverter.connect.descriptor.Descriptor;
 import minhhai2209.jirapluginconverter.converter.descriptor.DescriptorConverter;
 import minhhai2209.jirapluginconverter.converter.utils.ConverterUtils;
 import minhhai2209.jirapluginconverter.plugin.properties.PluginProperties;
 import minhhai2209.jirapluginconverter.utils.ExceptionUtils;
+
+import java.io.File;
 
 public class Converter {
 
@@ -21,9 +21,9 @@ public class Converter {
       ConverterUtils.replaceTextInFolder(root, "generated_description", info.getDescription());
 
       String connectFile = ConverterUtils.getConnectFile(info.getUrl());
-      Modules modules = DescriptorConverter.analyze(connectFile);
-      ConverterUtils.replaceTextInDescriptor(root, modules);
-      ConverterUtils.replaceTextInConfigure(root, modules);
+      Descriptor descriptor = DescriptorConverter.analyze(connectFile);
+      ConverterUtils.replaceTextInDescriptor(root, descriptor.getModules());
+      ConverterUtils.replaceTextInConfigure(root, descriptor);
 
       ConverterUtils.copy(root, connectFile);
     } catch (Exception e) {

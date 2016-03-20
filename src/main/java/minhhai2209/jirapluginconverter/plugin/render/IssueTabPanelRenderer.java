@@ -1,13 +1,5 @@
 package minhhai2209.jirapluginconverter.plugin.render;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TimeZone;
-
-import org.apache.http.client.utils.URIBuilder;
-
 import com.atlassian.crowd.embedded.api.User;
 import com.atlassian.jira.bc.JiraServiceContextImpl;
 import com.atlassian.jira.component.ComponentAccessor;
@@ -22,18 +14,16 @@ import com.atlassian.jira.user.util.UserUtil;
 import com.atlassian.jira.util.VelocityParamFactory;
 import com.atlassian.sal.api.message.LocaleResolver;
 import com.atlassian.velocity.VelocityManager;
-
 import minhhai2209.jirapluginconverter.connect.descriptor.tabpanel.TabPanel;
 import minhhai2209.jirapluginconverter.plugin.iframe.HostConfig;
 import minhhai2209.jirapluginconverter.plugin.jwt.JwtComposer;
-import minhhai2209.jirapluginconverter.plugin.setting.AuthenticationUtils;
-import minhhai2209.jirapluginconverter.plugin.setting.JiraUtils;
-import minhhai2209.jirapluginconverter.plugin.setting.KeyUtils;
-import minhhai2209.jirapluginconverter.plugin.setting.PluginSetting;
-import minhhai2209.jirapluginconverter.plugin.setting.TabPanelUtils;
+import minhhai2209.jirapluginconverter.plugin.setting.*;
 import minhhai2209.jirapluginconverter.plugin.utils.LocaleUtils;
 import minhhai2209.jirapluginconverter.utils.ExceptionUtils;
 import minhhai2209.jirapluginconverter.utils.JsonUtils;
+import org.apache.http.client.utils.URIBuilder;
+
+import java.util.*;
 
 public class IssueTabPanelRenderer extends AbstractIssueTabPanel {
 
@@ -83,7 +73,7 @@ public class IssueTabPanelRenderer extends AbstractIssueTabPanel {
       String loc = LocaleUtils.getLocale(localeResolver);
       String userId = user != null ? user.getUsername() : "";
       String userKey = user != null ? user.getKey() : "";
-      String lic = "none";
+      String lic = LicenseUtils.getLic();
       String cv = "";
 
       String urlWithContext = ParameterContextBuilder.buildUrl(fullUrl, productContext);
