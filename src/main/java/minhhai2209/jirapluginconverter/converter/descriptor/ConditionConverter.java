@@ -1,12 +1,12 @@
 package minhhai2209.jirapluginconverter.converter.descriptor;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import minhhai2209.jirapluginconverter.connect.descriptor.Modules;
 import minhhai2209.jirapluginconverter.plugin.descriptor.Condition;
 import minhhai2209.jirapluginconverter.plugin.descriptor.Param;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class ConditionConverter extends ModuleConverter<Condition, minhhai2209.jirapluginconverter.connect.descriptor.condition.Condition>{
 

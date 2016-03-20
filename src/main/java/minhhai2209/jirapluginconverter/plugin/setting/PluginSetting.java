@@ -1,18 +1,16 @@
 package minhhai2209.jirapluginconverter.plugin.setting;
 
-import java.io.InputStream;
-
-import org.apache.commons.io.IOUtils;
-
 import com.atlassian.oauth.consumer.ConsumerService;
 import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
 import com.atlassian.sal.api.transaction.TransactionTemplate;
 import com.atlassian.upm.api.license.PluginLicenseManager;
-
 import minhhai2209.jirapluginconverter.connect.descriptor.Descriptor;
 import minhhai2209.jirapluginconverter.connect.descriptor.Modules;
 import minhhai2209.jirapluginconverter.utils.ExceptionUtils;
 import minhhai2209.jirapluginconverter.utils.JsonUtils;
+import org.apache.commons.io.IOUtils;
+
+import java.io.InputStream;
 
 public class PluginSetting {
 
@@ -34,6 +32,7 @@ public class PluginSetting {
       PluginLicenseManager pluginLicenseManager,
       ConsumerService consumerService) throws Exception {
     readDescriptor();
+    LicenseUtils.setPluginLicenseManager(pluginLicenseManager);
     KeyUtils.loadJiraConsumer(consumerService);
     KeyUtils.loadSharedSecret(pluginSettingsFactory);
   }
