@@ -13,7 +13,7 @@
     <url>generated_company_url</url>
   </organization>
 
-  <name>generated_artifact_id</name>
+  <name>generated_artifact_name</name>
   <description>generated_description</description>
   <packaging>atlassian-plugin</packaging>
 
