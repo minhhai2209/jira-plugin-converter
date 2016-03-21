@@ -15,6 +15,7 @@ public class Converter {
     try {
       File root = ConverterUtils.getTemplate(templatePath);
       ConverterUtils.replaceTextInFolder(root, "generated_artifact_id", info.getArtifactId());
+      ConverterUtils.replaceTextInFolder(root, "generated_artifact_name", info.getArtifactName());
       ConverterUtils.replaceTextInFolder(root, "generated_group_id", info.getGroupId());
       ConverterUtils.replaceTextInFolder(root, "generated_company_name", info.getCompany());
       ConverterUtils.replaceTextInFolder(root, "generated_company_url", info.getCompanyUrl());
@@ -36,11 +37,12 @@ public class Converter {
 
     PluginProperties info = new PluginProperties();
     info.setArtifactId(args[0]);
-    info.setGroupId(args[1]);
-    info.setCompany(args[2]);
-    info.setCompanyUrl(args[3]);
-    info.setDescription(args[4]);
-    info.setUrl(args[5]);
-    generate(args[6], info);
+    info.setArtifactName(args[1]);
+    info.setGroupId(args[2]);
+    info.setCompany(args[3]);
+    info.setCompanyUrl(args[4]);
+    info.setDescription(args[5]);
+    info.setUrl(args[6]);
+    generate(args[7], info);
   }
 }
