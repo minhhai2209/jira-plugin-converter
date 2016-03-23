@@ -7,18 +7,21 @@ import com.atlassian.seraph.auth.DefaultAuthenticator;
 import com.google.common.collect.Iterables;
 import minhhai2209.jirapluginconverter.plugin.jwt.JwtClaim;
 import minhhai2209.jirapluginconverter.plugin.jwt.JwtVerifier;
-import minhhai2209.jirapluginconverter.plugin.setting.JiraUtils;
 import minhhai2209.jirapluginconverter.plugin.setting.KeyUtils;
 import minhhai2209.jirapluginconverter.plugin.setting.PluginSetting;
+import minhhai2209.jirapluginconverter.utils.JsonUtils;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.Base64;
 import java.util.Collection;
+import java.util.Map;
 
 public class RestAuthenticationFilter implements Filter {
+  private static final int JWT_REALM_LENGTH = "JWT ".length();
 
   @Override
   public void init(FilterConfig filterConfig) throws ServletException {
@@ -32,35 +35,39 @@ public class RestAuthenticationFilter implements Filter {
 
     HttpServletRequest request = (HttpServletRequest) servletRequest;
     String authorization = request.getHeader("Authorization");
-    if (authorization != null) {
-      if (authorization.startsWith("JWT")) {
-        // only process if Authorization header is JWT token
-        String url = request.getRequestURL().toString();
-        String queryString = request.getQueryString();
-        if (queryString != null) {
-          url += queryString;
-        }
-        String method = request.getMethod();
-        JwtClaim claim = JwtVerifier.read(
-            url,
-            authorization,
-            JiraUtils.getBaseUrl(),
-            PluginSetting.getDescriptor().getKey(),
+    if (authorization != null && authorization.startsWith("JWT ")) {
+      // only process if Authorization header is JWT token
+      String jwtString = authorization.substring(JWT_REALM_LENGTH);
+      String[] jwtSegements = jwtString.split("\\.");
+      if (jwtSegements.length == 3) {
+        String claimSegmentJson = new String(Base64.getDecoder().decode(jwtSegements[1]));
+        JwtClaim unverifiedClaim = JsonUtils.fromJson(claimSegmentJson, JwtClaim.class);
+        String descriptorKey = PluginSetting.getDescriptor().getKey();
+        if (descriptorKey.equals(unverifiedClaim.getIss())) {
+          // only process requests for this plugin
+          String relativeURI = request.getRequestURI().substring(request.getContextPath().length());
+          Map<String, String[]> parameterMap = request.getParameterMap();
+          String method = request.getMethod();
+          boolean verified = JwtVerifier.verify(
+            relativeURI,
+            jwtString,
+            parameterMap,
+            descriptorKey,
             KeyUtils.getSharedSecret(),
             method);
-        if (claim == null) {
-          // only in this case does this filter block the request
-          authorized = false;
-          HttpServletResponse response = (HttpServletResponse) servletResponse;
-          response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
-        } else {
-
-          UserUtil userUtil = ComponentAccessor.getUserUtil();
-          Collection<ApplicationUser> admins = userUtil.getJiraAdministrators();
-          ApplicationUser applicationAdmin = Iterables.get(admins, 0);
-          HttpSession httpSession = request.getSession();
-          httpSession.setAttribute(DefaultAuthenticator.LOGGED_IN_KEY, applicationAdmin);
-          httpSession.setAttribute(DefaultAuthenticator.LOGGED_OUT_KEY, null);
+          if (verified) {
+            UserUtil userUtil = ComponentAccessor.getUserUtil();
+            Collection<ApplicationUser> admins = userUtil.getJiraAdministrators();
+            ApplicationUser applicationAdmin = Iterables.get(admins, 0);
+            HttpSession httpSession = request.getSession();
+            httpSession.setAttribute(DefaultAuthenticator.LOGGED_IN_KEY, applicationAdmin);
+            httpSession.setAttribute(DefaultAuthenticator.LOGGED_OUT_KEY, null);
+          } else {
+            // only in this case does this filter block the request
+            authorized = false;
+            HttpServletResponse response = (HttpServletResponse) servletResponse;
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+          }
         }
       }
     }
@@ -68,7 +75,6 @@ public class RestAuthenticationFilter implements Filter {
       chain.doFilter(servletRequest, servletResponse);
     }
   }
-
   @Override
   public void destroy() {
   }
