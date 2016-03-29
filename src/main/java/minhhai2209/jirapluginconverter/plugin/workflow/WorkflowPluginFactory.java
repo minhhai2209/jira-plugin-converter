@@ -48,9 +48,20 @@ public class WorkflowPluginFactory extends AbstractWorkflowPluginFactory impleme
 
     Map<String, Object> velocityParams = super.getVelocityParams(resourceName, descriptor);
 
-    String key = getKey( (FunctionDescriptor) descriptor);
+    //Fix to address the issue of having a null descriptor
+    WorkflowPostFuntion workflowPostFuntion = null;
+    String key = null;
+    if(descriptor == null){
+      //Get the first workflow post function
+      if(PluginSetting.getDescriptor().getModules().getJiraWorkflowPostFunctions().size() > 0){
+        workflowPostFuntion = PluginSetting.getDescriptor().getModules().getJiraWorkflowPostFunctions().get(0);
+        key = workflowPostFuntion.getKey();
+      }
+    }else{
+      key = getKey( (FunctionDescriptor) descriptor);
+      workflowPostFuntion = WorkflowPostFunctionUtils.getWorkflowPostFuntion(key);
+    }
 
-    WorkflowPostFuntion workflowPostFuntion = WorkflowPostFunctionUtils.getWorkflowPostFuntion(key);
     String workflowPostFunctionUrl;
     if (JiraWorkflowPluginConstants.RESOURCE_NAME_VIEW.equals(resourceName)) {
       workflowPostFunctionUrl = WorkflowPostFunctionUtils.getViewUrl(workflowPostFuntion);
@@ -62,7 +73,7 @@ public class WorkflowPluginFactory extends AbstractWorkflowPluginFactory impleme
       throw new IllegalStateException();
     }
 
-    addContext(velocityParams, workflowPostFunctionUrl);
+    addContext(velocityParams, workflowPostFunctionUrl, key);
 
     return velocityParams;
   }
@@ -99,7 +110,7 @@ public class WorkflowPluginFactory extends AbstractWorkflowPluginFactory impleme
     return key.replaceFirst(PluginSetting.PLUGIN_KEY, "");
   }
 
-  private void addContext(Map<String, Object> velocityParams, String workflowPostFuntionUrl) {
+  private void addContext(Map<String, Object> velocityParams, String workflowPostFuntionUrl, String key) {
     try {
 
       String postFunctionId = (String) velocityParams.get("postFunctionId");
@@ -118,7 +129,7 @@ public class WorkflowPluginFactory extends AbstractWorkflowPluginFactory impleme
 
       String xdm_e = JiraUtils.getBaseUrl();
       String cp = JiraUtils.getContextPath();
-      String ns = PluginSetting.URL_SAFE_PLUGIN_KEY + "__" + PluginSetting.getDescriptor().getKey().replaceFirst(PluginSetting.PLUGIN_KEY, "");
+      String ns = PluginSetting.URL_SAFE_PLUGIN_KEY + "__" + key;
       String xdm_c = "channel-" + ns;
       String dlg = "";
       String simpleDlg = dlg;
