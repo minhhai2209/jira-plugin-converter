@@ -42,6 +42,7 @@ public class WorkflowPostFunctionUtils {
     String url = workflowPostFuntion.getTriggered().getUrl();
     return url;
   }
+
   public static WorkflowPostFuntion getWorkflowPostFuntion(String key) {
     return workflowPostFunctionLookup.get(key);
   }

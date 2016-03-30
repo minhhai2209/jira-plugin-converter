@@ -6,14 +6,14 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>generated_group_id</groupId>
   <artifactId>generated_artifact_id</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.0.10</version>
 
   <organization>
     <name>generated_company_name</name>
     <url>generated_company_url</url>
   </organization>
 
-  <name>generated_artifact_id</name>
+  <name>generated_artifact_name</name>
   <description>generated_description</description>
   <packaging>atlassian-plugin</packaging>
 
@@ -38,12 +38,6 @@
       <groupId>com.atlassian.jira</groupId>
       <artifactId>jira-rest-plugin</artifactId>
       <version>7.0.4</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.sun.jersey</groupId>
-      <artifactId>jersey-server</artifactId>
-      <version>1.19</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -221,21 +215,6 @@
       </plugin>
     </plugins>
   </build>
-  <repositories>
-    <repository>
-      <id>atlassian-public</id>
-      <url>https://maven.atlassian.com/repository/public</url>
-      <snapshots>
-        <enabled>true</enabled>
-        <updatePolicy>never</updatePolicy>
-        <checksumPolicy>warn</checksumPolicy>
-      </snapshots>
-      <releases>
-        <enabled>true</enabled>
-        <checksumPolicy>warn</checksumPolicy>
-      </releases>
-    </repository>
-  </repositories>
   <properties>
     <jira.version>7.0.5</jira.version>
     <amps.version>6.2.1</amps.version>

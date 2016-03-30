@@ -45,7 +45,7 @@ public class JiraFunctionProvider extends AbstractJiraFunctionProvider {
       HttpClient httpClient = HttpClientFactory.build();
       HttpPost post = new HttpPost(url);
 
-      String json = this.getJSON(transientVars, args, ps);
+      String json = this.getJSON(transientVars, args);
       post.setEntity(new StringEntity(json));
       post.addHeader(HttpHeaders.CONTENT_TYPE, "application/json");
       if (jwt != null) {
@@ -61,7 +61,7 @@ public class JiraFunctionProvider extends AbstractJiraFunctionProvider {
     return uri == null ? null : PluginSetting.getPluginBaseUrl() + uri;
   }
 
-  private String getJSON(Map transientVars, Map args, PropertySet ps) throws JSONException {
+  private String getJSON(Map transientVars, Map args) throws JSONException {
     final ApplicationUser currentUser = this.getCallerUser(transientVars, args);
     final Issue issue = this.getIssue(transientVars);
 

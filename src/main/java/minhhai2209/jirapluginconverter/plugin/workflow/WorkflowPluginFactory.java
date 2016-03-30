@@ -125,7 +125,7 @@ public class WorkflowPluginFactory extends AbstractWorkflowPluginFactory impleme
           timeZoneService.getDefaultTimeZoneInfo(jiraServiceContext).toTimeZone() :
           timeZoneService.getUserTimeZoneInfo(jiraServiceContext).toTimeZone();
 
-      Map<String, String> productContext = ParameterContextBuilder.buildContext(null, velocityParams, null);
+      Map<String, String> productContext = ParameterContextBuilder.buildWorkflowContext( velocityParams);
 
       String xdm_e = JiraUtils.getBaseUrl();
       String cp = JiraUtils.getContextPath();

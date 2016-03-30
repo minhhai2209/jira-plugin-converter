@@ -83,13 +83,12 @@ public class DescriptorConverter {
       }
 
       List<WorkflowPostFuntion> jiraWorkflowPostFunctions = modules.getJiraWorkflowPostFunctions();
-      if(jiraWorkflowPostFunctions != null){
-        for(WorkflowPostFuntion workflowPostFuntion:jiraWorkflowPostFunctions){
+      if (jiraWorkflowPostFunctions != null) {
+        for (WorkflowPostFuntion workflowPostFuntion : jiraWorkflowPostFunctions) {
           WorkflowPostFunctionModule workflowPostFunctionModule = workflowPostFunctionConverter.toPluginModule(workflowPostFuntion, modules);
           XmlUtils.toXml(workflowPostFunctionModule, writer);
         }
       }
-
 
       return writer.toString();
     } catch (Exception e) {
