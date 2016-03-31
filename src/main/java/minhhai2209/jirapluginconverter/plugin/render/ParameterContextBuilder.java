@@ -23,7 +23,9 @@ public class ParameterContextBuilder {
 
   @SuppressWarnings("unchecked")
   private static void buildContextParams(HttpServletRequest request, Map<String, String> acContext) {
+
     try {
+
       acContext.put("issue.id", "");
       acContext.put("issue.key", "");
       acContext.put("issuetype.id", "");
@@ -89,7 +91,9 @@ public class ParameterContextBuilder {
   }
 
   private static void buildContextParams(Map<String, Object> contextParams, Map<String, String> acContext) {
+
     try {
+
       Object o = contextParams.get("issue");
       if (o instanceof Issue) {
         Issue issue = (Issue) o;
@@ -98,12 +102,14 @@ public class ParameterContextBuilder {
         acContext.put("issuetype.id", issue.getIssueTypeId());
       }
 
+
       o = contextParams.get("project");
       if (o instanceof Project) {
         Project project = (Project) o;
         acContext.put("project.key", project.getKey());
         acContext.put("project.id", project.getId().toString());
       }
+
 
       o = contextParams.get("postFunctionId");
       if (o != null) {
@@ -122,6 +128,7 @@ public class ParameterContextBuilder {
   }
 
   private static void buildContextParams(Issue issue, Map<String, String> acContext) {
+
     if (issue != null) {
       acContext.put("issue.key", issue.getKey());
       acContext.put("issue.id", issue.getId().toString());
@@ -154,14 +161,7 @@ public class ParameterContextBuilder {
     try {
       Map<String, String> acContext = new HashMap<String, String>();
 
-      Object o = contextParams.get("project");
-      if (o instanceof Project) {
-        Project project = (Project) o;
-        acContext.put("project.key", project.getKey());
-        acContext.put("project.id", project.getId().toString());
-      }
-
-      o = contextParams.get("postFunctionId");
+      Object o = contextParams.get("postFunctionId");
       if (o != null) {
         acContext.put("postFunction.id", (String) o);
       }
@@ -174,9 +174,8 @@ public class ParameterContextBuilder {
       }
 
       return acContext;
-
     } catch (UnsupportedEncodingException e) {
-      e.printStackTrace();
+      ExceptionUtils.throwUnchecked(e);
     }
 
     return null;

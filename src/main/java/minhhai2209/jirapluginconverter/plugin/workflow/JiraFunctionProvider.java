@@ -36,21 +36,29 @@ public class JiraFunctionProvider extends AbstractJiraFunctionProvider {
   }
   @Override
   public void execute(Map transientVars, Map args, PropertySet ps) throws WorkflowException {
-    String key = ((String)args.get("full.module.key")).replaceFirst(PluginSetting.PLUGIN_KEY, "");
-    String uri = WorkflowPostFunctionUtils.getTriggeredUrl(WorkflowPostFunctionUtils.getWorkflowPostFuntion(key));
-
-    String jwt = JwtComposer.compose(KeyUtils.getClientKey(), KeyUtils.getSharedSecret(), "POST", uri, null, null);
     try {
-      String url = getUrl(uri);
-      HttpClient httpClient = HttpClientFactory.build();
-      HttpPost post = new HttpPost(url);
+      String fullModuleKey = ((String)args.get("full.module.key"));
 
+      if(null == fullModuleKey){
+        throw new Exception("full.module.key is not available");
+      }
+      String uri = WorkflowPostFunctionUtils.getTriggeredUrl(WorkflowPostFunctionUtils.getWorkflowPostFuntion(fullModuleKey.replaceFirst(PluginSetting.PLUGIN_KEY, "")));
+
+      if (uri == null) {
+        throw new Exception("URI is empty");
+      }
+
+      HttpPost post = new HttpPost(PluginSetting.getPluginBaseUrl() + uri);
       String json = this.getJSON(transientVars, args);
       post.setEntity(new StringEntity(json));
       post.addHeader(HttpHeaders.CONTENT_TYPE, "application/json");
+
+      String jwt = JwtComposer.compose(KeyUtils.getClientKey(), KeyUtils.getSharedSecret(), "POST", uri, null, null);
       if (jwt != null) {
         post.addHeader("Authorization", "JWT " + jwt);
       }
+
+      HttpClient httpClient = HttpClientFactory.build();
       httpClient.execute(post);
     } catch (Exception e) {
       ExceptionUtils.throwUnchecked(e);
@@ -90,6 +98,7 @@ public class JiraFunctionProvider extends AbstractJiraFunctionProvider {
     parentJson.put("transition", transitionJson);
     parentJson.put("user_id", currentUser.getId());
     parentJson.put("user_key", currentUser.getKey());
+
     return parentJson.toString();
   }
 }
