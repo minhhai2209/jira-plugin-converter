@@ -3,9 +3,9 @@
 #set($hostConfigJsonWithHtml = $hostConfigJson)
 
 <input id="postFunction-config-$postFunctionId"
-       name="postFunctionConfig-$postFunctionId"
+       name="postFunction.config-$postFunctionId"
        value="$!postFunctionConfig" class="module-$ns" type="hidden"/>
-<input name="postFunctionId" value="$postFunctionId"
+<input name="postFunction.id" value="$postFunctionId"
        type="hidden"/>
 
 <span class="ap-postFunction">
