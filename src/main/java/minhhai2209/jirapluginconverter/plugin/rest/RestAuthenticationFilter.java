@@ -21,7 +21,7 @@ import java.util.Collection;
 import java.util.Map;
 
 public class RestAuthenticationFilter implements Filter {
-  private static final int JWT_REALM_LENGTH = "JWT ".length();
+  private static final String JWT_REALM = "JWT ";
 
   @Override
   public void init(FilterConfig filterConfig) throws ServletException {
@@ -35,9 +35,9 @@ public class RestAuthenticationFilter implements Filter {
 
     HttpServletRequest request = (HttpServletRequest) servletRequest;
     String authorization = request.getHeader("Authorization");
-    if (authorization != null && authorization.startsWith("JWT ")) {
+    if (authorization != null && authorization.startsWith(JWT_REALM)) {
       // only process if Authorization header is JWT token
-      String jwtString = authorization.substring(JWT_REALM_LENGTH);
+      String jwtString = authorization.substring(JWT_REALM.length());
       String[] jwtSegements = jwtString.split("\\.");
       if (jwtSegements.length == 3) {
         String claimSegmentJson = new String(Base64.getDecoder().decode(jwtSegements[1]));
