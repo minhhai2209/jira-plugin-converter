@@ -6,6 +6,7 @@ public class PluginProperties {
   private String companyUrl;
   private String groupId;
   private String artifactId;
+  private String artifactName;
   private String url;
   private String description;
 
@@ -57,4 +58,11 @@ public class PluginProperties {
     this.description = description;
   }
 
+  public String getArtifactName() {
+    return artifactName;
+  }
+
+  public void setArtifactName(String artifactName) {
+    this.artifactName = artifactName;
+  }
 }

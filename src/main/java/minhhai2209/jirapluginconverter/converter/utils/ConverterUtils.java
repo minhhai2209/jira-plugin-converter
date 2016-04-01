@@ -6,9 +6,9 @@ import minhhai2209.jirapluginconverter.converter.descriptor.DescriptorConverter;
 import minhhai2209.jirapluginconverter.utils.ExceptionUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.zeroturnaround.zip.ZipUtil;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
@@ -54,6 +54,19 @@ public class ConverterUtils {
     }
   }
 
+  public static void replaceNameSpace(File root, String groupId) throws IOException {
+    File pluginDescriptorFile = new File(root, "/src/main/resources/atlassian-plugin.xml");
+    replaceTextInFile(pluginDescriptorFile, "minhhai2209.jirapluginconverter", groupId);
+    File javaSrcDir = new File(root, "/src/main/java/minhhai2209/jirapluginconverter");
+    String newPackageFolder = groupId.replace(".", "/");
+    File newjavaSrcDir = new File(root, "/src/main/java/" + newPackageFolder);
+    File newjavaSrcConverterDir = new File(root, "/src/main/java/" + newPackageFolder + "/converter");
+    FileUtils.moveDirectory(javaSrcDir, newjavaSrcDir);
+    FileUtils.deleteDirectory(new File(root, "/src/main/java/minhhai2209"));
+    FileUtils.deleteDirectory(newjavaSrcConverterDir);
+    ConverterUtils.replaceTextInFolder(newjavaSrcDir, "minhhai2209.jirapluginconverter", groupId);
+  }
+
   public static void copy(File root, String connectFile) {
     try {
       File destFile = new File(root, "/src/main/resources/imported_atlas_connect_descriptor.json");
@@ -81,21 +94,13 @@ public class ConverterUtils {
     return null;
   }
 
-  public static File getTemplate(String templatePath, String version) {
+  public static File getTemplate(String templatePath) {
     try {
-      URL source = new URL("https://github.com/minhhai2209/jira-plugin-converter/archive/" + version + ".zip");
-      File zip = new File(templatePath);
-      if (zip.exists()) {
-        if (zip.isDirectory()) {
-          FileUtils.deleteDirectory(zip);
-        } else {
-          zip.delete();
-        }
-      }
-      FileUtils.copyURLToFile(source, zip);
-      ZipUtil.explode(zip);
-      File template = new File(templatePath, "jira-plugin-converter-" + version);
-      return template;
+      File outputFolder = new File(templatePath);
+      File outputSrcFolder = new File(templatePath + "/src");
+      FileUtils.copyDirectory(new File("src"), outputSrcFolder);
+      FileUtils.copyFileToDirectory(new File("pom.xml"), outputFolder);
+      return outputFolder;
     } catch (Exception e) {
       ExceptionUtils.throwUnchecked(e);
     }
