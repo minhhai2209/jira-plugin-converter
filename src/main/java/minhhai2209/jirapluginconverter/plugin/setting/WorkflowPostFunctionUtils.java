@@ -23,26 +23,6 @@ public class WorkflowPostFunctionUtils {
     }
   }
 
-  public static String getCreateUrl(WorkflowPostFuntion workflowPostFuntion) {
-    String url = workflowPostFuntion.getCreate().getUrl();
-    return url;
-  }
-
-  public static String getEditUrl(WorkflowPostFuntion workflowPostFuntion) {
-    String url = workflowPostFuntion.getEdit().getUrl();
-    return url;
-  }
-
-  public static String getViewUrl(WorkflowPostFuntion workflowPostFuntion) {
-    String url = workflowPostFuntion.getView().getUrl();
-    return url;
-  }
-
-  public static String getTriggeredUrl(WorkflowPostFuntion workflowPostFuntion){
-    String url = workflowPostFuntion.getTriggered().getUrl();
-    return url;
-  }
-
   public static WorkflowPostFuntion getWorkflowPostFuntion(String key) {
     return workflowPostFunctionLookup.get(key);
   }

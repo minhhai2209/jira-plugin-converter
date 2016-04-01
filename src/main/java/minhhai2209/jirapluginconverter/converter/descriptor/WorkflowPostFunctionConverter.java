@@ -28,12 +28,12 @@ public class WorkflowPostFunctionConverter extends ModuleConverter<WorkflowPostF
         Resource inputParametersResource = new Resource();
         inputParametersResource.setType("velocity");
         inputParametersResource.setName(JiraWorkflowPluginConstants.RESOURCE_NAME_INPUT_PARAMETERS);
-        inputParametersResource.setLocation("templates/workflow-create.vm");
+        inputParametersResource.setLocation("templates/workflow-post-function.vm");
 
         Resource editParametersResource = new Resource();
         editParametersResource.setType("velocity");
         editParametersResource.setName(JiraWorkflowPluginConstants.RESOURCE_NAME_EDIT_PARAMETERS);
-        editParametersResource.setLocation("templates/workflow-edit.vm");
+        editParametersResource.setLocation("templates/workflow-post-function.vm");
 
         module.addResource(viewResource);
         module.addResource(inputParametersResource);

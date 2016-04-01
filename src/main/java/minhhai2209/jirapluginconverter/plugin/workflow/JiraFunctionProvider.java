@@ -38,12 +38,11 @@ public class JiraFunctionProvider extends AbstractJiraFunctionProvider {
   public void execute(Map transientVars, Map args, PropertySet ps) throws WorkflowException {
     try {
       String fullModuleKey = ((String)args.get("full.module.key"));
-
       if(null == fullModuleKey){
         throw new Exception("full.module.key is not available");
       }
-      String uri = WorkflowPostFunctionUtils.getTriggeredUrl(WorkflowPostFunctionUtils.getWorkflowPostFuntion(fullModuleKey.replaceFirst(PluginSetting.PLUGIN_KEY, "")));
 
+      String uri = WorkflowPostFunctionUtils.getWorkflowPostFuntion(fullModuleKey.replaceFirst(PluginSetting.PLUGIN_KEY, "")).getTriggered().getUrl();
       if (uri == null) {
         throw new Exception("URI is empty");
       }

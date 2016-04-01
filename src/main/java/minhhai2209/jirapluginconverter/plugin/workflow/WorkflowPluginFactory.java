@@ -64,11 +64,11 @@ public class WorkflowPluginFactory extends AbstractWorkflowPluginFactory impleme
 
     String workflowPostFunctionUrl;
     if (JiraWorkflowPluginConstants.RESOURCE_NAME_VIEW.equals(resourceName)) {
-      workflowPostFunctionUrl = WorkflowPostFunctionUtils.getViewUrl(workflowPostFuntion);
+      workflowPostFunctionUrl = workflowPostFuntion.getView().getUrl();
     } else if (JiraWorkflowPluginConstants.RESOURCE_NAME_INPUT_PARAMETERS.equals(resourceName)) {
-      workflowPostFunctionUrl = WorkflowPostFunctionUtils.getCreateUrl(workflowPostFuntion);
+      workflowPostFunctionUrl = workflowPostFuntion.getCreate().getUrl();
     } else if (JiraWorkflowPluginConstants.RESOURCE_NAME_EDIT_PARAMETERS.equals(resourceName)) {
-      workflowPostFunctionUrl = WorkflowPostFunctionUtils.getEditUrl(workflowPostFuntion);
+      workflowPostFunctionUrl = workflowPostFuntion.getEdit().getUrl();
     } else {
       throw new IllegalStateException();
     }
