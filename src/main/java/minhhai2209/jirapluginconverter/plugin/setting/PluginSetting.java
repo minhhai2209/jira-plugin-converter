@@ -17,7 +17,7 @@ public class PluginSetting {
 
   public static final String ARTIFACT_ID = "generated_artifact_id";
 
-  public static final String PLUGIN_KEY = GROUP_ID + "." + ARTIFACT_ID;
+  public static final String PLUGIN_KEY = ARTIFACT_ID;
 
   public static final String URL_SAFE_PLUGIN_KEY = GROUP_ID + "-" + ARTIFACT_ID;
 
