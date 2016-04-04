@@ -2,12 +2,6 @@
 
 #set($hostConfigJsonWithHtml = $hostConfigJson)
 
-<input id="postFunction-config-$postFunctionId"
-       name="postFunction.config-$postFunctionId"
-       value="$!postFunctionConfig" class="module-$ns" type="hidden"/>
-<input name="postFunction.id" value="$postFunctionId"
-       type="hidden"/>
-
 <span class="ap-postFunction">
     <div class="ap-container" id="ap-$ns">
       <div class="ap-content" id="embedded-$ns"></div>
