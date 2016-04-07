@@ -35,9 +35,13 @@ Currently, many works are still left undone, including:
 
 Contributions are welcome and appreciated. Feel free to submit pull requests. All changes must be licensed under MIT License.
 
-## Credits
+## Contributors
 
-TODO: Write credits
+* gtzenky
+* kaushalye
+* liulikun
+* minhhai2209
+* tuanvle
 
 ## License
 
