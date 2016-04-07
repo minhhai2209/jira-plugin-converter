@@ -9,7 +9,6 @@ import minhhai2209.jirapluginconverter.connect.descriptor.Modules;
 import minhhai2209.jirapluginconverter.utils.ExceptionUtils;
 import minhhai2209.jirapluginconverter.utils.JsonUtils;
 import org.apache.commons.io.IOUtils;
-
 import java.io.InputStream;
 
 public class PluginSetting {
@@ -49,6 +48,7 @@ public class PluginSetting {
       PageUtils.buildAdminPageLookup();
       PageUtils.buildConfigurePageLookup();
       TabPanelUtils.buildJiraIssueTabPanelLookup();
+      WorkflowPostFunctionUtils.buildWorkflowPostFunctionLookup();
 
       plugin = new Plugin();
       plugin.setName(descriptor.getName());

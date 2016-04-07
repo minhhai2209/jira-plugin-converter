@@ -8,7 +8,7 @@
     <version>${project.version}</version>
     <vendor name="${project.organization.name}" url="${project.organization.url}" />
     <param name="atlassian-data-center-compatible">true</param>
-<!-- <plugin_info_xml /> -->
+    <!-- <plugin_info_xml /> -->
   </plugin-info>
   
   <!-- all.js -->
@@ -131,6 +131,7 @@
   
   <component-import key="consumerService" interface="com.atlassian.oauth.consumer.ConsumerService" />
 
+  <component-import key="beanBuilderFactory" interface="com.atlassian.jira.rest.v2.issue.builder.BeanBuilderFactory"/>
   <!-- life cycle events -->
 
   <component-import key="pluginEventManager" interface="com.atlassian.plugin.event.PluginEventManager" />
@@ -140,9 +141,13 @@
   <component key="pluginLifeCycleEventListener" 
       class="minhhai2209.jirapluginconverter.plugin.lifecycle.PluginLifeCycleEventListener" />
 
+  <!-- workflow post functions -->
+  <component key="jiraFunctionProvider"
+             class="minhhai2209.jirapluginconverter.plugin.workflow.JiraFunctionProvider" />
+
   <!-- view -->
 
-  <component-import key="renderer" 
+  <component-import key="renderer"
       interface="com.atlassian.templaterenderer.velocity.one.six.VelocityTemplateRenderer" />
 
   <!-- working with plugin settings -->
@@ -164,12 +169,12 @@
       class="minhhai2209.jirapluginconverter.plugin.render.WebPanelRenderer"/>
 
   <!-- web item -->
-  
-  <servlet key="${project.artifactId}-web-item-servlet" 
+
+  <servlet key="${project.artifactId}-web-item-servlet"
       class="minhhai2209.jirapluginconverter.plugin.render.WebItemRenderer">
     <url-pattern>/${project.groupId}-${project.artifactId}/web-item/*</url-pattern>
   </servlet>
-  
+
   <!-- REST -->
   
   <servlet-filter key="rest-authentication" 
@@ -177,7 +182,6 @@
       location="after-encoding">
     <url-pattern>/rest/*</url-pattern>
   </servlet-filter>
-  
-<!-- <generated_xml /> -->
-  
+
+  <!-- <generated_xml /> -->
 </atlassian-plugin>
