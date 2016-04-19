@@ -1,21 +1,24 @@
 package minhhai2209.jirapluginconverter.plugin.render;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang.text.StrSubstitutor;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.type.TypeReference;
+
 import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.issue.Issue;
 import com.atlassian.jira.issue.IssueManager;
 import com.atlassian.jira.issue.MutableIssue;
 import com.atlassian.jira.project.Project;
 import com.atlassian.jira.project.ProjectManager;
-import minhhai2209.jirapluginconverter.utils.ExceptionUtils;
-import org.apache.commons.lang.text.StrSubstitutor;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.type.TypeReference;
 
-import javax.servlet.http.HttpServletRequest;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.HashMap;
-import java.util.Map;
+import minhhai2209.jirapluginconverter.utils.ExceptionUtils;
 
 public class ParameterContextBuilder {
 
@@ -34,38 +37,62 @@ public class ParameterContextBuilder {
       acContext.put("version.id", "");
       acContext.put("component.id", "");
 
+      Map<String, String> productContext;
+
       Map<String, String[]> contextParams = request.getParameterMap();
       String[] productContexts = contextParams.get("product-context");
       if (productContexts != null && productContexts.length > 0) {
         String productContextAsString = productContexts[0];
         TypeReference<Map<String, String>> typeReference = new TypeReference<Map<String, String>>() {};
-        Map<String, String> productContext = objectMapper.readValue(productContextAsString, typeReference);
+        productContext = objectMapper.readValue(productContextAsString, typeReference);
+        for (Map.Entry<String, String> param : productContext.entrySet()) {
+          String value = param.getValue();
+          if (value == null || value.contains("$")) {
+            param.setValue("");
+          }
+        }
         acContext.putAll(productContext);
+      } else {
+        productContext = null;
       }
 
       ProjectManager projectManager = ComponentAccessor.getProjectManager();
       IssueManager issueManager = ComponentAccessor.getIssueManager();
 
+      Project project = null;
+
+      String issueKey;
       if (contextParams.containsKey("issueKey")) {
-        String issueKey = contextParams.get("issueKey")[0];
-        if (!issueKey.contains("$")) {
-          acContext.put("issue.key", issueKey);
-          MutableIssue issue = issueManager.getIssueByCurrentKey(issueKey);
-          if (issue != null) {
-            Project project = issue.getProjectObject();
-            acContext.put("issue.id", issue.getId().toString());
-            acContext.put("issuetype.id", issue.getIssueTypeId());
-            acContext.put("project.id", project.getId().toString());
-            acContext.put("project.key", project.getKey());
-          }
+        issueKey = contextParams.get("issueKey")[0];
+      } else if (productContext != null) {
+        issueKey = productContext.get("issueKey");
+      } else {
+        issueKey = null;
+      }
+      if (issueKey != null && !issueKey.contains("$")) {
+        acContext.put("issue.key", issueKey);
+        MutableIssue issue = issueManager.getIssueByCurrentKey(issueKey);
+        if (issue != null) {
+          project = issue.getProjectObject();
+          acContext.put("issue.id", issue.getId().toString());
+          acContext.put("issuetype.id", issue.getIssueTypeId());
+          acContext.put("project.id", project.getId().toString());
+          acContext.put("project.key", project.getKey());
         }
       }
 
-      if (contextParams.containsKey("projectKey")) {
-        String projectKey = contextParams.get("projectKey")[0];
-        if (!projectKey.contains("$")) {
+      if (project == null) {
+        String projectKey;
+        if (contextParams.containsKey("projectKey")) {
+          projectKey = contextParams.get("projectKey")[0];
+        } else if (productContext != null) {
+          projectKey = productContext.get("projectKey");
+        } else {
+          projectKey = null;
+        }
+        if (projectKey != null && !projectKey.contains("$")) {
           acContext.put("project.key", projectKey);
-          Project project = projectManager.getProjectByCurrentKey(projectKey);
+          project = projectManager.getProjectByCurrentKey(projectKey);
           if (project != null) {
             acContext.put("project.id", project.getId().toString());
           }
@@ -87,6 +114,7 @@ public class ParameterContextBuilder {
       }
     } catch (Exception e) {
       // do nothing
+      e.printStackTrace();
     }
   }
 

@@ -1,8 +1,9 @@
 package minhhai2209.jirapluginconverter.plugin.utils;
 
-import javax.servlet.http.HttpServletRequest;
-
+import minhhai2209.jirapluginconverter.plugin.setting.PluginSetting;
 import org.apache.commons.lang3.StringUtils;
+
+import javax.servlet.http.HttpServletRequest;
 
 public class RequestUtils {
 
@@ -10,6 +11,7 @@ public class RequestUtils {
     String servletPath = request.getServletPath();
     String requestUrl = request.getRequestURL().toString();
     String path = StringUtils.substringAfter(requestUrl, servletPath + "/");
+    path = path.replace(PluginSetting.getDescriptor().getKey() + "__", "");
     return path;
   }
 }

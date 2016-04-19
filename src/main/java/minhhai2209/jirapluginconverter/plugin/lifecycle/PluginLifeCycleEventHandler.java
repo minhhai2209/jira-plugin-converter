@@ -53,6 +53,9 @@ public class PluginLifeCycleEventHandler {
   }
 
   public void onInstalled(Plugin plugin) throws Exception {
+
+    JiraUtils.setApplicationProperties(applicationProperties);
+
     jiraVersion = applicationProperties.getVersion();
     PluginSetting.load(pluginSettingsFactory, transactionTemplate, pluginLicenseManager, consumerService);
     String existingSharedSecret = KeyUtils.getSharedSecret();
@@ -61,7 +64,6 @@ public class PluginLifeCycleEventHandler {
     }
     String currentSharedSecret = KeyUtils.getSharedSecret();
 
-    JiraUtils.setApplicationProperties(applicationProperties);
     pluginVersion = plugin.getPluginInformation().getVersion();
     String uri = LifeCycleUtils.getInstalledUri();
     String jwt = (existingSharedSecret == null) ? null :
@@ -71,6 +73,8 @@ public class PluginLifeCycleEventHandler {
   }
 
   public void onEnabled() throws Exception {
+    PluginSetting.load(pluginSettingsFactory, transactionTemplate, pluginLicenseManager, consumerService);
+
     String uri = LifeCycleUtils.getEnabledUri();
     String jwt = JwtComposer.compose(KeyUtils.getClientKey(), KeyUtils.getSharedSecret(), "POST", uri, null, null);
     notify(EventType.enabled, uri, null, jwt);

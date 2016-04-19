@@ -1,5 +1,12 @@
 package minhhai2209.jirapluginconverter.plugin.workflow;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TimeZone;
+import java.util.UUID;
+
+import org.apache.http.client.utils.URIBuilder;
+
 import com.atlassian.jira.bc.JiraServiceContextImpl;
 import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.plugin.workflow.AbstractWorkflowPluginFactory;
@@ -11,20 +18,20 @@ import com.atlassian.jira.user.ApplicationUser;
 import com.atlassian.sal.api.message.LocaleResolver;
 import com.opensymphony.workflow.loader.AbstractDescriptor;
 import com.opensymphony.workflow.loader.FunctionDescriptor;
+
 import minhhai2209.jirapluginconverter.connect.descriptor.jira.WorkflowPostFuntion;
 import minhhai2209.jirapluginconverter.plugin.iframe.HostConfig;
 import minhhai2209.jirapluginconverter.plugin.jwt.JwtComposer;
 import minhhai2209.jirapluginconverter.plugin.render.ParameterContextBuilder;
-import minhhai2209.jirapluginconverter.plugin.setting.*;
+import minhhai2209.jirapluginconverter.plugin.setting.AuthenticationUtils;
+import minhhai2209.jirapluginconverter.plugin.setting.JiraUtils;
+import minhhai2209.jirapluginconverter.plugin.setting.KeyUtils;
+import minhhai2209.jirapluginconverter.plugin.setting.LicenseUtils;
+import minhhai2209.jirapluginconverter.plugin.setting.PluginSetting;
+import minhhai2209.jirapluginconverter.plugin.setting.WorkflowPostFunctionUtils;
 import minhhai2209.jirapluginconverter.plugin.utils.LocaleUtils;
 import minhhai2209.jirapluginconverter.utils.ExceptionUtils;
 import minhhai2209.jirapluginconverter.utils.JsonUtils;
-import org.apache.http.client.utils.URIBuilder;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TimeZone;
-import java.util.UUID;
 
 public class WorkflowPluginFactory extends AbstractWorkflowPluginFactory implements WorkflowPluginFunctionFactory {
 
@@ -95,6 +102,7 @@ public class WorkflowPluginFactory extends AbstractWorkflowPluginFactory impleme
     velocityParams.put("postFunctionConfig", functionDescriptor.getArgs().get(STORED_POSTFUNCTION_CONFIG));
   }
 
+  @Override
   public Map<String, ?> getDescriptorParams(Map<String, Object> formParams) {
 
     String uuid = extractSingleParam(formParams, "postFunction.id");
@@ -129,7 +137,7 @@ public class WorkflowPluginFactory extends AbstractWorkflowPluginFactory impleme
 
       String xdm_e = JiraUtils.getBaseUrl();
       String cp = JiraUtils.getContextPath();
-      String ns = PluginSetting.URL_SAFE_PLUGIN_KEY + "__" + key;
+      String ns = PluginSetting.getDescriptor().getKey() + "__" + key;
       String xdm_c = "channel-" + ns;
       String dlg = "";
       String simpleDlg = dlg;
@@ -171,7 +179,7 @@ public class WorkflowPluginFactory extends AbstractWorkflowPluginFactory impleme
 
       HostConfig hostConfig = new HostConfig();
       hostConfig.setNs(ns);
-      hostConfig.setKey(PluginSetting.URL_SAFE_PLUGIN_KEY + "__" + postFunctionId);
+      hostConfig.setKey(PluginSetting.getDescriptor().getKey() + "__" + postFunctionId);
       hostConfig.setCp(cp);
       hostConfig.setUid(userId);
       hostConfig.setUkey(userKey);

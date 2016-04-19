@@ -1,4 +1,4 @@
-/*! atlassian-connect-js - v3.1.6 - 2015-09-01 */
+/*! atlassian-connect-js - v3.1.15 - 2016-02-17 */
 
 .ap-status small {
   color: #707070;
@@ -114,4 +114,58 @@
 
     /* Override the aui selector that assumes the last-child is the footer */
     border-radius: 0;
+}
+.ap-header-controls.aui-dialog2 .aui-dialog2-header {
+    background-color: #000;
+    border-radius: 0;
+    height: 50px;
+    margin-top: 0;
+    padding: 0 0 0 20px;
+}
+
+.ap-header-controls .header-title-container {
+    max-width: 70%;
+    display: block;
+    float: left;
+    height: 50px
+}
+
+.ap-header-controls .header-title-container div {
+    color: #fff;
+    line-height: 50px;
+    white-space: nowrap;
+    overflow: hidden
+}
+
+.ap-header-controls .header-control-panel {
+    padding-left: 0;
+    text-align: right;
+    float: right;
+    max-width: 30%;
+    display: block;
+    height: 50px
+}
+
+.ap-header-controls .header-control-panel > span {
+    display: inline-block
+}
+
+.ap-header-controls .header-control-panel .aui-button {
+    background-color: #000;  /* Override blue for primary controls*/
+    background-position: center;
+    background-repeat: no-repeat;
+    border-left: 1px solid #333;
+    border-radius: 0px;
+    height: 50px;
+    float: left;
+    margin-left: 0;  /* overrides AUI style of 10px */
+    text-align: left;
+    text-indent: -999em;
+    width: 50px
+}
+
+/* Pads the button icons provided by the AUI Icon font */
+.ap-header-controls .header-control-panel .aui-icon-small:before {
+    color: #fff;
+    margin-left: 16px;
 }

@@ -12,6 +12,7 @@ public class WebPanelUtils {
   private static Map<String, WebPanel> webPanelLookup;
 
   public static void buildWebPanelLookup() {
+    System.out.println("Build web panel lookup");
     Modules modules = PluginSetting.getModules();
     List<WebPanel> webPanels = modules.getWebPanels();
     webPanelLookup = new HashMap<String, WebPanel>();

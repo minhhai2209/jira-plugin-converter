@@ -1,25 +1,24 @@
 package minhhai2209.jirapluginconverter.plugin.setting;
 
+import java.io.InputStream;
+
+import org.apache.commons.io.IOUtils;
+
 import com.atlassian.oauth.consumer.ConsumerService;
 import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
 import com.atlassian.sal.api.transaction.TransactionTemplate;
 import com.atlassian.upm.api.license.PluginLicenseManager;
+
 import minhhai2209.jirapluginconverter.connect.descriptor.Descriptor;
 import minhhai2209.jirapluginconverter.connect.descriptor.Modules;
 import minhhai2209.jirapluginconverter.utils.ExceptionUtils;
 import minhhai2209.jirapluginconverter.utils.JsonUtils;
-import org.apache.commons.io.IOUtils;
-import java.io.InputStream;
 
 public class PluginSetting {
-
-  public static final String GROUP_ID = "generated_group_id";
 
   public static final String ARTIFACT_ID = "generated_artifact_id";
 
   public static final String PLUGIN_KEY = ARTIFACT_ID;
-
-  public static final String URL_SAFE_PLUGIN_KEY = GROUP_ID + "-" + ARTIFACT_ID;
 
   private static Descriptor descriptor;
 
@@ -70,7 +69,12 @@ public class PluginSetting {
   }
 
   public static String getPluginBaseUrl() {
-    return descriptor.getBaseUrl();
+    String baseUrl = descriptor.getBaseUrl();
+    String jiraUrl = JiraUtils.getBaseUrl();
+    if (jiraUrl.startsWith("http:")) {
+      baseUrl = baseUrl.replace("https:", "http:");
+    }
+    return baseUrl;
   }
 
   public static Modules getModules() {

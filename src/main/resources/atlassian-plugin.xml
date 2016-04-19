@@ -160,7 +160,7 @@
   <!-- page -->
   
   <servlet key="${project.artifactId}-page-servlet" class="minhhai2209.jirapluginconverter.plugin.render.PageRenderer">
-    <url-pattern>/${project.groupId}-${project.artifactId}/page/*</url-pattern>
+    <url-pattern>/ac/${project.artifactId}/*</url-pattern>
   </servlet>
   
   <!-- web panel -->
@@ -169,11 +169,6 @@
       class="minhhai2209.jirapluginconverter.plugin.render.WebPanelRenderer"/>
 
   <!-- web item -->
-
-  <servlet key="${project.artifactId}-web-item-servlet"
-      class="minhhai2209.jirapluginconverter.plugin.render.WebItemRenderer">
-    <url-pattern>/${project.groupId}-${project.artifactId}/web-item/*</url-pattern>
-  </servlet>
 
   <!-- REST -->
   
