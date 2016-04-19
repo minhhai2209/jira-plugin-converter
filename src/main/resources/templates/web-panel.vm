@@ -1,0 +1,24 @@
+#enable_html_escaping()
+
+#set($hostConfigJsonWithHtml = $hostConfigJson)
+
+<div class="ap-container" id="ap-$ns">
+  <div class="ap-content" id="embedded-$ns"></div>
+  <div class="ap-stats hidden">
+    <div class="ap-loading ap-status">
+      <small><div class="small-spinner"></div>Loading add-on <a href="${plugin.baseUrl}" class="ap-doc-url" target="_blank">$plugin.name</a>.</small>
+    </div>
+    <div class="ap-load-timeout ap-status hidden">
+      <small><div class="small-spinner"></div>Add-on <a href="${plugin.baseUrl}" class="ap-doc-url" target="_blank">$plugin.name</a> is not responding.
+      Wait or <a href="#" class="ap-btn-cancel">cancel</a>?</small>
+    </div>
+    <div class="ap-load-error ap-status hidden">
+      <small>Add-on <a href="${plugin.baseUrl}" class="ap-doc-url" target="_blank">$plugin.name</a> failed to load.</small>
+    </div>
+  </div>
+  <script>
+    require(['connect-host', 'ac/cookie', 'ac/env', 'ac/inline-dialog', 'ac/dialog', 'ac/messages', 'ac/request', 'ac/history'], function(host){
+      host.create($hostConfigJsonWithHtml);
+    });
+  </script>
+</div>
