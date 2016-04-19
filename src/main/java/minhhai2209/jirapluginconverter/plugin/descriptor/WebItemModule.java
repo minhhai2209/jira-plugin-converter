@@ -132,6 +132,7 @@ public class WebItemModule {
     this.label = label;
   }
 
+  @XmlElement(name="param")
   public List<Param> getParams() {
     return params;
   }

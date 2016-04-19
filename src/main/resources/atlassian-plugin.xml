@@ -177,6 +177,8 @@
       location="after-encoding">
     <url-pattern>/rest/*</url-pattern>
   </servlet-filter>
+  
+  <web-panel key="connect-dialog-options" location="atl.header.after.scripts" class="minhhai2209.jirapluginconverter.plugin.render.DialogOptionsWebPanel"/>
 
   <!-- <generated_xml /> -->
 </atlassian-plugin>

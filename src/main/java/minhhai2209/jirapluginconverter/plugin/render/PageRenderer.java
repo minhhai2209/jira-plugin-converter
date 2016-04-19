@@ -67,10 +67,22 @@ public class PageRenderer extends HttpServlet {
 
       String moduleKey = RequestUtils.getModuleKey(request);
       Page page = PageUtils.getGeneralPage(moduleKey);
+      PageType pageType = PageType.GENERAL;
+      if (page == null) {
+        page = PageUtils.getAdminPage(moduleKey);
+        if (page == null) {
+          page = PageUtils.getConfigurePage(moduleKey);
+          if (page != null) {
+            pageType = PageType.CONFIGURE;
+          }
+        } else {
+          pageType = PageType.ADMIN;
+        }
+      } else {
+        pageType = PageType.GENERAL;
+      }
 
       if (page != null) {
-        PageType pageType;
-        pageType = PageType.GENERAL;
 
         String fullUrl = PageUtils.getFullUrl(page);
 
@@ -79,8 +91,9 @@ public class PageRenderer extends HttpServlet {
         JiraAuthenticationContext authenticationContext = ComponentAccessor.getJiraAuthenticationContext();
         ApplicationUser user = authenticationContext != null ? authenticationContext.getLoggedInUser() : null;
         JiraServiceContextImpl jiraServiceContext = new JiraServiceContextImpl(user);
-        TimeZone timeZone = user == null ? timeZoneService.getDefaultTimeZoneInfo(jiraServiceContext).toTimeZone()
-            : timeZoneService.getUserTimeZoneInfo(jiraServiceContext).toTimeZone();
+        TimeZone timeZone = user == null ?
+            timeZoneService.getDefaultTimeZoneInfo(jiraServiceContext).toTimeZone() :
+            timeZoneService.getUserTimeZoneInfo(jiraServiceContext).toTimeZone();
 
         String location = page.getLocation();
         boolean chrome = !("none".equals(location) || "no-location".equals(location));
@@ -165,17 +178,17 @@ public class PageRenderer extends HttpServlet {
 
         String template;
         switch (pageType) {
-        case GENERAL:
-          template = "general-page";
-          break;
-        case ADMIN:
-          template = "admin-page";
-          break;
-        case CONFIGURE:
-          template = "configure-page";
-          break;
-        default:
-          throw new IllegalStateException();
+          case GENERAL:
+            template = "general-page";
+            break;
+          case ADMIN:
+            template = "admin-page";
+            break;
+          case CONFIGURE:
+            template = "configure-page";
+            break;
+          default:
+            throw new IllegalStateException();
         }
 
         Map<String, Object> context = new HashMap<String, Object>();
@@ -194,8 +207,9 @@ public class PageRenderer extends HttpServlet {
         JiraAuthenticationContext authenticationContext = ComponentAccessor.getJiraAuthenticationContext();
         ApplicationUser user = authenticationContext != null ? authenticationContext.getLoggedInUser() : null;
         JiraServiceContextImpl jiraServiceContext = new JiraServiceContextImpl(user);
-        TimeZone timeZone = user == null ? timeZoneService.getDefaultTimeZoneInfo(jiraServiceContext).toTimeZone()
-            : timeZoneService.getUserTimeZoneInfo(jiraServiceContext).toTimeZone();
+        TimeZone timeZone = user == null ?
+            timeZoneService.getDefaultTimeZoneInfo(jiraServiceContext).toTimeZone() :
+            timeZoneService.getUserTimeZoneInfo(jiraServiceContext).toTimeZone();
 
         Map<String, String> productContext = ParameterContextBuilder.buildContext(request, null, null);
 

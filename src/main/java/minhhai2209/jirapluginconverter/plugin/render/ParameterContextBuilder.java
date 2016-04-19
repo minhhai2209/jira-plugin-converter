@@ -123,19 +123,23 @@ public class ParameterContextBuilder {
     try {
 
       Object o = contextParams.get("issue");
-      if (o instanceof Issue) {
-        Issue issue = (Issue) o;
-        acContext.put("issue.key", issue.getKey());
-        acContext.put("issue.id", issue.getId().toString());
-        acContext.put("issuetype.id", issue.getIssueTypeId());
+      if (o != null) {
+        if (o instanceof Issue) {
+          Issue issue = (Issue) o;
+          acContext.put("issue.key", issue.getKey());
+          acContext.put("issue.id", issue.getId().toString());
+          acContext.put("issuetype.id", issue.getIssueTypeId());
+        }
       }
 
 
       o = contextParams.get("project");
-      if (o instanceof Project) {
-        Project project = (Project) o;
-        acContext.put("project.key", project.getKey());
-        acContext.put("project.id", project.getId().toString());
+      if (o != null) {
+        if (o instanceof Project) {
+          Project project = (Project) o;
+          acContext.put("project.key", project.getKey());
+          acContext.put("project.id", project.getId().toString());
+        }
       }
 
 

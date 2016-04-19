@@ -115,7 +115,7 @@ public class DescriptorConverter {
     if (modules != null) {
       Page configurePage = modules.getConfigurePage();
       if (configurePage != null) {
-        pluginInfoXml += "<param name=\"configure.url\">/plugins/servlet/${project.artifactId}/page/" +
+        pluginInfoXml += "<param name=\"configure.url\">/plugins/servlet/ac/${project.artifactId}/" +
             configurePage.getKey() + "</param>";
       }
     }

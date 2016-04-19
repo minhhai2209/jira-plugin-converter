@@ -15,7 +15,6 @@ import com.atlassian.jira.timezone.TimeZoneService;
 import com.atlassian.jira.user.ApplicationUser;
 import com.atlassian.plugin.Plugin;
 import com.atlassian.plugin.web.renderer.RendererException;
-import com.atlassian.sal.api.ApplicationProperties;
 import com.atlassian.sal.api.message.LocaleResolver;
 import com.atlassian.templaterenderer.TemplateRenderer;
 
@@ -42,7 +41,6 @@ public class WebPanelRenderer implements com.atlassian.plugin.web.renderer.WebPa
 
   public WebPanelRenderer(
       TemplateRenderer renderer,
-      ApplicationProperties applicationProperties,
       TimeZoneService timeZoneService,
       LocaleResolver localeResolver) {
 
@@ -139,7 +137,7 @@ public class WebPanelRenderer implements com.atlassian.plugin.web.renderer.WebPa
       viewContext.put("hostConfigJson", hostConfigJson);
       viewContext.put("ns", ns);
       viewContext.put("plugin", PluginSetting.getPlugin());
-      render("web-item", writer, viewContext);
+      render("web-panel", writer, viewContext);
 
     } catch (Exception e) {
       ExceptionUtils.throwUnchecked(e);

@@ -1,16 +1,17 @@
 package minhhai2209.jirapluginconverter.converter.utils;
 
-import minhhai2209.jirapluginconverter.connect.descriptor.Descriptor;
-import minhhai2209.jirapluginconverter.connect.descriptor.Modules;
-import minhhai2209.jirapluginconverter.converter.descriptor.DescriptorConverter;
-import minhhai2209.jirapluginconverter.utils.ExceptionUtils;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+
+import minhhai2209.jirapluginconverter.connect.descriptor.Descriptor;
+import minhhai2209.jirapluginconverter.connect.descriptor.Modules;
+import minhhai2209.jirapluginconverter.converter.descriptor.DescriptorConverter;
+import minhhai2209.jirapluginconverter.utils.ExceptionUtils;
 
 public class ConverterUtils {
 
@@ -55,16 +56,19 @@ public class ConverterUtils {
   }
 
   public static void replaceNameSpace(File root, String groupId) throws IOException {
-    File pluginDescriptorFile = new File(root, "/src/main/resources/atlassian-plugin.xml");
-    replaceTextInFile(pluginDescriptorFile, "minhhai2209.jirapluginconverter", groupId);
-    File javaSrcDir = new File(root, "/src/main/java/minhhai2209/jirapluginconverter");
-    String newPackageFolder = groupId.replace(".", "/");
-    File newjavaSrcDir = new File(root, "/src/main/java/" + newPackageFolder);
-    File newjavaSrcConverterDir = new File(root, "/src/main/java/" + newPackageFolder + "/converter");
-    FileUtils.moveDirectory(javaSrcDir, newjavaSrcDir);
-    FileUtils.deleteDirectory(new File(root, "/src/main/java/minhhai2209"));
-    FileUtils.deleteDirectory(newjavaSrcConverterDir);
-    ConverterUtils.replaceTextInFolder(newjavaSrcDir, "minhhai2209.jirapluginconverter", groupId);
+    String originalGroupId = "minhhai2209.jirapluginconverter";
+    if (!originalGroupId.equals(groupId)) {
+      File pluginDescriptorFile = new File(root, "/src/main/resources/atlassian-plugin.xml");
+      replaceTextInFile(pluginDescriptorFile, originalGroupId, groupId);
+      File javaSrcDir = new File(root, "/src/main/java/minhhai2209/jirapluginconverter");
+      String newPackageFolder = groupId.replace(".", "/");
+      File newjavaSrcDir = new File(root, "/src/main/java/" + newPackageFolder);
+      File newjavaSrcConverterDir = new File(root, "/src/main/java/" + newPackageFolder + "/converter");
+      FileUtils.moveDirectory(javaSrcDir, newjavaSrcDir);
+      FileUtils.deleteDirectory(new File(root, "/src/main/java/minhhai2209"));
+      FileUtils.deleteDirectory(newjavaSrcConverterDir);
+      ConverterUtils.replaceTextInFolder(newjavaSrcDir, originalGroupId, groupId);
+    }
   }
 
   public static void copy(File root, String connectFile) {
