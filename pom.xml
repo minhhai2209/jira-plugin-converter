@@ -6,14 +6,13 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>generated_group_id</groupId>
   <artifactId>generated_artifact_id</artifactId>
-  <version>1.0-SNAPSHOT</version>
-
+  <version>generated_artifact_version</version>
   <organization>
     <name>generated_company_name</name>
     <url>generated_company_url</url>
   </organization>
 
-  <name>generated_artifact_id</name>
+  <name>generated_artifact_name</name>
   <description>generated_description</description>
   <packaging>atlassian-plugin</packaging>
 
@@ -34,7 +33,18 @@
       <version>${jira.version}</version>
       <scope>provided</scope>
     </dependency>
-  
+    <dependency>
+      <groupId>com.atlassian.jira</groupId>
+      <artifactId>jira-rest-plugin</artifactId>
+      <version>7.0.4</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.atlassian.plugins.rest</groupId>
+      <artifactId>atlassian-rest-common</artifactId>
+      <version>2.9.2</version>
+      <scope>provided</scope>
+    </dependency>
     <dependency>
       <groupId>com.atlassian.upm</groupId>
       <artifactId>licensing-api</artifactId>
@@ -204,7 +214,6 @@
       </plugin>
     </plugins>
   </build>
-
   <properties>
     <jira.version>7.0.5</jira.version>
     <amps.version>6.2.1</amps.version>

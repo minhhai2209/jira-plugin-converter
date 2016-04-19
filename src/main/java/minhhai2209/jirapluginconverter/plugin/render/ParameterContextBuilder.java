@@ -6,11 +6,14 @@ import com.atlassian.jira.issue.IssueManager;
 import com.atlassian.jira.issue.MutableIssue;
 import com.atlassian.jira.project.Project;
 import com.atlassian.jira.project.ProjectManager;
+import minhhai2209.jirapluginconverter.utils.ExceptionUtils;
 import org.apache.commons.lang.text.StrSubstitutor;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -89,23 +92,38 @@ public class ParameterContextBuilder {
 
   private static void buildContextParams(Map<String, Object> contextParams, Map<String, String> acContext) {
 
-    Object o = contextParams.get("issue");
-    if (o != null) {
+    try {
+
+      Object o = contextParams.get("issue");
       if (o instanceof Issue) {
         Issue issue = (Issue) o;
         acContext.put("issue.key", issue.getKey());
         acContext.put("issue.id", issue.getId().toString());
         acContext.put("issuetype.id", issue.getIssueTypeId());
       }
-    }
 
-    o = contextParams.get("project");
-    if (o != null) {
+
+      o = contextParams.get("project");
       if (o instanceof Project) {
         Project project = (Project) o;
         acContext.put("project.key", project.getKey());
         acContext.put("project.id", project.getId().toString());
       }
+
+
+      o = contextParams.get("postFunctionId");
+      if (o != null) {
+        acContext.put("postFunction.id", (String) o);
+      }
+
+      o = contextParams.get("postFunctionConfig");
+      if (o != null) {
+        acContext.put("postFunction.config", URLEncoder.encode((String) o, "UTF-8"));
+      } else {
+        acContext.put("postFunction.config", "");
+      }
+    } catch (Exception e) {
+      ExceptionUtils.throwUnchecked(e);
     }
   }
 
@@ -127,7 +145,7 @@ public class ParameterContextBuilder {
   }
 
   public static Map<String, String> buildContext(
-      HttpServletRequest request, Map<String, Object> contextParams, Issue issue) {
+          HttpServletRequest request, Map<String, Object> contextParams, Issue issue) {
     Map<String, String> acContext = new HashMap<String, String>();
     if (request != null) {
       buildContextParams(request, acContext);
@@ -137,5 +155,29 @@ public class ParameterContextBuilder {
       buildContextParams(issue, acContext);
     }
     return acContext;
+  }
+
+  public static Map<String, String> buildWorkflowContext( Map<String, Object> contextParams ) {
+    try {
+      Map<String, String> acContext = new HashMap<String, String>();
+
+      Object o = contextParams.get("postFunctionId");
+      if (o != null) {
+        acContext.put("postFunction.id", (String) o);
+      }
+
+      o = contextParams.get("postFunctionConfig");
+      if (o != null) {
+        acContext.put("postFunction.config", URLEncoder.encode((String) o, "UTF-8"));
+      } else {
+        acContext.put("postFunction.config", "");
+      }
+
+      return acContext;
+    } catch (UnsupportedEncodingException e) {
+      ExceptionUtils.throwUnchecked(e);
+    }
+
+    return null;
   }
 }

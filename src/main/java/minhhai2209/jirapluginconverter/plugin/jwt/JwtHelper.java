@@ -10,16 +10,6 @@ import org.apache.http.NameValuePair;
 
 public class JwtHelper {
 
-  public static String getRelativePath(String url, String baseUrl) {
-    String path = url.split("\\?")[0];
-    int baseUrlLength = baseUrl.length();
-    String relativePath = path.substring(baseUrlLength);
-    if (relativePath.isEmpty()) {
-      relativePath = "/";
-    }
-    return relativePath;
-  }
-
   public static Map<String, String[]> getParameterMap(Map<String, List<String>> parameters) {
     final Map<String, String[]> parameterMap = new HashMap<String, String[]>();
     for (Entry<String, List<String>> parameter : parameters.entrySet()) {

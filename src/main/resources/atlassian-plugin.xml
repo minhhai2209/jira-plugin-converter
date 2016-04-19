@@ -1,4 +1,4 @@
-<atlassian-plugin key="${project.groupId}.${project.artifactId}" name="${project.name}"
+<atlassian-plugin key="${project.artifactId}" name="${project.name}"
   plugins-version="2">
   
   <!-- plugin info -->
@@ -8,7 +8,7 @@
     <version>${project.version}</version>
     <vendor name="${project.organization.name}" url="${project.organization.url}" />
     <param name="atlassian-data-center-compatible">true</param>
-<!-- <plugin_info_xml /> -->
+    <!-- <plugin_info_xml /> -->
   </plugin-info>
   
   <!-- all.js -->
@@ -31,15 +31,15 @@
     <context>atl.admin</context>
     <context>atl.general</context>
 
-    <dependency>${project.groupId}.${project.artifactId}:dialog-page-resource</dependency>
-    <dependency>${project.groupId}.${project.artifactId}:remote-condition</dependency>
-    <dependency>${project.groupId}.${project.artifactId}:iframe-host-css</dependency>
-    <dependency>${project.groupId}.${project.artifactId}:iframe-host-js</dependency>
-    <dependency>${project.groupId}.${project.artifactId}:ap-extensions</dependency>
-    <dependency>${project.groupId}.${project.artifactId}:ap-user</dependency>
-    <dependency>${project.groupId}.${project.artifactId}:workflow-post-function</dependency>
-    <dependency>${project.groupId}.${project.artifactId}:events</dependency>
-    <dependency>${project.groupId}.${project.artifactId}:create-issue-dialog</dependency>
+    <dependency>${project.artifactId}:dialog-page-resource</dependency>
+    <dependency>${project.artifactId}:remote-condition</dependency>
+    <dependency>${project.artifactId}:iframe-host-css</dependency>
+    <dependency>${project.artifactId}:iframe-host-js</dependency>
+    <dependency>${project.artifactId}:ap-extensions</dependency>
+    <dependency>${project.artifactId}:ap-user</dependency>
+    <dependency>${project.artifactId}:workflow-post-function</dependency>
+    <dependency>${project.artifactId}:events</dependency>
+    <dependency>${project.artifactId}:create-issue-dialog</dependency>
   </web-resource>
 
   <web-resource key="dialog-page-resource">
@@ -49,8 +49,8 @@
   <web-resource key="atlassian-connect-dashboard-item-resources" name="Connect resources for dashboard page.">
     <context>atl.dashboard</context>
 
-    <dependency>${project.groupId}.${project.artifactId}:atlassian-connect-resources</dependency>
-    <dependency>${project.groupId}.${project.artifactId}:dashboard-item</dependency>
+    <dependency>${project.artifactId}:atlassian-connect-resources</dependency>
+    <dependency>${project.artifactId}:dashboard-item</dependency>
   </web-resource>
 
   <!-- JavaScript API Core -->
@@ -68,17 +68,17 @@
     <resource type="download" name="connect-history.js" location="/js/core/connect-host-history.js" />
     <resource type="download" name="connect-dialog.js" location="/js/core/connect-host-dialog.js" />
     <resource type="download" name="connect-inline-dialog.js" location="/js/core/connect-host-inline-dialog.js" />
-    <dependency>${project.groupId}.${project.artifactId}:ap-core</dependency>
-    <dependency>${project.groupId}.${project.artifactId}:iframe-host-js</dependency>
+    <dependency>${project.artifactId}:ap-core</dependency>
+    <dependency>${project.artifactId}:iframe-host-js</dependency>
   </web-resource>
 
   <web-resource key="ap-user">
     <resource type="download" name="user.js" location="/js/iframe/host/user.js" />
-    <dependency>${project.groupId}.${project.artifactId}:ap-core</dependency>
+    <dependency>${project.artifactId}:ap-core</dependency>
   </web-resource>
 
   <web-resource key="iframe-host-js">
-    <dependency>${project.groupId}.${project.artifactId}:ap-core</dependency>
+    <dependency>${project.artifactId}:ap-core</dependency>
     <resource type="download" name="main.js" location="/js/iframe/host/main.js" />
     <resource type="download" name="content-resolver.js" location="/js/iframe/host/content-resolver.js" />
     <dependency>com.atlassian.auiplugin:dialog2</dependency>
@@ -86,7 +86,7 @@
 
   <web-resource key="remote-condition">
     <resource type="download" name="remote.js" location="js/condition/remote.js" />
-    <dependency>${project.groupId}.${project.artifactId}:ap-core</dependency>
+    <dependency>${project.artifactId}:ap-core</dependency>
   </web-resource>
 
   <!-- JIRA specific javascript modules -->
@@ -95,28 +95,28 @@
     <resource type="download" name="workflow-post-function.js" location="js/jira/workflow-post-function/workflow-post-function.js" />
     <resource type="download" name="workflow-post-function-rpc.js" location="js/jira/workflow-post-function/workflow-post-function-rpc.js" />
     <dependency>com.atlassian.auiplugin:ajs</dependency>
-    <dependency>${project.groupId}.${project.artifactId}:ap-core</dependency>
+    <dependency>${project.artifactId}:ap-core</dependency>
   </web-resource>
 
   <web-resource key="dashboard-item">
     <resource type="download" name="dashboard-item.js" location="js/jira/dashboard-item/dashboard-item.js" />
 
     <dependency>com.atlassian.auiplugin:ajs</dependency>
-    <dependency>${project.groupId}.${project.artifactId}:ap-core</dependency>
+    <dependency>${project.artifactId}:ap-core</dependency>
   </web-resource>
 
   <web-resource key="create-issue-dialog">
     <resource type="download" name="create-issue-dialog.js" location="/js/jira/issue/issue.js" />
     <resource type="download" name="create-issue-dialog-rpc.js" location="/js/jira/issue/issue-rpc.js" />
     <dependency>com.atlassian.auiplugin:ajs</dependency>
-    <dependency>${project.groupId}.${project.artifactId}:ap-core</dependency>
+    <dependency>${project.artifactId}:ap-core</dependency>
   </web-resource>
 
   <web-resource key="events">
     <resource type="download" name="jira-events.js" location="/js/jira/events/events.js" />
     <resource type="download" name="jira-events-rpc.js" location="/js/jira/events/events-rpc.js" />
     <dependency>com.atlassian.auiplugin:ajs</dependency>
-    <dependency>${project.groupId}.${project.artifactId}:ap-core</dependency>
+    <dependency>${project.artifactId}:ap-core</dependency>
   </web-resource>
   
   <!-- jira information -->
@@ -131,6 +131,7 @@
   
   <component-import key="consumerService" interface="com.atlassian.oauth.consumer.ConsumerService" />
 
+  <component-import key="beanBuilderFactory" interface="com.atlassian.jira.rest.v2.issue.builder.BeanBuilderFactory"/>
   <!-- life cycle events -->
 
   <component-import key="pluginEventManager" interface="com.atlassian.plugin.event.PluginEventManager" />
@@ -140,9 +141,13 @@
   <component key="pluginLifeCycleEventListener" 
       class="minhhai2209.jirapluginconverter.plugin.lifecycle.PluginLifeCycleEventListener" />
 
+  <!-- workflow post functions -->
+  <component key="jiraFunctionProvider"
+             class="minhhai2209.jirapluginconverter.plugin.workflow.JiraFunctionProvider" />
+
   <!-- view -->
 
-  <component-import key="renderer" 
+  <component-import key="renderer"
       interface="com.atlassian.templaterenderer.velocity.one.six.VelocityTemplateRenderer" />
 
   <!-- working with plugin settings -->
@@ -164,12 +169,12 @@
       class="minhhai2209.jirapluginconverter.plugin.render.WebPanelRenderer"/>
 
   <!-- web item -->
-  
-  <servlet key="${project.artifactId}-web-item-servlet" 
+
+  <servlet key="${project.artifactId}-web-item-servlet"
       class="minhhai2209.jirapluginconverter.plugin.render.WebItemRenderer">
     <url-pattern>/${project.groupId}-${project.artifactId}/web-item/*</url-pattern>
   </servlet>
-  
+
   <!-- REST -->
   
   <servlet-filter key="rest-authentication" 
@@ -177,7 +182,6 @@
       location="after-encoding">
     <url-pattern>/rest/*</url-pattern>
   </servlet-filter>
-  
-<!-- <generated_xml /> -->
-  
+
+  <!-- <generated_xml /> -->
 </atlassian-plugin>
