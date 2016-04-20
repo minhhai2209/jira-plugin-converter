@@ -7,7 +7,6 @@ import org.apache.http.HttpHeaders;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
-import org.apache.wink.common.internal.UriBuilderImpl;
 
 import com.atlassian.jira.issue.Issue;
 import com.atlassian.jira.rest.v2.issue.IncludedFields;
@@ -22,6 +21,7 @@ import com.opensymphony.module.propertyset.PropertySet;
 import com.opensymphony.workflow.WorkflowException;
 import com.opensymphony.workflow.spi.SimpleStep;
 import com.opensymphony.workflow.spi.SimpleWorkflowEntry;
+import com.sun.jersey.api.uri.UriBuilderImpl;
 
 import minhhai2209.jirapluginconverter.plugin.jwt.JwtComposer;
 import minhhai2209.jirapluginconverter.plugin.setting.KeyUtils;
