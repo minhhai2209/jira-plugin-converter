@@ -71,7 +71,7 @@ public class ParameterContextBuilder {
       }
       if (issueKey != null && !issueKey.contains("$")) {
         acContext.put("issue.key", issueKey);
-        MutableIssue issue = issueManager.getIssueByCurrentKey(issueKey);
+        MutableIssue issue = issueManager.getIssueObject(issueKey);
         if (issue != null) {
           project = issue.getProjectObject();
           acContext.put("issue.id", issue.getId().toString());
