@@ -2,7 +2,7 @@
     "use strict";
 
     function getContentUrl(pluginKey, moduleKey){
-        return AJS.contextPath() + "/plugins/servlet/" + encodeURIComponent(pluginKey) + "/page/" + encodeURIComponent(moduleKey);
+        return AJS.contextPath() + "/plugins/servlet/ac/" + encodeURIComponent(pluginKey) + "/" + encodeURIComponent(moduleKey);
     }
 
     var contentResolver = {

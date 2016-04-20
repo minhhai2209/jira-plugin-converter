@@ -60,7 +60,7 @@ AP.require(
       }
 
       if (options.sizeToParent) {
-        env.sizeToParent();
+        env.sizeToParent(options.hideFooter === true);
       }
       else if (options.resize !== false) {
         var rate = options.resize;

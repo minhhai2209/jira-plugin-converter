@@ -1,5 +1,7 @@
 package minhhai2209.jirapluginconverter.plugin.descriptor;
 
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -27,6 +29,8 @@ public class WebItemModule {
 
   private Condition condition;
   private Conditions conditions;
+
+  private List<Param> params;
 
   public Icon getIcon() {
     return icon;
@@ -126,6 +130,15 @@ public class WebItemModule {
 
   public void setLabel(Label label) {
     this.label = label;
+  }
+
+  @XmlElement(name="param")
+  public List<Param> getParams() {
+    return params;
+  }
+
+  public void setParams(List<Param> params) {
+    this.params = params;
   }
 
 }

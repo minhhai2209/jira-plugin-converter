@@ -1,12 +1,19 @@
 package minhhai2209.jirapluginconverter.plugin.condition;
 
+import java.util.Map;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.utils.URIBuilder;
+
 import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.security.JiraAuthenticationContext;
 import com.atlassian.jira.user.ApplicationUser;
-import com.atlassian.jira.user.util.UserUtil;
 import com.atlassian.plugin.PluginParseException;
 import com.atlassian.plugin.web.Condition;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import minhhai2209.jirapluginconverter.plugin.jwt.JwtComposer;
 import minhhai2209.jirapluginconverter.plugin.render.ParameterContextBuilder;
 import minhhai2209.jirapluginconverter.plugin.setting.AuthenticationUtils;
@@ -14,15 +21,9 @@ import minhhai2209.jirapluginconverter.plugin.setting.KeyUtils;
 import minhhai2209.jirapluginconverter.plugin.setting.LicenseUtils;
 import minhhai2209.jirapluginconverter.plugin.setting.PluginSetting;
 import minhhai2209.jirapluginconverter.plugin.utils.HttpClientFactory;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.utils.URIBuilder;
-
-import java.util.Map;
 
 public class RemoteCondition implements Condition {
-  
+
   private Map<String, String> params;
   private String conditionUrl;
   private ObjectMapper om = new ObjectMapper();
@@ -37,7 +38,7 @@ public class RemoteCondition implements Condition {
   public boolean shouldDisplay(Map<String, Object> context) {
     return conditionUrl == null || getRemoteCondition(context);
   }
-  
+
   private boolean getRemoteCondition(Map<String, Object> context) {
     try {
       String baseUrl = PluginSetting.getPluginBaseUrl();
@@ -85,7 +86,7 @@ public class RemoteCondition implements Condition {
     } catch (Exception e) {
       //any exception will return false
     }
-    
+
     return false;
   }
 

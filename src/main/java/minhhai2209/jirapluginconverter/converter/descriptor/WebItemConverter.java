@@ -1,5 +1,6 @@
 package minhhai2209.jirapluginconverter.converter.descriptor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import minhhai2209.jirapluginconverter.connect.descriptor.Modules;
@@ -12,6 +13,7 @@ import minhhai2209.jirapluginconverter.plugin.descriptor.Conditions;
 import minhhai2209.jirapluginconverter.plugin.descriptor.Conditions.Type;
 import minhhai2209.jirapluginconverter.plugin.descriptor.Icon;
 import minhhai2209.jirapluginconverter.plugin.descriptor.Link;
+import minhhai2209.jirapluginconverter.plugin.descriptor.Param;
 import minhhai2209.jirapluginconverter.plugin.descriptor.WebItemModule;
 
 public class WebItemConverter extends ModuleConverter<WebItemModule, WebItem>{
@@ -36,7 +38,13 @@ public class WebItemConverter extends ModuleConverter<WebItemModule, WebItem>{
       switch (type) {
         case DIALOG:
         case dialog:
-          module.setStyleClass("trigger-dialog");
+          List<Param> params = new ArrayList<Param>();
+          Param param = new Param();
+          param.setName("-acopt-chrome");
+          param.setValue("false");
+          params.add(param);
+          module.setParams(params);
+          module.setStyleClass("ap-dialog ap-plugin-key-${project.artifactId} ap-module-key-" + key);
           break;
         default:
           break;
@@ -78,8 +86,14 @@ public class WebItemConverter extends ModuleConverter<WebItemModule, WebItem>{
     if (menu) {
       link.setLinkId(key);
     } else {
-      String queryContext = "projectKey=${project.key}&projectId=${project.id}&versionId=${version.id}&componentId=${component.id}&issueId=${issue.id}&issueKey=${issue.key}";
-      link.setValue("/plugins/servlet/${project.groupId}-${project.artifactId}/web-item/" + key + "?" + queryContext);
+      String queryContext = "projectKey=${project.key}" +
+          "&projectId=${project.id}" +
+          "&versionId=${version.id}" +
+          "&componentId=${component.id}" +
+          "&issueId=${issue.id}" +
+          "&issueKey=${issue.key}";
+      String pluginKey = "${project.artifactId}";
+      link.setValue("/plugins/servlet/ac/" + pluginKey + "/" + pluginKey + "__" + key + "?" + queryContext);
     }
     return link;
   }

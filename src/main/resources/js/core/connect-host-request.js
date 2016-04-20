@@ -8,7 +8,16 @@
             requestHeadersWhitelist = [
                 "If-Match", "If-None-Match"
             ],
-            contextPath = null;
+            contextPath = null,
+            experimentify = null;
+
+        function setExperimentify(func) {
+            if ($.isFunction(func)) {
+                experimentify = func;
+            } else {
+                throw new Error("func must be a function");
+            }
+        }
 
         _AP.extend(function () {
             return {
@@ -62,12 +71,26 @@
                                 ajaxOptions.headers[header] = headers[header.toLowerCase()];
                             }
                         });
+
+                        // Set experimental API header
+                        if (args.experimental === true) {
+                            if ($.isFunction(experimentify)) {
+                                ajaxOptions = experimentify(ajaxOptions);
+                            } else {
+                                console.log("Experimental api is not supported.");
+                            }
+                        }
+
                         $.ajax(ajaxOptions).then(done, fail);
                     }
 
                 }
             };
         });
+
+        return {
+            setExperimentify: setExperimentify
+        }
 
     });
 })(define, AJS, AJS.$);

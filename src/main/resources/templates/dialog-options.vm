@@ -1,0 +1,30 @@
+<script>
+
+    window._AP = window._AP || {};
+    
+        window._AP.dialogOptions = {
+                #foreach($keyedOptionSet in $acDialogOptions.entrySet())
+                    "${keyedOptionSet.key}":
+                    {
+                        #foreach($dialogOption in $keyedOptionSet.value.entrySet())
+                            "${dialogOption.key}":"${dialogOption.value}"#if(!${foreach.isLast()}),#end
+                        #end
+                    }
+
+                    #if(!${foreach.isLast()}),#end
+                #end
+            };
+
+    window._AP.inlineDialogOptions = {
+                #foreach($keyedOptionSet in $acInlineDialogOptions.entrySet())
+                    "${keyedOptionSet.key}":
+                    {
+                        #foreach($dialogOption in $keyedOptionSet.value.entrySet())
+                            "${dialogOption.key}":"${dialogOption.value}"#if(!${foreach.isLast()}),#end
+                        #end
+                    }
+
+                    #if(!${foreach.isLast()}),#end
+                #end
+            };
+</script>

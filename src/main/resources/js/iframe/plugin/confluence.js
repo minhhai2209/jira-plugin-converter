@@ -5,14 +5,14 @@ AP.define("confluence", ["_dollar", "_rpc"],
     return rpc.extend(function (remote) {
         return {
             /**
-            * Interact with the confluence macro editor.
+            * A Confluence specific Javascript module which provides functions to interact with the macro editor.
             * @exports confluence
             */
             apis: {
                 /**
                 * Save a macro with data that can be accessed when viewing the confluence page.
-                * @param {Object} data to be saved with the macro.
-                * @param {String} the macro body to be saved with the macro. If omitted, the existing body will remain untouched.
+                * @param {Object} macroParameters - data to be saved with the macro.
+                * @param {String} macroBody - the macro body to be saved with the macro. If omitted, the existing body will remain untouched.
                 * @noDemo
                 * @example
                 * AP.require('confluence', function(confluence){
@@ -28,7 +28,7 @@ AP.define("confluence", ["_dollar", "_rpc"],
                 },
                 /**
                 * Get the data saved in the saveMacro method.
-                * @param {Function} callback to be passed the macro data.
+                * @param {Function} callback - callback to be passed the macro data.
                 * @noDemo
                 * @example
                 * AP.require('confluence', function(confluence){
@@ -43,7 +43,7 @@ AP.define("confluence", ["_dollar", "_rpc"],
 
                 /**
                 * Get the body saved in the saveMacro method.
-                * @param {Function} callback to be passed the macro data.
+                * @param {Function} callback - callback to be passed the macro data.
                 * @noDemo
                 * @example
                 * AP.require('confluence', function(confluence){

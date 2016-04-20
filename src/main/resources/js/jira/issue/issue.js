@@ -1,8 +1,8 @@
 (function($, define){
     "use strict";
     define("ac/jira/issue", function(){
-        return {
-            createIssueDialog: function(callback, fields){
+        function createIssueDialog(callback, fields){
+            WRM.require(['wr!com.atlassian.jira.jira-quick-edit-plugin:quick-create-issue']).then(function() {
                 if(!JIRA || !JIRA.Forms || !JIRA.Forms.createCreateIssueForm){
                     if(console && console.warn){
                         console.warn("Connect: Create issue form is not available");
@@ -31,7 +31,11 @@
                         callback.call({}, sanitizedIssues);
                     }
                 });
-            }
+            }.bind(this));
+        }
+
+        return {
+            createIssueDialog: createIssueDialog
         };
     });
 

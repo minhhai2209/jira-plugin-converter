@@ -13,7 +13,15 @@ public class WorkflowPostFuntion {
   private URL view;
   
   public static class URL {
-    public String url;
+    private String url;
+
+    public String getUrl() {
+      return url;
+    }
+
+    public void setUrl(String url) {
+      this.url = url;
+    }
   }
 
   public I18nProperty getName() {

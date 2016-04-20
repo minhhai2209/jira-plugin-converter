@@ -1,10 +1,16 @@
 package minhhai2209.jirapluginconverter.converter.descriptor;
 
+import java.io.IOException;
+import java.io.StringWriter;
+import java.util.List;
+
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import minhhai2209.jirapluginconverter.connect.descriptor.Descriptor;
 import minhhai2209.jirapluginconverter.connect.descriptor.Modules;
+import minhhai2209.jirapluginconverter.connect.descriptor.jira.WorkflowPostFuntion;
 import minhhai2209.jirapluginconverter.connect.descriptor.page.Page;
 import minhhai2209.jirapluginconverter.connect.descriptor.tabpanel.TabPanel;
 import minhhai2209.jirapluginconverter.connect.descriptor.webitem.WebItem;
@@ -15,11 +21,8 @@ import minhhai2209.jirapluginconverter.plugin.descriptor.IssueTabPanelModule;
 import minhhai2209.jirapluginconverter.plugin.descriptor.WebItemModule;
 import minhhai2209.jirapluginconverter.plugin.descriptor.WebPanelModule;
 import minhhai2209.jirapluginconverter.plugin.descriptor.WebSectionModule;
+import minhhai2209.jirapluginconverter.plugin.descriptor.WorkflowPostFunctionModule;
 import minhhai2209.jirapluginconverter.utils.ExceptionUtils;
-
-import java.io.IOException;
-import java.io.StringWriter;
-import java.util.List;
 
 public class DescriptorConverter {
 
@@ -30,6 +33,7 @@ public class DescriptorConverter {
   private static PageConverter generalPageConverter = new PageConverter("system.top.navigation.bar");
   private static PageConverter adminPageConverter = new PageConverter("advanced_menu_section/advanced_section");
   private static IssueTabPanelConverter issueTabPanelConverter = new IssueTabPanelConverter();
+  private static WorkflowPostFunctionConverter workflowPostFunctionConverter = new WorkflowPostFunctionConverter();
 
   public static String convert(Modules modules) {
     try {
@@ -83,6 +87,14 @@ public class DescriptorConverter {
         }
       }
 
+      List<WorkflowPostFuntion> jiraWorkflowPostFunctions = modules.getJiraWorkflowPostFunctions();
+      if (jiraWorkflowPostFunctions != null) {
+        for (WorkflowPostFuntion workflowPostFuntion : jiraWorkflowPostFunctions) {
+          WorkflowPostFunctionModule workflowPostFunctionModule = workflowPostFunctionConverter.toPluginModule(workflowPostFuntion, modules);
+          XmlUtils.toXml(workflowPostFunctionModule, writer);
+        }
+      }
+
       return writer.toString();
     } catch (Exception e) {
       ExceptionUtils.throwUnchecked(e);
@@ -103,7 +115,7 @@ public class DescriptorConverter {
     if (modules != null) {
       Page configurePage = modules.getConfigurePage();
       if (configurePage != null) {
-        pluginInfoXml += "<param name=\"configure.url\">/plugins/servlet/${project.groupId}-${project.artifactId}/page/" +
+        pluginInfoXml += "<param name=\"configure.url\">/plugins/servlet/ac/${project.artifactId}/" +
             configurePage.getKey() + "</param>";
       }
     }

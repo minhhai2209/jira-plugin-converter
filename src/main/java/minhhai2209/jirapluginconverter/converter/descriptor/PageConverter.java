@@ -61,8 +61,10 @@ public class PageConverter extends ModuleConverter<WebItemModule, Page>{
 
   public static Link getPageUrl(String key) {
     Link link = new Link();
-    String queryContext = "projectKey=${project.key}&projectId=${project.id}";
-    link.setValue("/plugins/servlet/${project.groupId}-${project.artifactId}/page/" + key + "?" + queryContext);
+    String queryContext = "projectKey=${project.key}" +
+        "&projectId=${project.id}";
+    String pluginKey = "${project.artifactId}";
+    link.setValue("/plugins/servlet/ac/" + pluginKey + "/" + pluginKey + "__" + key + "?" + queryContext);
     return link;
   }
 }

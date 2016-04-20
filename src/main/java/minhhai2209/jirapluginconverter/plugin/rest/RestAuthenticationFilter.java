@@ -1,25 +1,32 @@
 package minhhai2209.jirapluginconverter.plugin.rest;
 
+import java.io.IOException;
+import java.util.Base64;
+import java.util.Collection;
+import java.util.Map;
+
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
 import com.atlassian.crowd.embedded.api.User;
 import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.user.ApplicationUser;
 import com.atlassian.jira.user.util.UserUtil;
 import com.atlassian.seraph.auth.DefaultAuthenticator;
 import com.google.common.collect.Iterables;
+
 import minhhai2209.jirapluginconverter.plugin.jwt.JwtClaim;
 import minhhai2209.jirapluginconverter.plugin.jwt.JwtVerifier;
 import minhhai2209.jirapluginconverter.plugin.setting.KeyUtils;
 import minhhai2209.jirapluginconverter.plugin.setting.PluginSetting;
 import minhhai2209.jirapluginconverter.utils.JsonUtils;
-
-import javax.servlet.*;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import java.io.IOException;
-import java.util.Base64;
-import java.util.Collection;
-import java.util.Map;
 
 public class RestAuthenticationFilter implements Filter {
   private static final String JWT_REALM = "JWT ";
