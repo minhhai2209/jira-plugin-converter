@@ -1,7 +1,6 @@
 package minhhai2209.jirapluginconverter.plugin.rest;
 
 import java.io.IOException;
-import java.util.Base64;
 import java.util.Collection;
 import java.util.Map;
 
@@ -14,6 +13,8 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import org.apache.commons.codec.binary.Base64;
 
 import com.atlassian.crowd.embedded.api.User;
 import com.atlassian.jira.component.ComponentAccessor;
@@ -48,7 +49,7 @@ public class RestAuthenticationFilter implements Filter {
       String jwtString = authorization.substring(JWT_REALM.length());
       String[] jwtSegements = jwtString.split("\\.");
       if (jwtSegements.length == 3) {
-        String claimSegmentJson = new String(Base64.getDecoder().decode(jwtSegements[1]));
+        String claimSegmentJson = new String(Base64.decodeBase64(jwtSegements[1]));
         JwtClaim unverifiedClaim = JsonUtils.fromJson(claimSegmentJson, JwtClaim.class);
         String descriptorKey = PluginSetting.getDescriptor().getKey();
         if (descriptorKey.equals(unverifiedClaim.getIss())) {

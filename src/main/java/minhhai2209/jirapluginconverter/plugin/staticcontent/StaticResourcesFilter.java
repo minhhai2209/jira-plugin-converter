@@ -18,9 +18,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.IOUtils;
 
+import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
 
 /**
  * Provides static host resources for plugin iframes
@@ -33,7 +33,7 @@ public class StaticResourcesFilter implements Filter {
   private static final Pattern RESOURCE_PATTERN = Pattern.compile("all\\.(js|css)");
 
   private FilterConfig config;
-  private LoadingCache<String, CacheEntry> loadingCache;
+  private Cache<String, CacheEntry> loadingCache;
 
   @Override
   public void init(FilterConfig config) throws ServletException {
