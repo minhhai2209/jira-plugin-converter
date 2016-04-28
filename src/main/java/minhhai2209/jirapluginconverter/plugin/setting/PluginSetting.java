@@ -17,7 +17,7 @@ import java.io.InputStream;
 
 public class PluginSetting {
 
-  public static final String ARTIFACT_ID = "hw";
+  public static final String ARTIFACT_ID = "generated_artifact_id";
 
   public static final String PLUGIN_KEY = ARTIFACT_ID;
 
