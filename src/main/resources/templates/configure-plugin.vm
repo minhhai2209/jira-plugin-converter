@@ -1,0 +1,110 @@
+#enable_html_escaping()
+
+<html>
+  <head>
+    <meta name="decorator" content="atl.admin">
+    <meta name="application-base-url" content="$applicationProperties.getBaseUrl()">
+    $webResourceManager.requireResource("com.atlassian.auiplugin:ajs")
+    <title>Plugin configuration</title>
+    <style>
+      header > .header-content {
+        display: table;
+      }
+      
+      header > .header-content > * {
+        display: table-cell;
+      }
+      
+      header > .header-content > h1 {
+        width: 100%;
+      }
+      
+      form.aui .form-body {
+        border-top: 1px solid #ddd;
+      }
+      
+      .aui-icon.icon-help {
+        vertical-align: top;
+      }
+    </style>
+  </head>
+  <body>
+    <div>
+      <header>
+        <div class="header-content">
+          <h1>Plugin configuration</h1>
+          <div><a class="aui-icon icon-help" target="_blank" href="#" title="Help goes here">Help goes here</a></div>
+        </div>
+      </header>
+      <form class="aui" method="POST">
+        <div class="form-body">
+          #if($error)
+            <div class="aui-message error">
+              <span class="aui-icon icon-error"></span>
+              <p>$error</p>
+            </div>
+          #end
+          <div class="hidden">
+            <input type="hidden" name="progress" value="connect">
+          </div>
+          <div class="aui-message warning">
+            <span class="aui-icon icon-warning"></span>
+            <p>Instruction goes here</p>
+          </div>
+          <div class="field-group">
+            <label for="url">URL</label>
+            <input type="text" value="$url" id="url" name="url" class="text">
+            <div class="aui-description description">(E.g.: http://example.com)</div>
+          </div>
+          <div class="field-group">
+            <label for="user">User</label>
+            <select type="text" id="user" name="user" class="select">
+              #foreach($u in $users.entrySet())
+                <option value="$u.key" #if($u.key.equals($user)) selected#end>$u.value</option>
+              #end
+            </select>
+          </div>
+        </div>
+        <div class="buttons-container form-footer">
+          <div class="buttons">
+            <input type="submit" value="Save" class="button">
+          </div>
+        </div>
+      </form>
+    </div>
+    #if($hostConfigJson)
+      #set($hostConfigJsonWithHtml = $hostConfigJson)
+      <div class="ac-content-page">
+        <div class="ap-servlet-placeholder">
+          <div class="ap-container" id="ap-$ns">
+            <div class="ap-content" id="embedded-$ns"></div>
+            <div class="ap-stats hidden">
+              <div class="ap-loading ap-status">
+                <small>
+                  <div class="small-spinner"></div>
+                  Loading add-on <a href="${plugin.baseUrl}" class="ap-doc-url" target="_blank">$plugin.name</a>.
+                </small>
+              </div>
+              <div class="ap-load-timeout ap-status hidden">
+                <small>
+                  <div class="small-spinner"></div>
+                  Add-on <a href="${plugin.baseUrl}" class="ap-doc-url" target="_blank">$plugin.name</a> is not responding.
+                  Wait or <a href="#" class="ap-btn-cancel">cancel</a>?
+                </small>
+              </div>
+              <div class="ap-load-error ap-status hidden">
+                <small>Add-on <a href="${plugin.baseUrl}" class="ap-doc-url" target="_blank">$plugin.name</a> failed to load.
+                </small>
+              </div>
+            </div>
+            <script>
+              require(['connect-host', 'ac/cookie', 'ac/env', 'ac/inline-dialog', 'ac/dialog', 'ac/messages', 'ac/request', 'ac/history'], function (host) {
+                host.create($hostConfigJsonWithHtml);
+              });
+            </script>
+          </div>
+         </div>
+       </div>
+     #end
+  </body>
+</html>

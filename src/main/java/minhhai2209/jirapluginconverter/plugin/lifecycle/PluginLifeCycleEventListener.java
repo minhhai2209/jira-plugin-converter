@@ -1,9 +1,5 @@
 package minhhai2209.jirapluginconverter.plugin.lifecycle;
 
-import java.util.UUID;
-
-import org.springframework.beans.factory.DisposableBean;
-
 import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.plugin.Plugin;
 import com.atlassian.plugin.event.PluginEventListener;
@@ -12,9 +8,11 @@ import com.atlassian.plugin.event.events.PluginDisabledEvent;
 import com.atlassian.plugin.event.events.PluginEnabledEvent;
 import com.atlassian.plugin.event.events.PluginFrameworkShutdownEvent;
 import com.atlassian.plugin.event.events.PluginUninstalledEvent;
-
 import minhhai2209.jirapluginconverter.plugin.setting.PluginSetting;
 import minhhai2209.jirapluginconverter.utils.ExceptionUtils;
+import org.springframework.beans.factory.DisposableBean;
+
+import java.util.UUID;
 
 public class PluginLifeCycleEventListener implements DisposableBean {
 
@@ -35,6 +33,7 @@ public class PluginLifeCycleEventListener implements DisposableBean {
   }
 
   private void handle(EventType nextPluginStatus, Plugin plugin) {
+    PluginSetting.setJiraPlugin(plugin);
     if (currentPluginStatus == null && EventType.enabled.equals(nextPluginStatus)) {
       fireNullToEnabledEvent(plugin);
     }
@@ -119,7 +118,7 @@ public class PluginLifeCycleEventListener implements DisposableBean {
       currentPluginStatus = nextPluginStatus;
       switch (currentPluginStatus) {
         case installed:
-          pluginLifeCycleEventHandler.onInstalled(plugin);
+          pluginLifeCycleEventHandler.onInstalled(null);
           break;
         case uninstalled:
           pluginLifeCycleEventHandler.onUninstalled();
