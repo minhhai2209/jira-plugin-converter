@@ -62,8 +62,8 @@ public class ConfigurePluginServlet extends HttpServlet {
 
   private static final String RESPONSE_CONTENT_TYPE = "text/html;charset=utf-8";
 
-  public static String DB_URL;
-  public static String DB_USER;
+  public static String DB_URL = PluginSetting.getDescriptor().getKey() + ".url";
+  public static String DB_USER = PluginSetting.getDescriptor().getKey() + ".user";
 
   private static final String UI_URL = "url";
   private static final String UI_USER = "user";
@@ -88,9 +88,6 @@ public class ConfigurePluginServlet extends HttpServlet {
     this.timeZoneService = timeZoneService;
     this.localeResolver = localeResolver;
     this.pluginLifeCycleEventHandler = pluginLifeCycleEventHandler;
-
-    DB_URL = PluginSetting.getDescriptor().getKey() + ".url";
-    DB_USER = PluginSetting.getDescriptor().getKey() + ".user";
   }
 
   /**
