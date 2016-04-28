@@ -1,20 +1,5 @@
 package minhhai2209.jirapluginconverter.plugin.config;
 
-import java.io.IOException;
-import java.net.URI;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TimeZone;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.http.client.utils.URIBuilder;
-
 import com.atlassian.jira.bc.JiraServiceContextImpl;
 import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.security.JiraAuthenticationContext;
@@ -31,22 +16,29 @@ import com.atlassian.sal.api.user.UserKey;
 import com.atlassian.sal.api.user.UserManager;
 import com.atlassian.sal.api.user.UserProfile;
 import com.atlassian.templaterenderer.TemplateRenderer;
-
 import minhhai2209.jirapluginconverter.connect.descriptor.Modules;
 import minhhai2209.jirapluginconverter.connect.descriptor.page.Page;
 import minhhai2209.jirapluginconverter.plugin.iframe.HostConfig;
 import minhhai2209.jirapluginconverter.plugin.jwt.JwtComposer;
 import minhhai2209.jirapluginconverter.plugin.lifecycle.PluginLifeCycleEventHandler;
 import minhhai2209.jirapluginconverter.plugin.render.ParameterContextBuilder;
-import minhhai2209.jirapluginconverter.plugin.setting.AuthenticationUtils;
-import minhhai2209.jirapluginconverter.plugin.setting.JiraUtils;
-import minhhai2209.jirapluginconverter.plugin.setting.KeyUtils;
-import minhhai2209.jirapluginconverter.plugin.setting.LicenseUtils;
-import minhhai2209.jirapluginconverter.plugin.setting.PageUtils;
-import minhhai2209.jirapluginconverter.plugin.setting.PluginSetting;
+import minhhai2209.jirapluginconverter.plugin.setting.*;
 import minhhai2209.jirapluginconverter.plugin.utils.LocaleUtils;
 import minhhai2209.jirapluginconverter.utils.ExceptionUtils;
 import minhhai2209.jirapluginconverter.utils.JsonUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.http.client.utils.URIBuilder;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.net.URI;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TimeZone;
 
 public class ConfigurePluginServlet extends HttpServlet {
 
@@ -70,8 +62,8 @@ public class ConfigurePluginServlet extends HttpServlet {
 
   private static final String RESPONSE_CONTENT_TYPE = "text/html;charset=utf-8";
 
-  public static final String DB_URL = PluginSetting.getDescriptor().getKey() + ".url";
-  public static final String DB_USER = PluginSetting.getDescriptor().getKey() + ".user";
+  public static String DB_URL;
+  public static String DB_USER;
 
   private static final String UI_URL = "url";
   private static final String UI_USER = "user";
@@ -96,6 +88,9 @@ public class ConfigurePluginServlet extends HttpServlet {
     this.timeZoneService = timeZoneService;
     this.localeResolver = localeResolver;
     this.pluginLifeCycleEventHandler = pluginLifeCycleEventHandler;
+
+    DB_URL = PluginSetting.getDescriptor().getKey() + ".url";
+    DB_USER = PluginSetting.getDescriptor().getKey() + ".user";
   }
 
   /**
