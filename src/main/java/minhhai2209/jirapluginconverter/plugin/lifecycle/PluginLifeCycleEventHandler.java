@@ -60,6 +60,7 @@ public class PluginLifeCycleEventHandler {
 
     jiraVersion = applicationProperties.getVersion();
     PluginSetting.load(pluginSettingsFactory, transactionTemplate, pluginLicenseManager, consumerService);
+
     String existingSharedSecret = KeyUtils.getSharedSecret();
     if (existingSharedSecret == null) {
       KeyUtils.generateSharedSecret(pluginSettingsFactory, transactionTemplate);
