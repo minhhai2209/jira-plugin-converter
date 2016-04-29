@@ -1,0 +1,47 @@
+#enable_html_escaping()
+
+#set($hostConfigJsonWithHtml = $hostConfigJson)
+
+<html>
+<head>
+  <meta name="decorator" content="atl.admin"/>
+  $webResourceManager.requireResource("com.atlassian.jira.jira-project-config-plugin:project-config-global")
+  <title>$!title</title>
+  <meta name="tab" content="$!title"/>
+  <meta name="decorator" content="atl.admin"/>
+  <meta name="admin.active.section" content="atl.jira.proj.config"/>
+  <meta name="admin.active.tab" content="$adminActiveTab"/>
+  <meta name="projectKey" content="$projectKey"/>
+</head>
+<body>
+<div class="ap-servlet-placeholder">
+  <div class="ap-container" id="ap-$ns">
+    <div class="ap-content" id="embedded-$ns"></div>
+    <div class="ap-stats hidden">
+      <div class="ap-loading ap-status">
+        <small>
+          <div class="small-spinner"></div>
+          Loading add-on <a href="${plugin.baseUrl}" class="ap-doc-url" target="_blank">$plugin.name</a>.
+        </small>
+      </div>
+      <div class="ap-load-timeout ap-status hidden">
+        <small>
+          <div class="small-spinner"></div>
+          Add-on <a href="${plugin.baseUrl}" class="ap-doc-url" target="_blank">$plugin.name</a> is not responding.
+          Wait or <a href="#" class="ap-btn-cancel">cancel</a>?
+        </small>
+      </div>
+      <div class="ap-load-error ap-status hidden">
+        <small>Add-on <a href="${plugin.baseUrl}" class="ap-doc-url" target="_blank">$plugin.name</a> failed to load.
+        </small>
+      </div>
+    </div>
+    <script>
+      require(['connect-host', 'ac/cookie', 'ac/env', 'ac/inline-dialog', 'ac/dialog', 'ac/messages', 'ac/request', 'ac/history'], function (host) {
+        host.create($hostConfigJsonWithHtml);
+      });
+    </script>
+  </div>
+</div>
+</body>
+</html>

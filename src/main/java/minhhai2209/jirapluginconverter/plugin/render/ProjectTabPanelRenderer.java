@@ -2,14 +2,13 @@ package minhhai2209.jirapluginconverter.plugin.render;
 
 import com.atlassian.jira.bc.JiraServiceContextImpl;
 import com.atlassian.jira.component.ComponentAccessor;
+import com.atlassian.jira.plugin.projectpanel.impl.AbstractProjectTabPanel;
+import com.atlassian.jira.project.browse.BrowseContext;
 import com.atlassian.jira.security.JiraAuthenticationContext;
 import com.atlassian.jira.timezone.TimeZoneService;
 import com.atlassian.jira.user.ApplicationUser;
-import com.atlassian.plugin.Plugin;
-import com.atlassian.plugin.web.renderer.RendererException;
 import com.atlassian.sal.api.message.LocaleResolver;
-import com.atlassian.templaterenderer.TemplateRenderer;
-import minhhai2209.jirapluginconverter.connect.descriptor.webpanel.WebPanel;
+import minhhai2209.jirapluginconverter.connect.descriptor.tabpanel.TabPanel;
 import minhhai2209.jirapluginconverter.plugin.iframe.HostConfig;
 import minhhai2209.jirapluginconverter.plugin.jwt.JwtComposer;
 import minhhai2209.jirapluginconverter.plugin.setting.*;
@@ -18,45 +17,37 @@ import minhhai2209.jirapluginconverter.utils.ExceptionUtils;
 import minhhai2209.jirapluginconverter.utils.JsonUtils;
 import org.apache.http.client.utils.URIBuilder;
 
-import java.io.IOException;
-import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TimeZone;
 
-public class WebPanelRenderer implements com.atlassian.plugin.web.renderer.WebPanelRenderer {
-
-  private TemplateRenderer renderer;
+public class ProjectTabPanelRenderer extends AbstractProjectTabPanel {
 
   private TimeZoneService timeZoneService;
 
   private LocaleResolver localeResolver;
 
-  public WebPanelRenderer(
-      TemplateRenderer renderer,
-      TimeZoneService timeZoneService,
-      LocaleResolver localeResolver) {
-
-    this.renderer = renderer;
+  public ProjectTabPanelRenderer(TimeZoneService timeZoneService, LocaleResolver localeResolver) {
     this.timeZoneService = timeZoneService;
     this.localeResolver = localeResolver;
   }
 
   @Override
-  public String getResourceType() {
-    return PluginSetting.PLUGIN_KEY + "-iframe";
+  public boolean showPanel(BrowseContext browseContext) {
+    return false;
   }
 
   @Override
-  public void render(String templateName, Plugin plugin, Map<String, Object> context, Writer writer)
-      throws RendererException, IOException {
-
+  public Map<String, Object> createVelocityParams(BrowseContext browseContext) {
     try {
 
-      String moduleKey = templateName;
+      String moduleKey = descriptor.getKey();
 
-      WebPanel webPanel = WebPanelUtils.getWebPanel(moduleKey);
-      String fullUrl = WebPanelUtils.getFullUrl(webPanel);
+      TabPanel tabPanel = ProjectTabPanelUtils.getProjectTabPanel(moduleKey);
+
+      String fullUrl = ProjectTabPanelUtils.getFullUrl(tabPanel);
+
+      String title = tabPanel.getName().getValue();
 
       JiraAuthenticationContext authenticationContext = ComponentAccessor.getJiraAuthenticationContext();
       ApplicationUser user = authenticationContext != null ? authenticationContext.getUser() : null;
@@ -65,14 +56,14 @@ public class WebPanelRenderer implements com.atlassian.plugin.web.renderer.WebPa
           timeZoneService.getDefaultTimeZoneInfo(jiraServiceContext).toTimeZone() :
           timeZoneService.getUserTimeZoneInfo(jiraServiceContext).toTimeZone();
 
-      Map<String, String> productContext = ParameterContextBuilder.buildContext(null, context, null, null);
+      Map<String, String> productContext = ParameterContextBuilder.buildContext(null, null, null, browseContext);
 
       String xdm_e = JiraUtils.getBaseUrl();
       String cp = JiraUtils.getContextPath();
       String ns = PluginSetting.getDescriptor().getKey() + "__" + moduleKey;
       String xdm_c = "channel-" + ns;
+      String simpleDlg = "";
       String dlg = "";
-      String simpleDlg = dlg;
       String general = "";
       String w = "";
       String h = "";
@@ -104,7 +95,7 @@ public class WebPanelRenderer implements com.atlassian.plugin.web.renderer.WebPa
             "GET",
             uriBuilder,
             userKey,
-            webPanel.getUrl());
+            tabPanel.getUrl());
         uriBuilder.addParameter("jwt", jwt);
       }
       String url = uriBuilder.toString();
@@ -126,30 +117,21 @@ public class WebPanelRenderer implements com.atlassian.plugin.web.renderer.WebPa
 
       String hostConfigJson = JsonUtils.toJson(hostConfig);
 
-      Map<String, Object> viewContext = new HashMap<String, Object>();
-      viewContext.put("hostConfigJson", hostConfigJson);
-      viewContext.put("ns", ns);
-      viewContext.put("plugin", PluginSetting.getPlugin());
-      render("web-panel", writer, viewContext);
+      Map<String, Object> context = new HashMap<String, Object>();
+      context.put("hostConfigJson", hostConfigJson);
+      context.put("ns", ns);
+      context.put("title", title);
+      context.put("plugin", PluginSetting.getPlugin());
+
+      context.put("projectKey", browseContext.getProject().getKey());
+      context.put("adminActiveTab", moduleKey);
+
+      return context;
 
     } catch (Exception e) {
       ExceptionUtils.throwUnchecked(e);
     }
-  }
 
-  private void render(String vm, Writer writer, Map<String, Object> context) throws IOException {
-    renderer.render("templates/" + vm + ".vm", context, writer);
+    return null;
   }
-
-  @Override
-  public String renderFragment(String fragment, Plugin plugin, Map<String, Object> context) throws RendererException {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
-  public void renderFragment(Writer writer, String fragment, Plugin plugin, Map<String, Object> context)
-      throws RendererException, IOException {
-    throw new UnsupportedOperationException();
-  }
-
 }

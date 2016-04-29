@@ -1,24 +1,22 @@
 package minhhai2209.jirapluginconverter.plugin.render;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.lang.text.StrSubstitutor;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.type.TypeReference;
-
 import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.issue.Issue;
 import com.atlassian.jira.issue.IssueManager;
 import com.atlassian.jira.issue.MutableIssue;
 import com.atlassian.jira.project.Project;
 import com.atlassian.jira.project.ProjectManager;
-
+import com.atlassian.jira.project.browse.BrowseContext;
 import minhhai2209.jirapluginconverter.utils.ExceptionUtils;
+import org.apache.commons.lang.text.StrSubstitutor;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.type.TypeReference;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ParameterContextBuilder {
 
@@ -168,6 +166,13 @@ public class ParameterContextBuilder {
     }
   }
 
+  private static void buildContextParams(BrowseContext browseContext, Map<String, String> acContext) {
+
+    Project project = browseContext.getProject();
+    acContext.put("project.key", project.getKey());
+    acContext.put("project.id", project.getId().toString());
+  }
+
   public static String buildUrl(String url, Map<String, String> acContext) {
     StrSubstitutor substitutor = new StrSubstitutor(acContext, "${", "}");
     url = substitutor.replace(url);
@@ -177,7 +182,7 @@ public class ParameterContextBuilder {
   }
 
   public static Map<String, String> buildContext(
-          HttpServletRequest request, Map<String, Object> contextParams, Issue issue) {
+      HttpServletRequest request, Map<String, Object> contextParams, Issue issue, BrowseContext browseContext) {
     Map<String, String> acContext = new HashMap<String, String>();
     if (request != null) {
       buildContextParams(request, acContext);
@@ -185,6 +190,8 @@ public class ParameterContextBuilder {
       buildContextParams(contextParams, acContext);
     } else if (issue != null) {
       buildContextParams(issue, acContext);
+    } else if (browseContext != null) {
+      buildContextParams(browseContext, acContext);
     }
     return acContext;
   }

@@ -1,19 +1,11 @@
 package minhhai2209.jirapluginconverter.plugin.condition;
 
-import java.util.Map;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.utils.URIBuilder;
-
 import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.security.JiraAuthenticationContext;
 import com.atlassian.jira.user.ApplicationUser;
 import com.atlassian.plugin.PluginParseException;
 import com.atlassian.plugin.web.Condition;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import minhhai2209.jirapluginconverter.plugin.jwt.JwtComposer;
 import minhhai2209.jirapluginconverter.plugin.render.ParameterContextBuilder;
 import minhhai2209.jirapluginconverter.plugin.setting.AuthenticationUtils;
@@ -21,6 +13,12 @@ import minhhai2209.jirapluginconverter.plugin.setting.KeyUtils;
 import minhhai2209.jirapluginconverter.plugin.setting.LicenseUtils;
 import minhhai2209.jirapluginconverter.plugin.setting.PluginSetting;
 import minhhai2209.jirapluginconverter.plugin.utils.HttpClientFactory;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.utils.URIBuilder;
+
+import java.util.Map;
 
 public class RemoteCondition implements Condition {
 
@@ -47,7 +45,7 @@ public class RemoteCondition implements Condition {
       JiraAuthenticationContext authenticationContext = ComponentAccessor.getJiraAuthenticationContext();
       ApplicationUser user = authenticationContext != null ? authenticationContext.getUser() : null;
 
-      Map<String, String> productContext = ParameterContextBuilder.buildContext(null, context, null);
+      Map<String, String> productContext = ParameterContextBuilder.buildContext(null, context, null, null);
       String userKey = user != null ? user.getKey() : "";
       String lic = LicenseUtils.getLic();
 

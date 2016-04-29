@@ -1,15 +1,15 @@
 package minhhai2209.jirapluginconverter.plugin.setting;
 
+import minhhai2209.jirapluginconverter.connect.descriptor.Modules;
+import minhhai2209.jirapluginconverter.connect.descriptor.tabpanel.TabPanel;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import minhhai2209.jirapluginconverter.connect.descriptor.Modules;
-import minhhai2209.jirapluginconverter.connect.descriptor.tabpanel.TabPanel;
+public class ProjectTabPanelUtils {
 
-public class TabPanelUtils {
-
-  private static Map<String, TabPanel> jiraIssueTabPanelLookup;
+  private static Map<String, TabPanel> projectTabPanelLookup;
 
   public static String getFullUrl(TabPanel tabPanel) {
     String baseUrl = PluginSetting.getPluginBaseUrl();
@@ -18,19 +18,19 @@ public class TabPanelUtils {
     return url;
   }
 
-  public static TabPanel getJiraIssueTabPanel(String key) {
-    TabPanel tabPanel = jiraIssueTabPanelLookup.get(key);
+  public static TabPanel getProjectTabPanel(String key) {
+    TabPanel tabPanel = projectTabPanelLookup.get(key);
     return tabPanel;
   }
 
-  public static void buildJiraIssueTabPanelLookup() {
+  public static void buildProjectTabPanelLookup() {
     Modules modules = PluginSetting.getModules();
     List<TabPanel> tabPanels = modules.getJiraIssueTabPanels();
-    jiraIssueTabPanelLookup = new HashMap<String, TabPanel>();
+    projectTabPanelLookup = new HashMap<String, TabPanel>();
     if (tabPanels != null) {
       for (TabPanel tabPanel : tabPanels) {
         String key = tabPanel.getKey();
-        jiraIssueTabPanelLookup.put(key, tabPanel);
+        projectTabPanelLookup.put(key, tabPanel);
       }
     }
   }
