@@ -38,13 +38,12 @@ public class PluginSetting {
     PluginSetting.pluginSettingsFactory = pluginSettingsFactory;
     PluginSetting.transactionTemplate = transactionTemplate;
 
-    readDescriptor();
     LicenseUtils.setPluginLicenseManager(pluginLicenseManager);
     KeyUtils.loadJiraConsumer(consumerService);
     KeyUtils.loadSharedSecret(pluginSettingsFactory);
   }
 
-  private static void readDescriptor() {
+  public static void readDescriptor() {
     InputStream is = null;
     try {
       is = PluginSetting.class.getResourceAsStream("/imported_atlas_connect_descriptor.json");
