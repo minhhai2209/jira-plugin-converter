@@ -28,6 +28,7 @@ public class PluginLifeCycleEventListener implements DisposableBean {
 
   public PluginLifeCycleEventListener(PluginLifeCycleEventHandler pluginLifeCycleEventHandler) {
 
+    PluginSetting.readDescriptor();
     this.pluginLifeCycleEventHandler = pluginLifeCycleEventHandler;
     register();
   }

@@ -26,7 +26,6 @@ import minhhai2209.jirapluginconverter.plugin.setting.*;
 import minhhai2209.jirapluginconverter.plugin.utils.LocaleUtils;
 import minhhai2209.jirapluginconverter.utils.ExceptionUtils;
 import minhhai2209.jirapluginconverter.utils.JsonUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.http.client.utils.URIBuilder;
 
 import javax.servlet.ServletException;
@@ -150,15 +149,13 @@ public class ConfigurePluginServlet extends HttpServlet {
           addListUsersToContext(context);
 
           // login to qTest
-          boolean urlChanged = transactionTemplate.execute(new TransactionCallback<Boolean>() {
+          transactionTemplate.execute(new TransactionCallback() {
             @Override
-            public Boolean doInTransaction() {
+            public Object doInTransaction() {
               try {
                 PluginSettings settings = pluginSettingsFactory.createGlobalSettings();
-                String oldUrl = (String) settings.get(DB_URL);
                 settings.put(DB_URL, url);
                 settings.put(DB_USER, user);
-                return !StringUtils.equals(oldUrl, url);
               } catch (Exception e) {
                 error.append(ExceptionUtils.getStackTrace(e));
               }
@@ -166,9 +163,7 @@ public class ConfigurePluginServlet extends HttpServlet {
             }
           });
 
-          if (urlChanged) {
-            pluginLifeCycleEventHandler.onInstalled(error);
-          }
+          pluginLifeCycleEventHandler.onInstalled(error);
 
         } catch (Exception e) {
           error.append(ExceptionUtils.getStackTrace(e));
