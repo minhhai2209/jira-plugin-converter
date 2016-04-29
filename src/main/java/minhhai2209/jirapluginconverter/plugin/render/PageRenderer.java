@@ -1,17 +1,5 @@
 package minhhai2209.jirapluginconverter.plugin.render;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TimeZone;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.http.client.utils.URIBuilder;
-
 import com.atlassian.jira.bc.JiraServiceContextImpl;
 import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.security.JiraAuthenticationContext;
@@ -19,22 +7,25 @@ import com.atlassian.jira.timezone.TimeZoneService;
 import com.atlassian.jira.user.ApplicationUser;
 import com.atlassian.sal.api.message.LocaleResolver;
 import com.atlassian.templaterenderer.TemplateRenderer;
-
 import minhhai2209.jirapluginconverter.connect.descriptor.page.Page;
 import minhhai2209.jirapluginconverter.connect.descriptor.webitem.WebItem;
 import minhhai2209.jirapluginconverter.plugin.iframe.HostConfig;
 import minhhai2209.jirapluginconverter.plugin.jwt.JwtComposer;
-import minhhai2209.jirapluginconverter.plugin.setting.AuthenticationUtils;
-import minhhai2209.jirapluginconverter.plugin.setting.JiraUtils;
-import minhhai2209.jirapluginconverter.plugin.setting.KeyUtils;
-import minhhai2209.jirapluginconverter.plugin.setting.LicenseUtils;
-import minhhai2209.jirapluginconverter.plugin.setting.PageUtils;
-import minhhai2209.jirapluginconverter.plugin.setting.PluginSetting;
-import minhhai2209.jirapluginconverter.plugin.setting.WebItemUtils;
+import minhhai2209.jirapluginconverter.plugin.setting.*;
 import minhhai2209.jirapluginconverter.plugin.utils.LocaleUtils;
 import minhhai2209.jirapluginconverter.plugin.utils.RequestUtils;
 import minhhai2209.jirapluginconverter.utils.ExceptionUtils;
 import minhhai2209.jirapluginconverter.utils.JsonUtils;
+import org.apache.http.client.utils.URIBuilder;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TimeZone;
 
 public class PageRenderer extends HttpServlet {
 
@@ -98,7 +89,7 @@ public class PageRenderer extends HttpServlet {
         String location = page.getLocation();
         boolean chrome = !("none".equals(location) || "no-location".equals(location));
 
-        Map<String, String> productContext = ParameterContextBuilder.buildContext(request, null, null);
+        Map<String, String> productContext = ParameterContextBuilder.buildContext(request, null, null, null);
 
         String dlg;
         String general;
@@ -211,7 +202,7 @@ public class PageRenderer extends HttpServlet {
             timeZoneService.getDefaultTimeZoneInfo(jiraServiceContext).toTimeZone() :
             timeZoneService.getUserTimeZoneInfo(jiraServiceContext).toTimeZone();
 
-        Map<String, String> productContext = ParameterContextBuilder.buildContext(request, null, null);
+        Map<String, String> productContext = ParameterContextBuilder.buildContext(request, null, null, null);
 
         String title = "";
         boolean chrome = false;

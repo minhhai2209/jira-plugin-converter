@@ -5,7 +5,7 @@
     <meta name="decorator" content="atl.admin">
     <meta name="application-base-url" content="$applicationProperties.getBaseUrl()">
     $webResourceManager.requireResource("com.atlassian.auiplugin:ajs")
-    <title>Plugin configuration</title>
+    <title>$i18n.getText("plugin.configuration.title")</title>
     <style>
       header > .header-content {
         display: table;
@@ -32,8 +32,12 @@
     <div>
       <header>
         <div class="header-content">
-          <h1>Plugin configuration</h1>
-          <div><a class="aui-icon icon-help" target="_blank" href="#" title="Help goes here">Help goes here</a></div>
+          <h1>$i18n.getText("plugin.configuration.title")</h1>
+          <div><a
+              class="aui-icon icon-help"
+              target="_blank"
+              href="#"
+              title="$i18n.getText("plugin.configuration.help.text")">$i18n.getText("plugin.configuration.help.text")</a></div>
         </div>
       </header>
       <form class="aui" method="POST">
@@ -41,23 +45,26 @@
           #if($error)
             <div class="aui-message error">
               <span class="aui-icon icon-error"></span>
-              <p>$error</p>
+              <p>$i18n.getText("plugin.configuration.error"): $error</p>
             </div>
           #end
-          <div class="hidden">
-            <input type="hidden" name="progress" value="connect">
-          </div>
+          #if($success)
+            <div class="aui-message success">
+              <span class="aui-icon icon-success"></span>
+              <p>$i18n.getText("plugin.configuration.success")</p>
+            </div>
+          #end
           <div class="aui-message warning">
             <span class="aui-icon icon-warning"></span>
-            <p>Instruction goes here</p>
+            <p>$i18n.getText("plugin.configuration.instruction")</p>
           </div>
           <div class="field-group">
-            <label for="url">URL</label>
+            <label for="url">$i18n.getText("plugin.configuration.url.label")</label>
             <input type="text" value="$url" id="url" name="url" class="text">
-            <div class="aui-description description">(E.g.: http://example.com)</div>
+            <div class="aui-description description">$i18n.getText("plugin.configuration.url.description")</div>
           </div>
           <div class="field-group">
-            <label for="user">User</label>
+            <label for="user">$i18n.getText("plugin.configuration.user.label")</label>
             <select type="text" id="user" name="user" class="select">
               #foreach($u in $users.entrySet())
                 <option value="$u.key" #if($u.key.equals($user)) selected#end>$u.value</option>
@@ -67,7 +74,7 @@
         </div>
         <div class="buttons-container form-footer">
           <div class="buttons">
-            <input type="submit" value="Save" class="button">
+            <input type="submit" value="$i18n.getText("plugin.configuration.save")" class="button">
           </div>
         </div>
       </form>

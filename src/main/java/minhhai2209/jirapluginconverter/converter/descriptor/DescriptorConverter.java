@@ -28,6 +28,7 @@ public class DescriptorConverter {
   private static PageConverter generalPageConverter = new PageConverter("system.top.navigation.bar");
   private static PageConverter adminPageConverter = new PageConverter("advanced_menu_section/advanced_section");
   private static IssueTabPanelConverter issueTabPanelConverter = new IssueTabPanelConverter();
+  private static ProjectTabPanelConverter projectTabPanelConverter = new ProjectTabPanelConverter();
   private static WorkflowPostFunctionConverter workflowPostFunctionConverter = new WorkflowPostFunctionConverter();
 
   public static String convert(Modules modules) {
@@ -78,6 +79,14 @@ public class DescriptorConverter {
       if (jiraIssueTabPanels != null) {
         for (TabPanel tabPanel : jiraIssueTabPanels) {
           IssueTabPanelModule pluginModule = issueTabPanelConverter.toPluginModule(tabPanel, modules);
+          XmlUtils.toXml(pluginModule, writer);
+        }
+      }
+
+      List<TabPanel> projectTabPanels = modules.getJiraProjectTabPanels();
+      if (projectTabPanels != null) {
+        for (TabPanel tabPanel : projectTabPanels) {
+          ProjectTabPanelModule pluginModule = projectTabPanelConverter.toPluginModule(tabPanel, modules);
           XmlUtils.toXml(pluginModule, writer);
         }
       }

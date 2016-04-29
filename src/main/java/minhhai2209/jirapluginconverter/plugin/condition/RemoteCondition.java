@@ -45,7 +45,7 @@ public class RemoteCondition implements Condition {
       JiraAuthenticationContext authenticationContext = ComponentAccessor.getJiraAuthenticationContext();
       ApplicationUser user = authenticationContext != null ? authenticationContext.getLoggedInUser() : null;
 
-      Map<String, String> productContext = ParameterContextBuilder.buildContext(null, context, null);
+      Map<String, String> productContext = ParameterContextBuilder.buildContext(null, context, null, null);
       String userKey = user != null ? user.getKey() : "";
       String lic = LicenseUtils.getLic();
 

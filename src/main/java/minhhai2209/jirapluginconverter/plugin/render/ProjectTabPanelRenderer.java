@@ -2,16 +2,12 @@ package minhhai2209.jirapluginconverter.plugin.render;
 
 import com.atlassian.jira.bc.JiraServiceContextImpl;
 import com.atlassian.jira.component.ComponentAccessor;
-import com.atlassian.jira.config.properties.APKeys;
-import com.atlassian.jira.config.properties.ApplicationProperties;
-import com.atlassian.jira.issue.Issue;
-import com.atlassian.jira.issue.tabpanels.GenericMessageAction;
-import com.atlassian.jira.plugin.issuetabpanel.AbstractIssueTabPanel;
+import com.atlassian.jira.plugin.projectpanel.impl.AbstractProjectTabPanel;
+import com.atlassian.jira.project.browse.BrowseContext;
+import com.atlassian.jira.security.JiraAuthenticationContext;
 import com.atlassian.jira.timezone.TimeZoneService;
 import com.atlassian.jira.user.ApplicationUser;
-import com.atlassian.jira.util.VelocityParamFactory;
 import com.atlassian.sal.api.message.LocaleResolver;
-import com.atlassian.velocity.VelocityManager;
 import minhhai2209.jirapluginconverter.connect.descriptor.tabpanel.TabPanel;
 import minhhai2209.jirapluginconverter.plugin.iframe.HostConfig;
 import minhhai2209.jirapluginconverter.plugin.jwt.JwtComposer;
@@ -21,45 +17,53 @@ import minhhai2209.jirapluginconverter.utils.ExceptionUtils;
 import minhhai2209.jirapluginconverter.utils.JsonUtils;
 import org.apache.http.client.utils.URIBuilder;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TimeZone;
 
-public class IssueTabPanelRenderer extends AbstractIssueTabPanel {
+public class ProjectTabPanelRenderer extends AbstractProjectTabPanel {
 
   private TimeZoneService timeZoneService;
 
   private LocaleResolver localeResolver;
 
-  public IssueTabPanelRenderer(
-      TimeZoneService timeZoneService,
-      LocaleResolver localeResolver) {
-
+  public ProjectTabPanelRenderer(TimeZoneService timeZoneService, LocaleResolver localeResolver) {
     this.timeZoneService = timeZoneService;
     this.localeResolver = localeResolver;
   }
 
-  @SuppressWarnings({ "unchecked", "rawtypes" })
   @Override
-  public List getActions(Issue issue, ApplicationUser user) {
+  public boolean showPanel(BrowseContext browseContext) {
+    return false;
+  }
 
+  @Override
+  public Map<String, Object> createVelocityParams(BrowseContext browseContext) {
     try {
 
       String moduleKey = descriptor.getKey();
-      TabPanel tabPanel = IssueTabPanelUtils.getJiraIssueTabPanel(moduleKey);
-      String fullUrl = IssueTabPanelUtils.getFullUrl(tabPanel);
 
+      TabPanel tabPanel = ProjectTabPanelUtils.getProjectTabPanel(moduleKey);
+
+      String fullUrl = ProjectTabPanelUtils.getFullUrl(tabPanel);
+
+      String title = tabPanel.getName().getValue();
+
+      JiraAuthenticationContext authenticationContext = ComponentAccessor.getJiraAuthenticationContext();
+      ApplicationUser user = authenticationContext != null ? authenticationContext.getUser() : null;
       JiraServiceContextImpl jiraServiceContext = new JiraServiceContextImpl(user);
       TimeZone timeZone = user == null ?
           timeZoneService.getDefaultTimeZoneInfo(jiraServiceContext).toTimeZone() :
           timeZoneService.getUserTimeZoneInfo(jiraServiceContext).toTimeZone();
 
-      Map<String, String> productContext = ParameterContextBuilder.buildContext(null, null, issue, null);
+      Map<String, String> productContext = ParameterContextBuilder.buildContext(null, null, null, browseContext);
 
       String xdm_e = JiraUtils.getBaseUrl();
       String cp = JiraUtils.getContextPath();
       String ns = PluginSetting.getDescriptor().getKey() + "__" + moduleKey;
       String xdm_c = "channel-" + ns;
-      String dlg = "";
       String simpleDlg = "";
+      String dlg = "";
       String general = "";
       String w = "";
       String h = "";
@@ -116,32 +120,18 @@ public class IssueTabPanelRenderer extends AbstractIssueTabPanel {
       Map<String, Object> context = new HashMap<String, Object>();
       context.put("hostConfigJson", hostConfigJson);
       context.put("ns", ns);
+      context.put("title", title);
       context.put("plugin", PluginSetting.getPlugin());
-      String html = render("issue-tab-panel", context);
 
-      return Collections.singletonList(new GenericMessageAction(html));
+      context.put("projectKey", browseContext.getProject().getKey());
+      context.put("adminActiveTab", moduleKey);
+
+      return context;
 
     } catch (Exception e) {
       ExceptionUtils.throwUnchecked(e);
     }
+
     return null;
   }
-
-  @SuppressWarnings({ "unchecked", "rawtypes" })
-  private String render(String template, Map<String, Object> context) {
-    ApplicationProperties ap = ComponentAccessor.getApplicationProperties();
-    String webworkEncoding = ap.getString(APKeys.JIRA_WEBWORK_ENCODING);
-    VelocityManager vm = ComponentAccessor.getVelocityManager();
-    VelocityParamFactory vp = ComponentAccessor.getVelocityParamFactory();
-    Map vc = vp.getDefaultVelocityParams();
-    vc.putAll(context);
-    String html = vm.getEncodedBody("templates/", template + ".vm", webworkEncoding, vc);
-    return html;
-  }
-
-  @Override
-  public boolean showPanel(Issue issue, ApplicationUser user) {
-    return true;
-  }
-
 }

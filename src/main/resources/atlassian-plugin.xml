@@ -11,6 +11,8 @@
     <param name="configure.url">/plugins/servlet/${project.artifactId}/configure</param>
     <!-- <plugin_info_xml /> -->
   </plugin-info>
+
+  <resource type="i18n" name="messages" location="i18n" />
   
   <!-- all.js -->
 

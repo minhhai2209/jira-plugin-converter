@@ -54,7 +54,8 @@ public class PluginSetting {
       PageUtils.buildGeneralPageLookup();
       PageUtils.buildAdminPageLookup();
       PageUtils.buildConfigurePageLookup();
-      TabPanelUtils.buildJiraIssueTabPanelLookup();
+      IssueTabPanelUtils.buildJiraIssueTabPanelLookup();
+      ProjectTabPanelUtils.buildProjectTabPanelLookup();
       WorkflowPostFunctionUtils.buildWorkflowPostFunctionLookup();
     } catch (Exception e1) {
       if (is != null) {

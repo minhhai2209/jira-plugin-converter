@@ -1,13 +1,5 @@
 package minhhai2209.jirapluginconverter.plugin.render;
 
-import java.io.IOException;
-import java.io.Writer;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TimeZone;
-
-import org.apache.http.client.utils.URIBuilder;
-
 import com.atlassian.jira.bc.JiraServiceContextImpl;
 import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.security.JiraAuthenticationContext;
@@ -17,19 +9,20 @@ import com.atlassian.plugin.Plugin;
 import com.atlassian.plugin.web.renderer.RendererException;
 import com.atlassian.sal.api.message.LocaleResolver;
 import com.atlassian.templaterenderer.TemplateRenderer;
-
 import minhhai2209.jirapluginconverter.connect.descriptor.webpanel.WebPanel;
 import minhhai2209.jirapluginconverter.plugin.iframe.HostConfig;
 import minhhai2209.jirapluginconverter.plugin.jwt.JwtComposer;
-import minhhai2209.jirapluginconverter.plugin.setting.AuthenticationUtils;
-import minhhai2209.jirapluginconverter.plugin.setting.JiraUtils;
-import minhhai2209.jirapluginconverter.plugin.setting.KeyUtils;
-import minhhai2209.jirapluginconverter.plugin.setting.LicenseUtils;
-import minhhai2209.jirapluginconverter.plugin.setting.PluginSetting;
-import minhhai2209.jirapluginconverter.plugin.setting.WebPanelUtils;
+import minhhai2209.jirapluginconverter.plugin.setting.*;
 import minhhai2209.jirapluginconverter.plugin.utils.LocaleUtils;
 import minhhai2209.jirapluginconverter.utils.ExceptionUtils;
 import minhhai2209.jirapluginconverter.utils.JsonUtils;
+import org.apache.http.client.utils.URIBuilder;
+
+import java.io.IOException;
+import java.io.Writer;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TimeZone;
 
 public class WebPanelRenderer implements com.atlassian.plugin.web.renderer.WebPanelRenderer {
 
@@ -72,7 +65,7 @@ public class WebPanelRenderer implements com.atlassian.plugin.web.renderer.WebPa
           timeZoneService.getDefaultTimeZoneInfo(jiraServiceContext).toTimeZone() :
           timeZoneService.getUserTimeZoneInfo(jiraServiceContext).toTimeZone();
 
-      Map<String, String> productContext = ParameterContextBuilder.buildContext(null, context, null);
+      Map<String, String> productContext = ParameterContextBuilder.buildContext(null, context, null, null);
 
       String xdm_e = JiraUtils.getBaseUrl();
       String cp = JiraUtils.getContextPath();

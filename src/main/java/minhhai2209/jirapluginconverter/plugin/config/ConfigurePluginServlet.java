@@ -171,6 +171,8 @@ public class ConfigurePluginServlet extends HttpServlet {
 
         if (error.length() > 0) {
           updateContext(context, "error", error.toString());
+        } else {
+          updateContext(context, "success", "success");
         }
         addConfigurePage(request, context);
         render(response, context);
@@ -268,7 +270,7 @@ public class ConfigurePluginServlet extends HttpServlet {
           String location = page.getLocation();
           boolean chrome = !("none".equals(location) || "no-location".equals(location));
 
-          Map<String, String> productContext = ParameterContextBuilder.buildContext(request, null, null);
+          Map<String, String> productContext = ParameterContextBuilder.buildContext(request, null, null, null);
 
           String dlg;
           String general;
