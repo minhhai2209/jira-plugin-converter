@@ -34,7 +34,7 @@ public class ProjectTabPanelRenderer extends AbstractProjectTabPanel {
 
   @Override
   public boolean showPanel(BrowseContext browseContext) {
-    return false;
+    return true;
   }
 
   @Override

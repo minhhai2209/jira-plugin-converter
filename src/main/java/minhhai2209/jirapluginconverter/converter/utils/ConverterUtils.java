@@ -1,17 +1,16 @@
 package minhhai2209.jirapluginconverter.converter.utils;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-
 import minhhai2209.jirapluginconverter.connect.descriptor.Descriptor;
 import minhhai2209.jirapluginconverter.connect.descriptor.Modules;
 import minhhai2209.jirapluginconverter.converter.descriptor.DescriptorConverter;
 import minhhai2209.jirapluginconverter.utils.ExceptionUtils;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 
 public class ConverterUtils {
 
@@ -60,15 +59,21 @@ public class ConverterUtils {
     if (!originalGroupId.equals(groupId)) {
       File pluginDescriptorFile = new File(root, "/src/main/resources/atlassian-plugin.xml");
       replaceTextInFile(pluginDescriptorFile, originalGroupId, groupId);
-      File javaSrcDir = new File(root, "/src/main/java/minhhai2209/jirapluginconverter");
-      String newPackageFolder = groupId.replace(".", "/");
-      File newjavaSrcDir = new File(root, "/src/main/java/" + newPackageFolder);
-      File newjavaSrcConverterDir = new File(root, "/src/main/java/" + newPackageFolder + "/converter");
-      FileUtils.moveDirectory(javaSrcDir, newjavaSrcDir);
-      FileUtils.deleteDirectory(new File(root, "/src/main/java/minhhai2209"));
-      FileUtils.deleteDirectory(newjavaSrcConverterDir);
+      File newjavaSrcDir = renamePath(root, "/src/main/java", groupId);
       ConverterUtils.replaceTextInFolder(newjavaSrcDir, originalGroupId, groupId);
+      renamePath(root, "/src/main/resources", groupId);
     }
+  }
+
+  private static File renamePath(File root, String parent, String groupId) throws IOException {
+    File javaSrcDir = new File(root, parent + "/minhhai2209/jirapluginconverter");
+    String newPackageFolder = "/" + groupId.replace(".", "/");
+    File newjavaSrcDir = new File(root, parent + newPackageFolder);
+    File newjavaSrcConverterDir = new File(root, parent + newPackageFolder + "/converter");
+    FileUtils.moveDirectory(javaSrcDir, newjavaSrcDir);
+    FileUtils.deleteDirectory(new File(root, parent + "/minhhai2209"));
+    FileUtils.deleteDirectory(newjavaSrcConverterDir);
+    return newjavaSrcDir;
   }
 
   public static void copy(File root, String connectFile) {
