@@ -2,9 +2,7 @@ package minhhai2209.jirapluginconverter.converter.descriptor;
 
 import minhhai2209.jirapluginconverter.connect.descriptor.Modules;
 import minhhai2209.jirapluginconverter.connect.descriptor.tabpanel.TabPanel;
-import minhhai2209.jirapluginconverter.plugin.descriptor.Param;
-import minhhai2209.jirapluginconverter.plugin.descriptor.ProjectTabPanelModule;
-import minhhai2209.jirapluginconverter.plugin.descriptor.Resource;
+import minhhai2209.jirapluginconverter.plugin.descriptor.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,15 +24,17 @@ public class ProjectTabPanelConverter extends ModuleConverter<ProjectTabPanelMod
     List<Param> params = new ArrayList<Param>();
     Param param = new Param();
     param.setName("noTitle");
-    param.setValue("false");
+    param.setValue("true");
     params.add(param);
+
+    Label label = new Label();
+    label.setKey(name);
 
     ProjectTabPanelModule module = new ProjectTabPanelModule();
     module.setClazz("minhhai2209.jirapluginconverter.plugin.render.ProjectTabPanelRenderer");
     module.setKey(tabPanel.getKey());
     module.setName(name);
-    module.setLabel(name);
-    module.setDescription(name);
+    module.setLabel(label);
     module.setOrder(tabPanel.getWeight());
     module.setResources(resources);
     module.setParams(params);

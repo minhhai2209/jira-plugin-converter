@@ -25,7 +25,7 @@ public class ProjectTabPanelUtils {
 
   public static void buildProjectTabPanelLookup() {
     Modules modules = PluginSetting.getModules();
-    List<TabPanel> tabPanels = modules.getJiraIssueTabPanels();
+    List<TabPanel> tabPanels = modules.getJiraProjectTabPanels();
     projectTabPanelLookup = new HashMap<String, TabPanel>();
     if (tabPanels != null) {
       for (TabPanel tabPanel : tabPanels) {

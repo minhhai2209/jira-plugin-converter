@@ -16,9 +16,9 @@ public class ProjectTabPanelModule {
   @XmlAttribute(name="class")
   private String clazz;
 
-  private String label;
+  private Label label;
 
-  private String description;
+  private Description description;
 
   private int order;
 
@@ -52,19 +52,19 @@ public class ProjectTabPanelModule {
     this.clazz = clazz;
   }
 
-  public String getLabel() {
+  public Label getLabel() {
     return label;
   }
 
-  public void setLabel(String label) {
+  public void setLabel(Label label) {
     this.label = label;
   }
 
-  public String getDescription() {
+  public Description getDescription() {
     return description;
   }
 
-  public void setDescription(String description) {
+  public void setDescription(Description description) {
     this.description = description;
   }
 

@@ -12,7 +12,9 @@
     <!-- <plugin_info_xml /> -->
   </plugin-info>
 
-  <resource type="i18n" name="messages" location="i18n" />
+  <component-import key="i18nResolver" interface="com.atlassian.sal.api.message.I18nResolver"/>
+
+  <resource type="i18n" name="messages" location="minhhai2209.jirapluginconverter.i18n" />
   
   <!-- all.js -->
 
