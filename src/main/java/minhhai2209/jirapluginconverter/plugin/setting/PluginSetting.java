@@ -1,6 +1,5 @@
 package minhhai2209.jirapluginconverter.plugin.setting;
 
-import com.atlassian.crowd.embedded.api.User;
 import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.user.ApplicationUser;
 import com.atlassian.jira.user.util.UserUtil;
@@ -136,10 +135,8 @@ public class PluginSetting {
     if (userKey != null) {
       user = userUtil.getUserByKey(userKey);
     } else {
-      Collection<User> admins = userUtil.getJiraAdministrators();
-      User admin = Iterables.get(admins, 0);
-      String adminName = admin.getName();
-      user = userUtil.getUserByName(adminName);
+      Collection<ApplicationUser> admins = userUtil.getJiraAdministrators();
+      user = Iterables.get(admins, 0);
     }
     return user;
   }
