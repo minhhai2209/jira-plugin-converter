@@ -1,13 +1,5 @@
 package minhhai2209.jirapluginconverter.plugin.workflow;
 
-import java.util.ArrayList;
-import java.util.Map;
-
-import org.apache.http.HttpHeaders;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-
 import com.atlassian.jira.issue.Issue;
 import com.atlassian.jira.rest.v2.issue.IncludedFields;
 import com.atlassian.jira.rest.v2.issue.IssueBean;
@@ -22,13 +14,19 @@ import com.opensymphony.workflow.WorkflowException;
 import com.opensymphony.workflow.spi.SimpleStep;
 import com.opensymphony.workflow.spi.SimpleWorkflowEntry;
 import com.sun.jersey.api.uri.UriBuilderImpl;
-
 import minhhai2209.jirapluginconverter.plugin.jwt.JwtComposer;
 import minhhai2209.jirapluginconverter.plugin.setting.KeyUtils;
 import minhhai2209.jirapluginconverter.plugin.setting.PluginSetting;
 import minhhai2209.jirapluginconverter.plugin.setting.WorkflowPostFunctionUtils;
 import minhhai2209.jirapluginconverter.plugin.utils.HttpClientFactory;
 import minhhai2209.jirapluginconverter.utils.ExceptionUtils;
+import org.apache.http.HttpHeaders;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+
+import java.util.ArrayList;
+import java.util.Map;
 
 public class JiraFunctionProvider extends AbstractJiraFunctionProvider {
   final private BeanBuilderFactory beanBuilderFactory;
@@ -43,7 +41,7 @@ public class JiraFunctionProvider extends AbstractJiraFunctionProvider {
         throw new Exception("full.module.key is not available");
       }
 
-      String uri = WorkflowPostFunctionUtils.getWorkflowPostFuntion(fullModuleKey.replaceFirst(PluginSetting.PLUGIN_KEY, "")).getTriggered().getUrl();
+      String uri = WorkflowPostFunctionUtils.getWorkflowPostFuntion(fullModuleKey.replaceFirst(PluginSetting.getDescriptor().getKey(), "")).getTriggered().getUrl();
       if (uri == null) {
         throw new Exception("URI is empty");
       }

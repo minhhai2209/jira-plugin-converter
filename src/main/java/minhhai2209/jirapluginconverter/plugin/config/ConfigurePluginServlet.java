@@ -102,22 +102,16 @@ public class ConfigurePluginServlet extends HttpServlet {
       @Override
       public void run() {
         final Map<String, Object> context = new HashMap<String, Object>();
+
         addListUsersToContext(context);
-        transactionTemplate.execute(new TransactionCallback() {
-          @Override
-          public Object doInTransaction() {
 
-            PluginSettings settings = pluginSettingsFactory.createGlobalSettings();
+        String url = PluginSetting.getPluginBaseUrl();
+        updateContext(context, UI_URL, url);
 
-            String url = (String) settings.get(DB_URL);
-            String user = (String) settings.get(DB_USER);
+        ApplicationUser user = PluginSetting.getPluginUser();
+        String userKey = user.getKey();
+        updateContext(context, UI_USER, userKey);
 
-            updateContext(context, UI_URL, url);
-            updateContext(context, UI_USER, user);
-            return null;
-          }
-
-        });
         addConfigurePage(request, context);
         render(response, context);
       }

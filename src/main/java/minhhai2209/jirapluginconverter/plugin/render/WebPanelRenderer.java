@@ -44,7 +44,7 @@ public class WebPanelRenderer implements com.atlassian.plugin.web.renderer.WebPa
 
   @Override
   public String getResourceType() {
-    return PluginSetting.PLUGIN_KEY + "-iframe";
+    return PluginSetting.getDescriptor().getKey() + "-iframe";
   }
 
   @Override

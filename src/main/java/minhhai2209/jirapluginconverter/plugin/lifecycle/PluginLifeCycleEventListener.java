@@ -38,7 +38,7 @@ public class PluginLifeCycleEventListener implements DisposableBean {
     if (currentPluginStatus == null && EventType.enabled.equals(nextPluginStatus)) {
       fireNullToEnabledEvent(plugin);
     }
-    if (plugin == null || PluginSetting.PLUGIN_KEY.equals(plugin.getKey())) {
+    if (plugin == null || PluginSetting.getDescriptor().getKey().equals(plugin.getKey())) {
       log("current " + currentPluginStatus + " next " + nextPluginStatus + " " + newlyInstalled);
       if (EventType.uninstalled.equals(currentPluginStatus)) {
         unregister();

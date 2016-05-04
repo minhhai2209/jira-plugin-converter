@@ -1,7 +1,5 @@
 package minhhai2209.jirapluginconverter.plugin.setting;
 
-import java.util.UUID;
-
 import com.atlassian.oauth.Consumer;
 import com.atlassian.oauth.consumer.ConsumerService;
 import com.atlassian.oauth.util.RSAKeys;
@@ -10,6 +8,8 @@ import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
 import com.atlassian.sal.api.transaction.TransactionCallback;
 import com.atlassian.sal.api.transaction.TransactionTemplate;
 import com.google.common.base.Strings;
+
+import java.util.UUID;
 
 public class KeyUtils {
 
@@ -28,7 +28,7 @@ public class KeyUtils {
       @Override
       public String doInTransaction() {
         PluginSettings settings = pluginSettingsFactory.createGlobalSettings();
-        String settingKey = PluginSetting.PLUGIN_KEY + ".sharedSecret";
+        String settingKey = PluginSetting.getDescriptor().getKey() + ".sharedSecret";
         String sharedSecret = (String) settings.get(settingKey);
         if (sharedSecret == null) {
           sharedSecret = UUID.randomUUID().toString();
@@ -41,7 +41,7 @@ public class KeyUtils {
 
   public static void loadSharedSecret(final PluginSettingsFactory pluginSettingsFactory) {
     PluginSettings settings = pluginSettingsFactory.createGlobalSettings();
-    String settingKey = PluginSetting.PLUGIN_KEY + ".sharedSecret";
+    String settingKey = PluginSetting.getDescriptor().getKey() + ".sharedSecret";
     sharedSecret = (String) settings.get(settingKey);
   }
 
