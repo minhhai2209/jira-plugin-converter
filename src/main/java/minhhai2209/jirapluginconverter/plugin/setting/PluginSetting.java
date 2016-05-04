@@ -1,11 +1,16 @@
 package minhhai2209.jirapluginconverter.plugin.setting;
 
+import com.atlassian.crowd.embedded.api.User;
+import com.atlassian.jira.component.ComponentAccessor;
+import com.atlassian.jira.user.ApplicationUser;
+import com.atlassian.jira.user.util.UserUtil;
 import com.atlassian.oauth.consumer.ConsumerService;
 import com.atlassian.sal.api.pluginsettings.PluginSettings;
 import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
 import com.atlassian.sal.api.transaction.TransactionCallback;
 import com.atlassian.sal.api.transaction.TransactionTemplate;
 import com.atlassian.upm.api.license.PluginLicenseManager;
+import com.google.common.collect.Iterables;
 import minhhai2209.jirapluginconverter.connect.descriptor.Descriptor;
 import minhhai2209.jirapluginconverter.connect.descriptor.Modules;
 import minhhai2209.jirapluginconverter.plugin.config.ConfigurePluginServlet;
@@ -14,12 +19,13 @@ import minhhai2209.jirapluginconverter.utils.JsonUtils;
 import org.apache.commons.io.IOUtils;
 
 import java.io.InputStream;
+import java.util.Collection;
 
 public class PluginSetting {
 
-  public static final String ARTIFACT_ID = "generated_artifact_id";
+//  public static final String ARTIFACT_ID = "generated_artifact_id";
 
-  public static final String PLUGIN_KEY = ARTIFACT_ID;
+//  public static final String PLUGIN_KEY = ARTIFACT_ID;
 
   private static Descriptor descriptor;
 
@@ -88,8 +94,10 @@ public class PluginSetting {
       baseUrl = descriptor.getBaseUrl();
     }
     String jiraUrl = JiraUtils.getBaseUrl();
-    if (jiraUrl.startsWith("http:")) {
+    if (jiraUrl.startsWith("http:") && baseUrl.startsWith("https:")) {
       baseUrl = baseUrl.replace("https:", "http:");
+    } else if (jiraUrl.startsWith("https:")) {
+      baseUrl = baseUrl.replace("http:", "https:");
     }
     return baseUrl;
   }
@@ -111,5 +119,28 @@ public class PluginSetting {
 
   public static void setJiraPlugin(com.atlassian.plugin.Plugin jiraPlugin) {
     PluginSetting.jiraPlugin = jiraPlugin;
+  }
+
+  public static ApplicationUser getPluginUser() {
+    String userKey = transactionTemplate.execute(new TransactionCallback<String>() {
+      @Override
+      public String doInTransaction() {
+
+        PluginSettings settings = pluginSettingsFactory.createGlobalSettings();
+        String userKey = (String) settings.get(ConfigurePluginServlet.DB_USER);
+        return userKey;
+      }
+    });
+    ApplicationUser user;
+    UserUtil userUtil = ComponentAccessor.getUserUtil();
+    if (userKey != null) {
+      user = userUtil.getUserByKey(userKey);
+    } else {
+      Collection<User> admins = userUtil.getJiraAdministrators();
+      User admin = Iterables.get(admins, 0);
+      String adminName = admin.getName();
+      user = userUtil.getUserByName(adminName);
+    }
+    return user;
   }
 }

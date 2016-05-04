@@ -36,7 +36,7 @@
           <div><a
               class="aui-icon icon-help"
               target="_blank"
-              href="#"
+              href="$i18n.getText("plugin.configuration.help.link")"
               title="$i18n.getText("plugin.configuration.help.text")">$i18n.getText("plugin.configuration.help.text")</a></div>
         </div>
       </header>
@@ -70,6 +70,7 @@
                 <option value="$u.key" #if($u.key.equals($user)) selected#end>$u.value</option>
               #end
             </select>
+            <div class="aui-description description">$i18n.getText("plugin.configuration.user.description")</div>
           </div>
         </div>
         <div class="buttons-container form-footer">

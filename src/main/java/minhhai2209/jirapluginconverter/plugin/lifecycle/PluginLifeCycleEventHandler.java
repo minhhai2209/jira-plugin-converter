@@ -103,7 +103,7 @@ public class PluginLifeCycleEventHandler {
         event.setClientKey(KeyUtils.getClientKey());
         event.setDescription("");
         event.setEventType(eventType);
-        event.setKey(PluginSetting.PLUGIN_KEY);
+        event.setKey(PluginSetting.getDescriptor().getKey());
         event.setPluginsVersion(pluginVersion);
         event.setProductType(ProductType.jira);
         event.setPublicKey(KeyUtils.getPublicKey());
@@ -113,7 +113,7 @@ public class PluginLifeCycleEventHandler {
         notify(uri, event, jwt);
       }
     } catch (Exception e) {
-      System.out.println(PluginSetting.PLUGIN_KEY + " PLUGIN NOTIFY EVENT '" +
+      System.out.println(PluginSetting.getDescriptor().getKey() + " PLUGIN NOTIFY EVENT '" +
         eventType.toString() + "' FAILED: " + e.getMessage());
       if (error != null) {
         error.append(ExceptionUtils.getStackTrace(e));

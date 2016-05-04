@@ -19,9 +19,9 @@ public class ConverterUtils {
     if (sourceName.equals(".git") || sourceName.equals("target")) {
       return;
     } else if (source.isDirectory()) {
-      File[] childs = source.listFiles();
-      for (int i = 0; i < childs.length; i++) {
-        replaceTextInFolder(childs[i], oldText, newText);
+      File[] children = source.listFiles();
+      for (int i = 0; i < children.length; i++) {
+        replaceTextInFolder(children[i], oldText, newText);
       }
     } else if (source.isFile()) {
       replaceTextInFile(source, oldText, newText);

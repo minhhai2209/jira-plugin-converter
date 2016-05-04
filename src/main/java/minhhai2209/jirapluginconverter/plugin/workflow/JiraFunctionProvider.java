@@ -42,7 +42,7 @@ public class JiraFunctionProvider extends AbstractJiraFunctionProvider {
         throw new Exception("full.module.key is not available");
       }
 
-      String uri = WorkflowPostFunctionUtils.getWorkflowPostFuntion(fullModuleKey.replaceFirst(PluginSetting.PLUGIN_KEY, "")).getTriggered().getUrl();
+      String uri = WorkflowPostFunctionUtils.getWorkflowPostFuntion(fullModuleKey.replaceFirst(PluginSetting.getDescriptor().getKey(), "")).getTriggered().getUrl();
       if (uri == null) {
         throw new Exception("URI is empty");
       }
