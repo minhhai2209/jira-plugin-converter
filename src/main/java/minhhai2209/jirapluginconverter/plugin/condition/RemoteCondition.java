@@ -13,6 +13,7 @@ import minhhai2209.jirapluginconverter.plugin.setting.KeyUtils;
 import minhhai2209.jirapluginconverter.plugin.setting.LicenseUtils;
 import minhhai2209.jirapluginconverter.plugin.setting.PluginSetting;
 import minhhai2209.jirapluginconverter.plugin.utils.HttpClientFactory;
+import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -78,6 +79,8 @@ public class RemoteCondition implements Condition {
 
       HttpClient client = HttpClientFactory.build();
       HttpGet httpGet = new HttpGet(url);
+      httpGet.addHeader(HttpHeaders.ACCEPT, "application/json");
+
       HttpResponse response = client.execute(httpGet);
       DisplayDto displayDto = om.readValue(response.getEntity().getContent(), DisplayDto.class);
       return displayDto.isShouldDisplay();
