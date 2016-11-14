@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import minhhai2209.jirapluginconverter.connect.descriptor.Descriptor;
 import minhhai2209.jirapluginconverter.connect.descriptor.Modules;
+import minhhai2209.jirapluginconverter.connect.descriptor.jira.EntityProperty;
 import minhhai2209.jirapluginconverter.connect.descriptor.jira.WorkflowPostFuntion;
 import minhhai2209.jirapluginconverter.connect.descriptor.page.Page;
 import minhhai2209.jirapluginconverter.connect.descriptor.tabpanel.TabPanel;
@@ -22,6 +23,7 @@ import java.util.List;
 public class DescriptorConverter {
 
   private static ObjectMapper mapper = new ObjectMapper();
+  private static JiraEntityPropertyConverter jiraEntityPropertyConverter = new JiraEntityPropertyConverter();
   private static WebItemConverter webItemConverter = new WebItemConverter();
   private static WebPanelConverter webPanelConverter = new WebPanelConverter();
   private static WebSectionConverter webSectionConverter = new WebSectionConverter();
@@ -34,6 +36,15 @@ public class DescriptorConverter {
   public static String convert(Modules modules) {
     try {
       StringWriter writer = new StringWriter();
+
+      List<EntityProperty> jiraEntityProperties = modules.getJiraEntityProperties();
+      if (jiraEntityProperties != null) {
+        for (EntityProperty jiraEntityProperty : jiraEntityProperties) {
+          IndexDocumentConfiguration pluginModule =
+              jiraEntityPropertyConverter.toPluginModule(jiraEntityProperty, modules);
+          XmlUtils.toXml(pluginModule, writer);
+        }
+      }
 
       List<WebItem> webItems = modules.getWebItems();
       if (webItems != null) {
