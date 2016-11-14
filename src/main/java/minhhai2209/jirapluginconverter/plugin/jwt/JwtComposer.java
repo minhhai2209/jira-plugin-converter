@@ -1,11 +1,5 @@
 package minhhai2209.jirapluginconverter.plugin.jwt;
 
-import java.util.List;
-import java.util.Map;
-
-import org.apache.http.NameValuePair;
-import org.apache.http.client.utils.URIBuilder;
-
 import com.atlassian.jwt.SigningAlgorithm;
 import com.atlassian.jwt.core.writer.JsonSmartJwtJsonBuilder;
 import com.atlassian.jwt.core.writer.JwtClaimsBuilder;
@@ -14,8 +8,12 @@ import com.atlassian.jwt.httpclient.CanonicalHttpUriRequest;
 import com.atlassian.jwt.writer.JwtJsonBuilder;
 import com.atlassian.jwt.writer.JwtWriter;
 import com.atlassian.jwt.writer.JwtWriterFactory;
-
 import minhhai2209.jirapluginconverter.utils.ExceptionUtils;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.utils.URIBuilder;
+
+import java.util.List;
+import java.util.Map;
 
 public class JwtComposer {
 
@@ -29,7 +27,7 @@ public class JwtComposer {
 
     try {
       long issuedAt = System.currentTimeMillis() / 1000L;
-      long expiresAt = issuedAt + 180L;
+      long expiresAt = issuedAt + 1800L;
       JwtJsonBuilder jwtJsonBuilder = new JsonSmartJwtJsonBuilder()
               .issuedAt(issuedAt)
               .expirationTime(expiresAt)
