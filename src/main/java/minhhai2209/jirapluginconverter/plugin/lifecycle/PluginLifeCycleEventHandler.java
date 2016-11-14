@@ -1,26 +1,25 @@
 package minhhai2209.jirapluginconverter.plugin.lifecycle;
 
-import org.apache.http.HttpHeaders;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-
+import com.atlassian.jira.util.json.JSONObject;
 import com.atlassian.oauth.consumer.ConsumerService;
 import com.atlassian.plugin.Plugin;
 import com.atlassian.sal.api.ApplicationProperties;
 import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
 import com.atlassian.sal.api.transaction.TransactionTemplate;
 import com.atlassian.upm.api.license.PluginLicenseManager;
-
 import minhhai2209.jirapluginconverter.plugin.jwt.JwtComposer;
-import minhhai2209.jirapluginconverter.plugin.setting.JiraUtils;
-import minhhai2209.jirapluginconverter.plugin.setting.KeyUtils;
-import minhhai2209.jirapluginconverter.plugin.setting.LifeCycleUtils;
-import minhhai2209.jirapluginconverter.plugin.setting.PluginSetting;
-import minhhai2209.jirapluginconverter.plugin.setting.SenUtils;
+import minhhai2209.jirapluginconverter.plugin.setting.*;
 import minhhai2209.jirapluginconverter.plugin.utils.HttpClientFactory;
 import minhhai2209.jirapluginconverter.utils.ExceptionUtils;
 import minhhai2209.jirapluginconverter.utils.JsonUtils;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpHeaders;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.util.EntityUtils;
 
 public class PluginLifeCycleEventHandler {
 
@@ -110,7 +109,7 @@ public class PluginLifeCycleEventHandler {
         event.setServerVersion(jiraVersion);
         event.setServiceEntitlementNumber(SenUtils.getSen());
         event.setSharedSecret(sharedSecret);
-        notify(uri, event, jwt);
+        notify(uri, event, jwt, error);
       }
     } catch (Exception e) {
       System.out.println(PluginSetting.getDescriptor().getKey() + " PLUGIN NOTIFY EVENT '" +
@@ -121,7 +120,7 @@ public class PluginLifeCycleEventHandler {
     }
   }
 
-  private void notify(String uri, PluginLifeCycleEvent event, String jwt) {
+  private void notify(String uri, PluginLifeCycleEvent event, String jwt, StringBuilder error) {
     try {
       String url = getUrl(uri);
       if (url != null) {
@@ -133,7 +132,17 @@ public class PluginLifeCycleEventHandler {
         if (jwt != null) {
           post.addHeader("Authorization", "JWT " + jwt);
         }
-        httpClient.execute(post);
+
+        HttpResponse response = httpClient.execute(post);
+
+        if (HttpStatus.SC_OK != response.getStatusLine().getStatusCode()) {
+          HttpEntity entity = response.getEntity();
+          String responseString = EntityUtils.toString(entity, "UTF-8");
+          JSONObject result = new JSONObject(responseString);
+          if (error != null) {
+            error.append(result.getString("message"));
+          }
+        }
       }
     } catch (Exception e) {
       ExceptionUtils.throwUnchecked(e);
