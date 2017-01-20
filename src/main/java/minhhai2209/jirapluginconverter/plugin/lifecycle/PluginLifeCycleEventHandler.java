@@ -137,10 +137,12 @@ public class PluginLifeCycleEventHandler {
 
         if (HttpStatus.SC_OK != response.getStatusLine().getStatusCode()) {
           HttpEntity entity = response.getEntity();
-          String responseString = EntityUtils.toString(entity, "UTF-8");
-          JSONObject result = new JSONObject(responseString);
-          if (error != null) {
-            error.append(result.getString("message"));
+          if(entity != null) {
+            String responseString = EntityUtils.toString(entity, "UTF-8");
+            JSONObject result = new JSONObject(responseString);
+            if (error != null) {
+              error.append(result.getString("message"));
+            }
           }
         }
       }
