@@ -6,11 +6,24 @@ import java.util.List;
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Condition {
+  public Condition() {
+    this.clazz = CONDITION_CLASS;
+  }
+
+  public Condition(String name) {
+    switch(name) {
+      case "user_is_logged_in":
+        this.clazz = "com.atlassian.jira.plugin.webfragment.conditions.UserLoggedInCondition";
+        break;
+      default:
+        this.clazz = CONDITION_CLASS;
+    }
+  }
 
   private static String CONDITION_CLASS = "minhhai2209.jirapluginconverter.plugin.condition.RemoteCondition";
   
   @XmlAttribute(name="class")
-  private String clazz = CONDITION_CLASS;
+  private String clazz;
   
   @XmlElement(name="param")
   private List<Param> params;
