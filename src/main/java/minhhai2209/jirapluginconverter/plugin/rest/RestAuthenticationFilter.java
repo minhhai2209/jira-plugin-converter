@@ -46,9 +46,20 @@ public class RestAuthenticationFilter implements Filter {
 
     HttpServletRequest request = (HttpServletRequest) servletRequest;
     String authorization = request.getHeader("Authorization");
+    String jwtString = null;
+
+    // Look for jwt in headers
     if (authorization != null && authorization.startsWith(JWT_REALM)) {
       // only process if Authorization header is JWT token
-      String jwtString = authorization.substring(JWT_REALM.length());
+      jwtString = authorization.substring(JWT_REALM.length());
+    }
+
+    // Look for jwt in query string
+    if (jwtString == null) {
+      jwtString = request.getParameter("jwt");
+    }
+
+    if (jwtString != null && jwtString.length() > 0) {
       String[] jwtSegements = jwtString.split("\\.");
       if (jwtSegements.length == 3) {
         String claimSegmentJson = new String(Base64.decodeBase64(jwtSegements[1]));
