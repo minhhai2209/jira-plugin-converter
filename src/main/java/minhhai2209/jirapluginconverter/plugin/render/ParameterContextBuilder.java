@@ -178,11 +178,13 @@ public class ParameterContextBuilder {
     url = substitutor.replace(url);
     substitutor = new StrSubstitutor(acContext, "{", "}");
     url = substitutor.replace(url);
+    url = url.replaceAll("&hasShare=\\{\\S+\\}",""); //Remove unhandled variable substitutions
+
     return url;
   }
 
   public static Map<String, String> buildContext(
-      HttpServletRequest request, Map<String, Object> contextParams, Issue issue, BrowseContext browseContext) {
+    HttpServletRequest request, Map<String, Object> contextParams, Issue issue, BrowseContext browseContext) {
     Map<String, String> acContext = new HashMap<String, String>();
     if (request != null) {
       buildContextParams(request, acContext);
