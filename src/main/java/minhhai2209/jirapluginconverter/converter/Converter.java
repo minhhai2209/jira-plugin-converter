@@ -10,7 +10,7 @@ import java.io.File;
 
 public class Converter {
 
-  public static void generate(String templatePath, PluginProperties info) {
+  public static void generate(String templatePath, PluginProperties info, String version) {
 
     try {
       String connectFile = ConverterUtils.getConnectFile(info.getUrl());
@@ -18,7 +18,7 @@ public class Converter {
 
       File root = ConverterUtils.getTemplate(templatePath);
       ConverterUtils.replaceTextInFolder(root, "generated_artifact_id", descriptor.getKey());
-      ConverterUtils.replaceTextInFolder(root, "generated_artifact_version", descriptor.getVersion());
+      ConverterUtils.replaceTextInFolder(root, "generated_artifact_version", version);
       ConverterUtils.replaceTextInFolder(root, "generated_artifact_name", descriptor.getName());
       ConverterUtils.replaceTextInFolder(root, "generated_group_id", info.getGroupId());
       ConverterUtils.replaceTextInFolder(root, "generated_company_name", descriptor.getVendor().get("name"));
@@ -36,9 +36,11 @@ public class Converter {
 
   public static void main(String[] args) {
 
+    String version = (args[3] != null) ? args[3] : "1.0";
+
     PluginProperties info = new PluginProperties();
     info.setGroupId(args[0]);
     info.setUrl(args[1]);
-    generate(args[2], info);
+    generate(args[2], info, version);
   }
 }
