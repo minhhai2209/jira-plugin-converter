@@ -184,6 +184,6 @@ public class PluginLifeCycleEventListener implements DisposableBean {
 
   @Override
   public void destroy() throws Exception {
-    handle(EventType.disabled, null);
+    handle(EventType.uninstalled, null);
   }
 }

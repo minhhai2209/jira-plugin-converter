@@ -27,22 +27,23 @@ public class WebPanelConverter extends ModuleConverter<WebPanelModule, WebPanel>
     module.setResource(resource);
 
     if (webPanel.getConditions() != null) {
-      ConditionWrapper conditionWrapper = webPanel.getConditions().get(0);
-      if (conditionWrapper.getOr() != null) {
-        Conditions conditions =  new Conditions();
-        conditions.setType(Type.OR);
-        List<Condition> clauses =conditionConverter.getConditionModules(conditionWrapper.getOr(), modules);
-        conditions.setConditions(clauses);
-        module.setConditions(conditions);
-      } else if (conditionWrapper.getAnd() != null) {
-        Conditions conditions =  new Conditions();
-        conditions.setType(Type.OR);
-        List<Condition> clauses = conditionConverter.getConditionModules(conditionWrapper.getAnd(), modules);
-        conditions.setConditions(clauses);
-        module.setConditions(conditions);
-      } else {
-        Condition singleCondtion = conditionConverter.toPluginModule(conditionWrapper, modules);
-        module.setCondition(singleCondtion);
+      for ( ConditionWrapper conditionWrapper : webPanel.getConditions() ) {
+        if (conditionWrapper.getOr() != null) {
+          Conditions conditions = new Conditions();
+          conditions.setType(Type.OR);
+          List<Condition> clauses = conditionConverter.getConditionModules(conditionWrapper.getOr(), modules);
+          conditions.setConditions(clauses);
+          module.setConditions(conditions);
+        } else if (conditionWrapper.getAnd() != null) {
+          Conditions conditions = new Conditions();
+          conditions.setType(Type.AND);
+          List<Condition> clauses = conditionConverter.getConditionModules(conditionWrapper.getAnd(), modules);
+          conditions.setConditions(clauses);
+          module.setConditions(conditions);
+        } else {
+          Condition singleCondtion = conditionConverter.toPluginModule(conditionWrapper, modules);
+          module.setCondition(singleCondtion);
+        }
       }
     };
 

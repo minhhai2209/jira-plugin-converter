@@ -11,12 +11,10 @@ import java.util.Map;
 public class ConditionConverter extends ModuleConverter<Condition, minhhai2209.jirapluginconverter.connect.descriptor.condition.Condition>{
 
   @Override
-  public Condition toPluginModule(
-      minhhai2209.jirapluginconverter.connect.descriptor.condition.Condition connectCondition, Modules modules) {
-    Condition conditionModule = new Condition();
+  public Condition toPluginModule(minhhai2209.jirapluginconverter.connect.descriptor.condition.Condition connectCondition, Modules modules) {
+    Condition conditionModule = new Condition(connectCondition.getCondition());
     conditionModule.setInvert(connectCondition.isInvert());
     List<Param> clauses = new ArrayList<Param>();
-    clauses.add(new Param("condition", connectCondition.getCondition()));
 
     Map<String, String> params = connectCondition.getParams();
     if (params != null) {

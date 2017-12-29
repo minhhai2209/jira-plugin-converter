@@ -27,7 +27,7 @@ import minhhai2209.jirapluginconverter.plugin.utils.LocaleUtils;
 import minhhai2209.jirapluginconverter.utils.ExceptionUtils;
 import minhhai2209.jirapluginconverter.utils.JsonUtils;
 import org.apache.http.client.utils.URIBuilder;
-
+import java.net.URISyntaxException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -112,7 +112,17 @@ public class ConfigurePluginServlet extends HttpServlet {
         String userKey = user.getKey();
         updateContext(context, UI_USER, userKey);
 
-        addConfigurePage(request, context);
+        final StringBuilder error = new StringBuilder("");
+        try{
+          addConfigurePage(request, context);
+        }catch(Exception e){
+          error.append(ExceptionUtils.getStackTrace(e));
+        }
+        if (error.length() > 0) {
+          updateContext(context, "error", error.toString());
+        } else {
+          updateContext(context, "success", "success");
+        }
         render(response, context);
       }
     });
@@ -134,13 +144,16 @@ public class ConfigurePluginServlet extends HttpServlet {
 
         final StringBuilder error = new StringBuilder("");
 
+        final String url = request.getParameter(UI_URL);
+        final String user = request.getParameter(UI_USER);
         try {
-          final String url = request.getParameter(UI_URL);
-          final String user = request.getParameter(UI_USER);
+          //just to check that it's a valid URL
 
           updateContext(context, UI_URL, url);
           updateContext(context, UI_USER, user);
           addListUsersToContext(context);
+
+          URIBuilder uriBuilder = new URIBuilder(url);
 
           // login to qTest
           transactionTemplate.execute(new TransactionCallback() {
@@ -163,12 +176,16 @@ public class ConfigurePluginServlet extends HttpServlet {
           error.append(ExceptionUtils.getStackTrace(e));
         }
 
+        try{
+          addConfigurePage(request, context);
+        }catch(Exception e){
+          error.append(ExceptionUtils.getStackTrace(e));
+        }
         if (error.length() > 0) {
           updateContext(context, "error", error.toString());
         } else {
           updateContext(context, "success", "success");
         }
-        addConfigurePage(request, context);
         render(response, context);
       }
 
@@ -238,10 +255,8 @@ public class ConfigurePluginServlet extends HttpServlet {
     }
   }
 
-  private void addConfigurePage(HttpServletRequest request, Map<String, Object> context) {
-
-    try {
-
+  private void addConfigurePage(HttpServletRequest request, Map<String, Object> context) 
+  throws URISyntaxException {
       Modules modules = PluginSetting.getModules();
       if (modules != null) {
         Page page = modules.getConfigurePage();
@@ -252,6 +267,7 @@ public class ConfigurePluginServlet extends HttpServlet {
 
           String fullUrl = PageUtils.getFullUrl(page);
 
+    System.out.println("fullUrl " + fullUrl);
           String title = page.getName().getValue();
 
           JiraAuthenticationContext authenticationContext = ComponentAccessor.getJiraAuthenticationContext();
@@ -349,8 +365,5 @@ public class ConfigurePluginServlet extends HttpServlet {
           context.put("plugin", PluginSetting.getPlugin());
         }
       }
-    } catch (Exception e) {
-      ExceptionUtils.throwUnchecked(e);
-    }
   }
 }

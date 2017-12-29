@@ -192,6 +192,12 @@
       location="after-encoding">
     <url-pattern>/rest/*</url-pattern>
   </servlet-filter>
+
+  <component key="sal-properties" class="minhhai2209.jirapluginconverter.plugin.rest.Properties"/>
+  
+  <rest key="rest-atlassian-connect" path="/atlassian-connect" version="1">
+    <description>Provides api to save properties to plugins.</description>
+  </rest>
   
   <web-panel key="connect-dialog-options" location="atl.header.after.scripts" class="minhhai2209.jirapluginconverter.plugin.render.DialogOptionsWebPanel"/>
 

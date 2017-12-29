@@ -5,24 +5,25 @@
     <meta name="decorator" content="atl.admin">
     <meta name="application-base-url" content="$applicationProperties.getBaseUrl()">
     $webResourceManager.requireResource("com.atlassian.auiplugin:ajs")
+    $webResourceManager.requireResource("com.atlassian.auiplugin:aui-experimental-expander")
     <title>$i18n.getText("plugin.configuration.title")</title>
     <style>
       header > .header-content {
         display: table;
       }
-      
+
       header > .header-content > * {
         display: table-cell;
       }
-      
+
       header > .header-content > h1 {
         width: 100%;
       }
-      
+
       form.aui .form-body {
         border-top: 1px solid #ddd;
       }
-      
+
       .aui-icon.icon-help {
         vertical-align: top;
       }
@@ -40,37 +41,34 @@
               title="$i18n.getText("plugin.configuration.help.text")">$i18n.getText("plugin.configuration.help.text")</a></div>
         </div>
       </header>
-      <form class="aui" method="POST">
+      <form class="aui" method="POST" enctype='application/json'>
         <div class="form-body">
           #if($error)
-            <div class="aui-message error">
-              <span class="aui-icon icon-error"></span>
-              <p>$i18n.getText("plugin.configuration.error"): $error</p>
-            </div>
+          <div class="aui-message error">
+            <span class="aui-icon icon-error"></span>
+            <p>$i18n.getText("plugin.configuration.error.text"): <a 
+                id="error-details-trigger" 
+                data-replace-text="$i18n.getText("plugin.configuration.error.expander.less")" 
+                class="aui-expander-trigger" 
+                aria-controls="error-details">$i18n.getText("plugin.configuration.error.expander.more")</a>
+            </p>
+            <div id="error-details" class="aui-expander-content">$error</div>
+          </div>
           #end
           #if($success)
-            <div class="aui-message success">
-              <span class="aui-icon icon-success"></span>
-              <p>$i18n.getText("plugin.configuration.success")</p>
-            </div>
+          <div class="aui-message success">
+            <span class="aui-icon icon-success"></span>
+            <p>$i18n.getText("plugin.configuration.success")</p>
+          </div>
           #end
-          <div class="aui-message warning">
-            <span class="aui-icon icon-warning"></span>
+          <div class="aui-message info">
+            <span class="aui-icon icon-info"></span>
             <p>$i18n.getText("plugin.configuration.instruction")</p>
           </div>
           <div class="field-group">
             <label for="url">$i18n.getText("plugin.configuration.url.label")</label>
             <input type="text" value="$url" id="url" name="url" class="text">
             <div class="aui-description description">$i18n.getText("plugin.configuration.url.description")</div>
-          </div>
-          <div class="field-group">
-            <label for="user">$i18n.getText("plugin.configuration.user.label")</label>
-            <select type="text" id="user" name="user" class="select">
-              #foreach($u in $users.entrySet())
-                <option value="$u.key" #if($u.key.equals($user)) selected#end>$u.value</option>
-              #end
-            </select>
-            <div class="aui-description description">$i18n.getText("plugin.configuration.user.description")</div>
           </div>
         </div>
         <div class="buttons-container form-footer">
@@ -80,7 +78,7 @@
         </div>
       </form>
     </div>
-    #if($hostConfigJson)
+    #if($hostConfigJson && !$error)
       #set($hostConfigJsonWithHtml = $hostConfigJson)
       <div class="ac-content-page">
         <div class="ap-servlet-placeholder">
@@ -113,6 +111,6 @@
           </div>
          </div>
        </div>
-     #end
+    #end
   </body>
 </html>

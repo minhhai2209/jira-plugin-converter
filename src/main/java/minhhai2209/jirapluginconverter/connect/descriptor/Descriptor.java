@@ -39,7 +39,7 @@ public class Descriptor {
     this.name = name;
   }
   public String getVersion() {
-    return version;
+    return (version != null) ? version : "1.0";
   }
   public void setVersion(String version) {
     this.version = version;

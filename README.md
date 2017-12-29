@@ -12,13 +12,13 @@ This project is originally a submission to [Atlassian's Codegeist 2015](http://d
 4. Package with Atlassian SDK: `atlas-clean && atlas-package`.
 5. Convert Atlassian Connect add-on:
 
-`java -cp target\generated_artifact_id-generated_artifact_version-jar-with-dependencies.jar minhhai2209.jirapluginconverter.converter.Converter <group_id> <descriptor_url> <path_to_generated_plugin>`
+`java -cp target\generated_artifact_id-generated_artifact_version-jar-with-dependencies.jar minhhai2209.jirapluginconverter.converter.Converter <group_id> <descriptor_url> <path_to_generated_plugin> <version>`
 
 The generated plugin's source code will be placed at `path_to_generated_plugin`.
 
 Example:
 
-`java -cp target\generated_artifact_id-generated_artifact_version-jar-with-dependencies.jar minhhai2209.jirapluginconverter.converter.Converter com.example http://localhost:7777/descriptor D:\tmp\plugin`
+`java -cp target\generated_artifact_id-generated_artifact_version-jar-with-dependencies.jar minhhai2209.jirapluginconverter.converter.Converter com.example http://localhost:7777/descriptor D:\tmp\plugin 1.0`
 
 For a quick test, use [this simple Atlassian Connect add-on](https://github.com/minhhai2209/jira-plugin-converter-demo).
 
